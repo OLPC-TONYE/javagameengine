@@ -41,6 +41,7 @@ public class LevelEditorLayer extends Layer{
 	private String selectedEntity;
 	private RendererDebug renderer2;
 	
+	ArrayList<VertexArrayObject> lines = new ArrayList<VertexArrayObject>();
 	@Override
 	public void attach() {
 		
@@ -53,6 +54,20 @@ public class LevelEditorLayer extends Layer{
 		System.out.println("Level Loaded");
 		levelScene.init();	
 		levelScene.findCameras();
+		
+		float fExtent = 10.0f;
+		float fStep = 1.0f;
+		float y = -0.5f;
+		int iLine;
+		
+		for(iLine = (int) -fExtent; iLine <= fExtent; iLine += fStep) {
+			// Draw Z lines
+			float[] verticesZ = new float[]{iLine, y, fExtent, iLine, y, -fExtent};
+			lines.add(EngineManager.createLine(verticesZ));
+		
+			float[] verticesX = new float[]{fExtent, y, iLine, -fExtent, y, iLine};
+			lines.add(EngineManager.createLine(verticesX));
+		}
 	}
 
 	@Override
@@ -64,21 +79,6 @@ public class LevelEditorLayer extends Layer{
 	public void render() {
 		screen.bind();
 		renderer.clearColour(0.06f, 0.06f, 0.06f, 0.960f);
-		
-		float fExtent = 10.0f;
-		float fStep = 1.0f;
-		float y = -0.5f;
-		int iLine;
-		ArrayList<VertexArrayObject> lines = new ArrayList<VertexArrayObject>();
-		for(iLine = (int) -fExtent; iLine <= fExtent; iLine += fStep) {
-			// Draw Z lines
-			float[] verticesZ = new float[]{iLine, y, fExtent, iLine, y, -fExtent};
-			lines.add(EngineManager.createLine(verticesZ));
-		
-			float[] verticesX = new float[]{fExtent, y, iLine, -fExtent, y, iLine};
-			lines.add(EngineManager.createLine(verticesX));
-		}
-		
 		renderer2.render(EntityManager.entities.get(levelScene.n_mainCamera), lines);
 		levelScene.render(renderer);
 		screen.unbind();	
