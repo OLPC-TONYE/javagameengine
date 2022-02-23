@@ -1,0 +1,636 @@
+[
+  {
+    "name": "Object3",
+    "id": 0,
+    "modified": false,
+    "components": [
+      {
+        "type": "entitiesComponents.Transform",
+        "properties": {
+          "position": {
+            "x": 2.5,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "firstTimeStart": true
+        }
+      },
+      {
+        "type": "entitiesComponents.MeshRenderer",
+        "properties": {
+          "positions": [
+            -0.5,
+            0.5,
+            -0.5,
+            -0.5,
+            -0.5,
+            -0.5,
+            0.5,
+            -0.5,
+            -0.5,
+            0.5,
+            0.5,
+            -0.5,
+            -0.5,
+            0.5,
+            0.5,
+            -0.5,
+            -0.5,
+            0.5,
+            0.5,
+            -0.5,
+            0.5,
+            0.5,
+            0.5,
+            0.5,
+            0.5,
+            0.5,
+            -0.5,
+            0.5,
+            -0.5,
+            -0.5,
+            0.5,
+            -0.5,
+            0.5,
+            0.5,
+            0.5,
+            0.5,
+            -0.5,
+            0.5,
+            -0.5,
+            -0.5,
+            -0.5,
+            -0.5,
+            -0.5,
+            -0.5,
+            0.5,
+            -0.5,
+            0.5,
+            0.5,
+            -0.5,
+            0.5,
+            0.5,
+            -0.5,
+            0.5,
+            -0.5,
+            0.5,
+            0.5,
+            -0.5,
+            0.5,
+            0.5,
+            0.5,
+            -0.5,
+            -0.5,
+            0.5,
+            -0.5,
+            -0.5,
+            -0.5,
+            0.5,
+            -0.5,
+            -0.5,
+            0.5,
+            -0.5,
+            0.5
+          ],
+          "indices": [
+            0,
+            1,
+            3,
+            3,
+            1,
+            2,
+            4,
+            5,
+            7,
+            7,
+            5,
+            6,
+            8,
+            9,
+            11,
+            11,
+            9,
+            10,
+            12,
+            13,
+            15,
+            15,
+            13,
+            14,
+            16,
+            17,
+            19,
+            19,
+            17,
+            18,
+            20,
+            21,
+            23,
+            23,
+            21,
+            22
+          ],
+          "textureCoords": [
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            0.0
+          ],
+          "mesh": {
+            "vaoID": 1,
+            "vboList": {
+              "indices": 3,
+              "textCords": 5,
+              "positions": 4
+            },
+            "vertexCount": 36
+          },
+          "colour": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "firstTimeStart": true
+        }
+      },
+      {
+        "type": "entitiesComponents.TextureComponent",
+        "properties": {
+          "textureID": 3,
+          "textureName": "first",
+          "textureCords": [
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            0.0
+          ],
+          "isSpritesheet": false,
+          "numberOfSprites": 0,
+          "currentSprite": 0,
+          "spriteWidth": 0,
+          "spriteHeight": 0,
+          "spriteSpacing": 0,
+          "firstTimeStart": true
+        }
+      }
+    ]
+  },
+  {
+    "name": "Object4",
+    "id": 0,
+    "modified": false,
+    "components": [
+      {
+        "type": "entitiesComponents.Transform",
+        "properties": {
+          "position": {
+            "x": -1.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "firstTimeStart": true
+        }
+      },
+      {
+        "type": "entitiesComponents.SpriteRenderer",
+        "properties": {
+          "sprite": {
+            "colour": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          },
+          "mesh": {
+            "vaoID": 2,
+            "vboList": {
+              "indices": 6,
+              "textCords": 8,
+              "positions": 7
+            },
+            "vertexCount": 6
+          },
+          "firstTimeStart": true
+        }
+      },
+      {
+        "type": "entitiesComponents.TextureComponent",
+        "properties": {
+          "textureID": 4,
+          "textureName": "spritesheet",
+          "textureCords": [
+            0.0,
+            0.0,
+            0.0,
+            0.5,
+            0.071428575,
+            0.5,
+            0.071428575,
+            0.0
+          ],
+          "isSpritesheet": true,
+          "spritesheet": [
+            [
+              0.0,
+              0.0,
+              0.0,
+              0.5,
+              0.071428575,
+              0.5,
+              0.071428575,
+              0.0
+            ],
+            [
+              0.071428575,
+              0.0,
+              0.071428575,
+              0.5,
+              0.14285715,
+              0.5,
+              0.14285715,
+              0.0
+            ],
+            [
+              0.14285715,
+              0.0,
+              0.14285715,
+              0.5,
+              0.21428572,
+              0.5,
+              0.21428572,
+              0.0
+            ],
+            [
+              0.21428572,
+              0.0,
+              0.21428572,
+              0.5,
+              0.2857143,
+              0.5,
+              0.2857143,
+              0.0
+            ],
+            [
+              0.2857143,
+              0.0,
+              0.2857143,
+              0.5,
+              0.35714287,
+              0.5,
+              0.35714287,
+              0.0
+            ],
+            [
+              0.35714287,
+              0.0,
+              0.35714287,
+              0.5,
+              0.42857143,
+              0.5,
+              0.42857143,
+              0.0
+            ],
+            [
+              0.42857143,
+              0.0,
+              0.42857143,
+              0.5,
+              0.5,
+              0.5,
+              0.5,
+              0.0
+            ],
+            [
+              0.5,
+              0.0,
+              0.5,
+              0.5,
+              0.5714286,
+              0.5,
+              0.5714286,
+              0.0
+            ],
+            [
+              0.5714286,
+              0.0,
+              0.5714286,
+              0.5,
+              0.64285713,
+              0.5,
+              0.64285713,
+              0.0
+            ],
+            [
+              0.64285713,
+              0.0,
+              0.64285713,
+              0.5,
+              0.71428573,
+              0.5,
+              0.71428573,
+              0.0
+            ],
+            [
+              0.71428573,
+              0.0,
+              0.71428573,
+              0.5,
+              0.78571427,
+              0.5,
+              0.78571427,
+              0.0
+            ],
+            [
+              0.78571427,
+              0.0,
+              0.78571427,
+              0.5,
+              0.85714287,
+              0.5,
+              0.85714287,
+              0.0
+            ],
+            [
+              0.85714287,
+              0.0,
+              0.85714287,
+              0.5,
+              0.9285714,
+              0.5,
+              0.9285714,
+              0.0
+            ],
+            [
+              0.9285714,
+              0.0,
+              0.9285714,
+              0.5,
+              1.0,
+              0.5,
+              1.0,
+              0.0
+            ],
+            [
+              0.0,
+              -0.5,
+              0.0,
+              0.0,
+              0.071428575,
+              0.0,
+              0.071428575,
+              -0.5
+            ],
+            [
+              0.071428575,
+              -0.5,
+              0.071428575,
+              0.0,
+              0.14285715,
+              0.0,
+              0.14285715,
+              -0.5
+            ],
+            [
+              0.14285715,
+              -0.5,
+              0.14285715,
+              0.0,
+              0.21428572,
+              0.0,
+              0.21428572,
+              -0.5
+            ],
+            [
+              0.21428572,
+              -0.5,
+              0.21428572,
+              0.0,
+              0.2857143,
+              0.0,
+              0.2857143,
+              -0.5
+            ],
+            [
+              0.2857143,
+              -0.5,
+              0.2857143,
+              0.0,
+              0.35714287,
+              0.0,
+              0.35714287,
+              -0.5
+            ],
+            [
+              0.35714287,
+              -0.5,
+              0.35714287,
+              0.0,
+              0.42857143,
+              0.0,
+              0.42857143,
+              -0.5
+            ],
+            [
+              0.42857143,
+              -0.5,
+              0.42857143,
+              0.0,
+              0.5,
+              0.0,
+              0.5,
+              -0.5
+            ]
+          ],
+          "numberOfSprites": 21,
+          "currentSprite": 0,
+          "spriteWidth": 16,
+          "spriteHeight": 16,
+          "spriteSpacing": 0,
+          "firstTimeStart": true
+        }
+      }
+    ]
+  },
+  {
+    "name": "Object1",
+    "id": 0,
+    "modified": false,
+    "components": [
+      {
+        "type": "entitiesComponents.CameraComponent",
+        "properties": {
+          "NEAR_PLANE": 0.01,
+          "FAR_PLANE": 1000.0,
+          "FOV": 70.0,
+          "width": 510.0,
+          "height": 320.0,
+          "CameraProjection": 0,
+          "firstTimeStart": true
+        }
+      },
+      {
+        "type": "entitiesComponents.Transform",
+        "properties": {
+          "position": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 20.0
+          },
+          "rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "firstTimeStart": true
+        }
+      }
+    ]
+  },
+  {
+    "name": "Object2",
+    "id": 0,
+    "modified": false,
+    "components": [
+      {
+        "type": "entitiesComponents.Transform",
+        "properties": {
+          "position": {
+            "x": -10.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "firstTimeStart": true
+        }
+      },
+      {
+        "type": "entitiesComponents.SpriteRenderer",
+        "properties": {
+          "sprite": {
+            "colour": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          },
+          "mesh": {
+            "vaoID": 3,
+            "vboList": {
+              "indices": 9,
+              "textCords": 11,
+              "positions": 10
+            },
+            "vertexCount": 6
+          },
+          "firstTimeStart": true
+        }
+      },
+      {
+        "type": "entitiesComponents.TextureComponent",
+        "properties": {
+          "textureID": 3,
+          "textureName": "first",
+          "textureCords": [
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            0.0
+          ],
+          "isSpritesheet": false,
+          "numberOfSprites": 0,
+          "currentSprite": 0,
+          "spriteWidth": 0,
+          "spriteHeight": 0,
+          "spriteSpacing": 0,
+          "firstTimeStart": true
+        }
+      }
+    ]
+  }
+]

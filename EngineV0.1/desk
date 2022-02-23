@@ -1,0 +1,167 @@
+[Window][DockspaceBackground]
+Pos=0,0
+Size=1680,988
+Collapsed=0
+
+[Window][Debug##Default]
+Pos=60,60
+Size=400,400
+Collapsed=0
+
+[Window][Assets]
+Pos=8,672
+Size=1322,308
+Collapsed=0
+DockId=0x00000004,0
+
+[Window][EnityInspector]
+Pos=1321,34
+Size=351,946
+Collapsed=0
+DockId=0x00000002,0
+
+[Window][Game]
+Pos=283,34
+Size=1047,636
+Collapsed=0
+DockId=0x00000009,0
+
+[Window][EntityInspector]
+Pos=1332,34
+Size=340,946
+Collapsed=0
+DockId=0x00000006,0
+
+[Window][EntityExplorer]
+Pos=8,34
+Size=273,636
+Collapsed=0
+DockId=0x00000008,0
+
+[Window][Dear ImGui Demo]
+Pos=551,113
+Size=554,680
+Collapsed=1
+
+[Window][Example: Property editor]
+Pos=60,66
+Size=528,668
+Collapsed=0
+
+[Window][Example: Custom rendering]
+Pos=116,153
+Size=503,557
+Collapsed=0
+
+[Window][No]
+Pos=335,238
+Size=843,446
+Collapsed=0
+
+[Window][Stacked 1]
+Pos=625,380
+Size=430,228
+Collapsed=0
+
+[Window][Example: Constrained Resize]
+Pos=60,60
+Size=500,500
+Collapsed=0
+
+[Window][Example: Documents]
+Pos=60,60
+Size=701,982
+Collapsed=0
+
+[Window][Lettuce]
+Pos=68,184
+Size=685,850
+Collapsed=0
+DockId=0xA086D808,0
+
+[Window][Eggplant]
+Pos=68,184
+Size=685,850
+Collapsed=0
+DockId=0xA086D808,1
+
+[Window][Carrot]
+Pos=68,184
+Size=685,850
+Collapsed=0
+DockId=0xA086D808,2
+
+[Window][Tomato]
+Pos=68,184
+Size=685,850
+Collapsed=0
+DockId=0xA086D808,3
+
+[Window][A Rather Long Title]
+Pos=68,184
+Size=685,850
+Collapsed=0
+DockId=0xA086D808,4
+
+[Window][Some Document]
+Pos=68,184
+Size=685,850
+Collapsed=0
+DockId=0xA086D808,5
+
+[Window][Example: Log]
+Pos=60,60
+Size=500,400
+Collapsed=0
+
+[Window][Example: Simple layout]
+Pos=60,60
+Size=500,440
+Collapsed=0
+
+[Window][Example: Console]
+Pos=60,60
+Size=520,600
+Collapsed=0
+
+[Window][Same title as another window##1]
+Pos=100,100
+Size=421,82
+Collapsed=0
+
+[Window][Same title as another window##2]
+Pos=100,200
+Size=421,82
+Collapsed=0
+
+[Window][###AnimatedTitle]
+Pos=100,300
+Size=239,62
+Collapsed=0
+
+[Window][NewEntity]
+Pos=692,254
+Size=320,480
+Collapsed=0
+
+[Window][Dear ImGui Style Editor]
+Pos=60,60
+Size=422,982
+Collapsed=0
+
+[Table][0xD0F0C6E3,2]
+Column 0  Weight=1.0000
+Column 1  Weight=1.0000
+
+[Docking][Data]
+DockSpace         ID=0xA086D808 Pos=68,184 Size=685,850 CentralNode=1 Selected=0x8BB04FA5
+DockSpace         ID=0xD6BDBBC4 Window=0x6CE2B512 Pos=8,34 Size=1664,946 Split=X Selected=0x83199EB2
+  DockNode        ID=0x00000005 Parent=0xD6BDBBC4 SizeRef=1322,946 Split=Y
+    DockNode      ID=0x00000003 Parent=0x00000005 SizeRef=1664,636 Split=X
+      DockNode    ID=0x00000001 Parent=0x00000003 SizeRef=1311,946 Split=X
+        DockNode  ID=0x00000008 Parent=0x00000001 SizeRef=273,677 Selected=0x3468653E
+        DockNode  ID=0x00000009 Parent=0x00000001 SizeRef=1047,677 CentralNode=1 Selected=0x83199EB2
+      DockNode    ID=0x00000002 Parent=0x00000003 SizeRef=351,946 Selected=0x07CD2889
+    DockNode      ID=0x00000004 Parent=0x00000005 SizeRef=1664,308 Selected=0x7E7D78B8
+  DockNode        ID=0x00000006 Parent=0xD6BDBBC4 SizeRef=340,946 Selected=0xF4DD1496
+
