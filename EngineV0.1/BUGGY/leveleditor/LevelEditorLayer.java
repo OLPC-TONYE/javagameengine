@@ -17,6 +17,7 @@ import entitiesComponents.Transform;
 import imgui.ImGui;
 import imgui.ImVec2;
 import imgui.flag.ImGuiCond;
+import imgui.flag.ImGuiPopupFlags;
 import imgui.flag.ImGuiStyleVar;
 import imgui.flag.ImGuiTreeNodeFlags;
 import imgui.flag.ImGuiWindowFlags;
@@ -32,7 +33,7 @@ import renderer.RendererDebug;
 import scenes.Layer;
 import scenes.Scene;
 
-public class LevelEditorLayer extends Layer{
+public class LevelEditorLayer extends Layer {
 	
 	Renderer renderer;
 	Framebuffer screen;
@@ -231,7 +232,7 @@ public class LevelEditorLayer extends Layer{
 		String entityName = "Mouse Pointing At Entity: false";
 		for(Entity entityRenderable: EntityManager.entities.values()) {
 						
-			if(entityRenderable.isRenderable()) {
+			if(!entityRenderable.isCamera()) {
 				Transform entity_transform = entityRenderable.getComponent(Transform.class);
 				Vector3f position = entity_transform.getPosition();
 				Vector3f scale = entity_transform.getScale();
@@ -252,35 +253,29 @@ public class LevelEditorLayer extends Layer{
 	
 	ImString new_entityName = new ImString();
 	ImInt new_entityType = new ImInt();
+	
 	private void beginEntityExplorer() {
 		ImGui.begin("EntityExplorer");
-		
-			if(ImGui.button("Create Entity")) {
-				ImGui.openPopup("NewEntity");
-			}
 			
-			ImGui.setNextWindowSize(320, 480);
-			if(ImGui.beginPopupModal("NewEntity")) {
+			if(ImGui.beginPopupContextWindow(ImGuiPopupFlags.MouseButtonRight)) {
 				
-				ImGui.text("Name: ");
-				ImGui.sameLine();
-				if(ImGui.inputText("", new_entityName)) {
-				}
-				
-				String[] items = EntityManager.getEntityTypes();
-				if(ImGui.combo("Type", new_entityType, items)) {
-				}
-		
-				
-				if(ImGui.button("Create")) {
-					Entity new_Entity = new Entity();
-					new_Entity.setName(new_entityName.get());
-					new_Entity.addComponent(new Transform(new Vector3f(0,0,0)));
-					new_Entity.addComponent(new SpriteRenderer(new Sprite(new Vector3f(0,1,1))));
-					new_Entity.start();
-					EntityManager.entities.put(new_entityName.get(), new_Entity);
+				if(ImGui.beginMenu("Add Entity")) {
 					
-					ImGui.closeCurrentPopup();
+					if(ImGui.menuItem("Empty Entity")) {
+						
+					}
+					
+					if(ImGui.menuItem("Sprite")) {
+						Entity new_Entity = new Entity();
+						String new_entityName = EntityManager.createEntity("Object");
+						new_Entity.setName(new_entityName);
+						new_Entity.addComponent(new Transform(new Vector3f(0,0,0)));
+						new_Entity.addComponent(new SpriteRenderer(new Sprite(new Vector3f(0,1,1))));
+						new_Entity.start();
+						EntityManager.entities.put(new_entityName, new_Entity);
+					}
+					
+					ImGui.endMenu();
 				}
 				
 				ImGui.endPopup();
@@ -309,9 +304,21 @@ public class LevelEditorLayer extends Layer{
 			if(this.selectedEntity != null) {
 				ImGui.text(selectedEntity);
 				Entity entity = EntityManager.entities.get(selectedEntity);
-				if(ImGui.button("Add Component")) {
+				
+				if(ImGui.beginPopupContextWindow(ImGuiPopupFlags.MouseButtonRight)) {
 					
+					if(ImGui.beginMenu("Add Component")) {
+						
+						if(ImGui.menuItem("Sprite Renderer")) {
+							
+						}
+						
+						ImGui.endMenu();
+					}
+					
+					ImGui.endPopup();
 				}
+				
 				for(Component component: entity.getComponents()) {
 					
 					if(ImGui.collapsingHeader(component.getClass().getSimpleName(), ImGuiTreeNodeFlags.DefaultOpen)) {
@@ -325,6 +332,5 @@ public class LevelEditorLayer extends Layer{
 			
 		ImGui.end();
 	}
-
 
 }

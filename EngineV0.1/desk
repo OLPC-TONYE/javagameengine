@@ -39,7 +39,7 @@ Collapsed=0
 DockId=0x00000008,0
 
 [Window][Dear ImGui Demo]
-Pos=551,113
+Pos=551,112
 Size=554,680
 Collapsed=1
 
@@ -115,7 +115,7 @@ Size=500,400
 Collapsed=0
 
 [Window][Example: Simple layout]
-Pos=60,60
+Pos=60,51
 Size=500,440
 Collapsed=0
 
@@ -140,13 +140,23 @@ Size=239,62
 Collapsed=0
 
 [Window][NewEntity]
-Pos=692,254
+Pos=704,249
 Size=320,480
 Collapsed=0
 
 [Window][Dear ImGui Style Editor]
 Pos=60,60
 Size=422,982
+Collapsed=0
+
+[Window][Example: Long text display]
+Pos=63,64
+Size=520,600
+Collapsed=0
+
+[Window][Delete?]
+Pos=703,414
+Size=273,160
 Collapsed=0
 
 [Table][0xD0F0C6E3,2]

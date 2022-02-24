@@ -31,7 +31,7 @@ public class SpriteRenderer extends Component {
 			if(entity.getComponent(TextureComponent.class)!= null) {
 				TextureComponent texture = entity.getComponent(TextureComponent.class);
 				texture.update();
-				mesh.modifyVertexBufferObject("textCords", texture.getTextureCoords());
+				mesh.modifyVertexBufferObject("textureCords", texture.getTextureCoords());
 			}
 			
 		}

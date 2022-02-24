@@ -24,15 +24,15 @@ public class LayerPile {
 	}
 	
 	public void render() {
-		for(Layer layer: layers) {
-			layer.render();
+		if(!layers.isEmpty()) {
+			this.layers.get(layers.size()-1).render();
 		}
 	}
 	
 	public void update(double dt) {
-		for(Layer layer:layers) {
-			layer.update(dt);
-		}
+		if(!layers.isEmpty()) {
+			this.layers.get(layers.size()-1).update(dt);
+		} 
 	}
 
 	public void unstackAll() {

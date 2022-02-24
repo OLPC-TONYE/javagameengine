@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import entitiesComponents.CameraComponent;
 import entitiesComponents.Component;
 import entitiesComponents.MeshRenderer;
 import entitiesComponents.SpriteRenderer;
@@ -99,6 +100,13 @@ public class Entity {
 	
 	public boolean isRenderable() {
 		if(this.getComponent(SpriteRenderer.class) != null | this.getComponent(MeshRenderer.class) != null) {
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean isCamera() {
+		if(this.getComponent(CameraComponent.class) != null) {
 			return true;
 		}
 		return false;
