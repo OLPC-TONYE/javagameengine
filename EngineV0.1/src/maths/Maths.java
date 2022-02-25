@@ -1,4 +1,4 @@
-package engine;
+package maths;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -6,11 +6,22 @@ import org.joml.Vector4f;
 
 import entitiesComponents.CameraComponent;
 
+
 /**
  * {@link Maths} contains functions for calculations .
 
  */
 public class Maths {
+
+	public static float clamp(float min, float max, float value) {
+		if(value>max) {
+			value = max;
+		}else if( value < min) {
+			value = min;
+		}
+		return value;	
+		
+	}
 	
 	public static Vector3f calculateRay(float ndsX, float ndsY, CameraComponent camera) {
 		Vector4f ray_clip = new Vector4f(ndsX, ndsY, -1, 1);

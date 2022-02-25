@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import engine.EntityManager;
 import entities.Entity;
-import entitiesComponents.CameraComponent;
 import renderer.Renderer;
 
 public abstract class Scene {
@@ -31,7 +30,7 @@ public abstract class Scene {
 	
 	public void findCameras() {
 		for(Entity camera:EntityManager.entities.values()) {
-			if(camera.getComponent(CameraComponent.class) != null) {
+			if(camera.isCamera()) {
 				String n_camera = camera.getName();
 				if(!cameras.contains(n_camera)) {
 					cameras.add(camera.getName());

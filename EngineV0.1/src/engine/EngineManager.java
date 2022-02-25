@@ -50,6 +50,7 @@ public class EngineManager {
 		VertexArrayObject create = new VertexArrayObject();
 		vaos.add(create.getId());
 		create.addVertexBufferObject("indices", indices);
+		create.setCount(indices.length);
 		create.addVertexBufferObject("positions", 0, 3, vertices);
 		create.addVertexBufferObject("textureCords", 1, 2, textureCords);
 		return create;
@@ -59,7 +60,16 @@ public class EngineManager {
 		VertexArrayObject line = new VertexArrayObject();
 		vaos.add(line.getId());
 		line.addVertexBufferObject("position", 0, 3, vertices);
+		line.setCount(vertices.length/3);
 		return line;
+	}
+	
+	public static VertexArrayObject createArrow(float[] vertices, int[] indices) {
+		VertexArrayObject arrow = new VertexArrayObject();
+		vaos.add(arrow.getId());
+		arrow.addVertexBufferObject("indices", indices);
+		arrow.addVertexBufferObject("position", 0, 3, vertices);
+		return arrow;
 	}
 
 	public static void addVBOS(int vboID) {

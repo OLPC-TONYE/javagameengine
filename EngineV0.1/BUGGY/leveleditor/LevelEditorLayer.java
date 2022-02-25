@@ -1,13 +1,10 @@
 package leveleditor;
 
-import java.util.ArrayList;
-
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
 import engine.EngineManager;
 import engine.EntityManager;
-import engine.Maths;
 import entities.Entity;
 import entities.Sprite;
 import entitiesComponents.CameraComponent;
@@ -16,6 +13,7 @@ import entitiesComponents.SpriteRenderer;
 import entitiesComponents.Transform;
 import imgui.ImGui;
 import imgui.ImVec2;
+import imgui.flag.ImGuiButtonFlags;
 import imgui.flag.ImGuiCond;
 import imgui.flag.ImGuiPopupFlags;
 import imgui.flag.ImGuiStyleVar;
@@ -26,6 +24,8 @@ import imgui.type.ImInt;
 import imgui.type.ImString;
 import loaders.LevelLoader;
 import main.Window;
+import maths.ListofFloats;
+import maths.Maths;
 import opengl.Framebuffer;
 import opengl.VertexArrayObject;
 import renderer.Renderer;
@@ -42,7 +42,7 @@ public class LevelEditorLayer extends Layer {
 	private String selectedEntity;
 	private RendererDebug renderer2;
 	
-	ArrayList<VertexArrayObject> lines = new ArrayList<VertexArrayObject>();
+	VertexArrayObject lines;
 	@Override
 	public void attach() {
 		
@@ -61,14 +61,16 @@ public class LevelEditorLayer extends Layer {
 		float y = -0.5f;
 		int iLine;
 		
+		ListofFloats linesvertices = new ListofFloats();
 		for(iLine = (int) -fExtent; iLine <= fExtent; iLine += fStep) {
 			// Draw Z lines
 			float[] verticesZ = new float[]{iLine, y, fExtent, iLine, y, -fExtent};
-			lines.add(EngineManager.createLine(verticesZ));
+			linesvertices.add(verticesZ);
 		
 			float[] verticesX = new float[]{fExtent, y, iLine, -fExtent, y, iLine};
-			lines.add(EngineManager.createLine(verticesX));
+			linesvertices.add(verticesX);
 		}
+		lines = EngineManager.createLine(linesvertices.toArray());
 	}
 
 	@Override
@@ -165,7 +167,12 @@ public class LevelEditorLayer extends Layer {
         PosY = ImGui.getWindowPosY();
         
         tabSizeY = sizeY - ImGui.getContentRegionAvailY();
-                
+        
+        ndsX = ((cursorPosX-PosX)/windowSizeX) * 2 - 1;
+        ndsY =  1 - 2 * ((cursorPosY-(tabSizeY + PosY))/windowSizeY);
+        
+        ndsX = Maths.clamp(-1, 1, ndsX);
+        ndsY = Maths.clamp(-1, 1, ndsY);
         // Calculate Size of Window
         ImVec2 windowSize = new ImVec2();
 		ImGui.getContentRegionAvail(windowSize);
@@ -206,48 +213,47 @@ public class LevelEditorLayer extends Layer {
         ImGui.endMenuBar();
         
         ImGui.image(screen.getTexture(), aspectWidth, aspectHeight, 0, 1, 1, 0);
+        
+        if(ImGui.isItemHovered()) {
+        	if(ImGui.isMouseClicked(ImGuiButtonFlags.MouseButtonLeft)) {
+        		selectEntity();
+        	}
+        }
         ImGui.end();
 	}
 	
 
-	private void beginAssetExplorer() {
-		ImGui.begin("Assets");
-        
-        ndsX = ((cursorPosX-PosX)/windowSizeX) * 2 - 1;
-        ndsY =  1 - 2 * ((cursorPosY-(tabSizeY + PosY))/windowSizeY);
-        ImGui.text("screenX:"+ndsX+"  screenY:"+ndsY);
-        
-        CameraComponent camera = EntityManager.entities.get(levelScene.n_mainCamera).getComponent(CameraComponent.class);
-        Vector4f gameViewCords = Maths.calculateGameViewportCords(camera, ndsX, ndsY);
-		
-		Vector3f ray_direction = Maths.calculateRayVector(ndsX, ndsY, camera);
-		
-		ImGui.text("rayX:"+ray_direction.x+"  rayY:"+ray_direction.y+"  rayZ:"+ray_direction.z);
-		
+	private void selectEntity() {
 		Transform camera_transform = EntityManager.entities.get(levelScene.n_mainCamera).getComponent(Transform.class);
 		Vector3f origin = camera_transform.getPosition();
 		
-		ImGui.text("originX:"+origin.x+"  originY:"+origin.y+"  originZ:"+origin.z);
+		CameraComponent camera = EntityManager.entities.get(levelScene.n_mainCamera).getComponent(CameraComponent.class);
+		Vector3f ray_direction = Maths.calculateRayVector(ndsX, ndsY, camera);
 		
-		String entityName = "Mouse Pointing At Entity: false";
 		for(Entity entityRenderable: EntityManager.entities.values()) {
-						
+			
 			if(!entityRenderable.isCamera()) {
 				Transform entity_transform = entityRenderable.getComponent(Transform.class);
 				Vector3f position = entity_transform.getPosition();
 				Vector3f scale = entity_transform.getScale();
 				if(Maths.intersectEntityuPlane(origin, ray_direction, position, scale, new Vector3f(0, 0, 1))) {
-					entityName = "Mouse Pointing At Entity: true, "+entityRenderable.getName();
 					this.selectedEntity = entityRenderable.getName();
 					break;
-				}else {
-					entityName = "Mouse Pointing At Entity: false";
 				}
 			}
 		}
-		
-		ImGui.text("gameCordX:"+gameViewCords.x+"  gameCordY:"+gameViewCords.y);
-		ImGui.text(entityName);
+	}
+
+	private void beginAssetExplorer() {
+		ImGui.begin("Assets");
+        
+	        ImGui.text("screenX:"+ndsX+"  screenY:"+ndsY);
+	        
+	        CameraComponent camera = EntityManager.entities.get(levelScene.n_mainCamera).getComponent(CameraComponent.class);
+	        Vector4f gameViewCords = Maths.calculateGameViewportCords(camera, ndsX, ndsY);
+			
+			ImGui.text("gameCordX:"+gameViewCords.x+"  gameCordY:"+gameViewCords.y);
+			
 		ImGui.end();
 	}
 	
@@ -267,7 +273,7 @@ public class LevelEditorLayer extends Layer {
 					
 					if(ImGui.menuItem("Sprite")) {
 						Entity new_Entity = new Entity();
-						String new_entityName = EntityManager.createEntity("Object");
+						String new_entityName = EntityManager.createEntity("Sprite");
 						new_Entity.setName(new_entityName);
 						new_Entity.addComponent(new Transform(new Vector3f(0,0,0)));
 						new_Entity.addComponent(new SpriteRenderer(new Sprite(new Vector3f(0,1,1))));

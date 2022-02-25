@@ -21,6 +21,10 @@ public class VertexArrayObject {
 		return vertexArrayId;
 	}
 	
+	public void setCount(int count) {
+		this.vertexCount = count;
+	}
+	
 	public int getCount() {
 		return vertexCount;
 	}
@@ -35,7 +39,6 @@ public class VertexArrayObject {
 	
 	public void addVertexBufferObject(String name, int[] indices) {
 		addVertexBufferObject(name, new VertexBufferObject(indices));
-		vertexCount = indices.length;
 	}
 
 	public void addVertexBufferObject(String name, int index, int size, float[] vertices) {
