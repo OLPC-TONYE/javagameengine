@@ -80,6 +80,7 @@ public class LevelEditorLayer extends Layer {
 	@Override
 	public void detach() {
 		levelScene.close();
+		screen.cleanup();
 	}
 
 	@Override
@@ -259,17 +260,7 @@ public class LevelEditorLayer extends Layer {
 	        
 	        ImGui.text("ViewPortX:"+viewportMouseHoverX+"  Y:"+viewportMouseHoverY);
 	        
-	        ImGui.text("r: "+pixelData[0] + " g: "+ pixelData[1] + " b: "+ pixelData[2]);
 	        ImGui.text("r: "+(int)pixelData[0] + " g: "+ pixelData[1] + " b: "+ pixelData[2]);
-	        
-	        ImGui.text("cameraX:"+origin.x+"  cameraY:"+origin.y+"  cameraZ:"+origin.z);
-	        ImGui.text("directionX:"+ray_direction.x+"  directionY:"+ray_direction.y+"  directionZ:"+ray_direction.z);
-	        
-	        float t = Maths.calculateIntersectPlane(origin, ray_direction, position, new Vector3f(0,0,1));
-	        ImGui.text("t:"+tabSizeY);
-	        
-	        Vector3f plane = new Vector3f(ray_direction).mul(t).add(origin);
-	        ImGui.text("planeX:"+plane.x+"  planeY:"+plane.y+"  planeZ:"+plane.z);
 	        
 	        CameraComponent camera = EntityManager.entities.get(levelScene.n_mainCamera).getComponent(CameraComponent.class);
 	        Vector4f gameViewCords = Maths.calculateGameViewportCords(camera, ndsX, ndsY);

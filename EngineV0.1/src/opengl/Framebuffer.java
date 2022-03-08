@@ -22,6 +22,9 @@ import static org.lwjgl.opengl.GL11.glTexParameteri;
 import static org.lwjgl.opengl.GL11.glViewport;
 import static org.lwjgl.opengl.GL14.GL_DEPTH_COMPONENT32;
 import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT0;
+import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT1;
+import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT2;
+import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT3;
 import static org.lwjgl.opengl.GL30.GL_DEPTH_ATTACHMENT;
 import static org.lwjgl.opengl.GL30.GL_FRAMEBUFFER;
 import static org.lwjgl.opengl.GL30.GL_RENDERBUFFER;
@@ -41,7 +44,6 @@ import org.lwjgl.opengl.GL14;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
-import engine.EngineManager;
 import main.Window;
 
 public class Framebuffer {
@@ -91,12 +93,14 @@ public class Framebuffer {
 		return pixels;
 	}
 	
-	public void unbind() {//call to switch to default frame buffer
+	public void unbind() {
+		//call to switch to default frame buffer
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glViewport(0, 0, Window.get().width(), Window.get().height());
 	}
 
-	public void cleanup() {//call when closing the game
+	public void cleanup() {
+		//call when closing the game
 		glDeleteFramebuffers(framebuffer);
 		glDeleteTextures(textures);
 		glDeleteTextures(depthTexture);
@@ -112,13 +116,12 @@ public class Framebuffer {
 	protected void createFrameBuffer() {
 		framebuffer = glGenFramebuffers();
 		glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-		EngineManager.addFramebuffer(framebuffer);
-		int[] bufs = new int[] { GL_COLOR_ATTACHMENT0, GL30.GL_COLOR_ATTACHMENT1};
+		int[] bufs = new int[] { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1};
 		GL20.glDrawBuffers(bufs);
 	}
 	
 	protected boolean validate() {
-		if(!(GL30.glCheckFramebufferStatus(framebuffer) == GL30.GL_FRAMEBUFFER_COMPLETE)) {
+		if(GL30.glCheckFramebufferStatus(framebuffer) != GL30.GL_FRAMEBUFFER_COMPLETE) {
 			switch (GL30.glCheckFramebufferStatus(framebuffer)) {
 				case GL30.GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER:
 					System.out.println("Incomplete Draw Buffer");
