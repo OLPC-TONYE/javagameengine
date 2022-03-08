@@ -14,6 +14,7 @@ import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 
 import org.lwjgl.opengl.GL11;
 
+import engine.EntityManager;
 import entities.Entity;
 import entitiesComponents.CameraComponent;
 import entitiesComponents.MeshRenderer;
@@ -56,6 +57,8 @@ public class Renderer {
 		
 		shader.start();
 		
+		shader.loadFloat("entityId", EntityManager.getId(entity.getName()));
+	
 		Transform transformation = entity.getComponent(Transform.class);
 		shader.loadMatrix("transformationMatrix", transformation.getTransformationMatrix());
 		
@@ -66,12 +69,12 @@ public class Renderer {
 			meshr = entity.getComponent(MeshRenderer.class);
 			mesh = meshr.getMesh();
 			
-			shader.loadVector("colour", meshr.getColour());
+			shader.loadVector3("colour", meshr.getColour());
 		}else if(entity.getComponent(SpriteRenderer.class)!= null) {
 			sprite = entity.getComponent(SpriteRenderer.class);
 			mesh = sprite.getMesh();
 			
-			shader.loadVector("colour", sprite.getSprite().getColour());
+			shader.loadVector3("colour", sprite.getSprite().getColour());
 		}
 		
 		shader.loadBoolean("hasTexture", entity.getComponent(TextureComponent.class)!= null);

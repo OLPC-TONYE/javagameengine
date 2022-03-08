@@ -1,5 +1,6 @@
 package leveleditor;
 
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
@@ -37,16 +38,19 @@ public class LevelEditorLayer extends Layer {
 	
 	Renderer renderer;
 	Framebuffer screen;
+	Framebuffer picking;
 	
 	private Scene levelScene = new LevelEditorScene();
 	private String selectedEntity;
 	private RendererDebug renderer2;
 	
 	VertexArrayObject lines;
+	float[] pixelData;
 	@Override
 	public void attach() {
 		
 		screen = new Framebuffer(1024, 600);
+//		picking = new Framebuffer(1, 1024, 600);
 		renderer = new Renderer();
 		renderer2 = new RendererDebug();
 		
@@ -80,10 +84,16 @@ public class LevelEditorLayer extends Layer {
 
 	@Override
 	public void render() {
+//		picking.bind();
+//		renderer.clearColour(0.06f, 0.06f, 0.06f, 0.960f);
+//		levelScene.render(renderer);
+//		picking.unbind();
+		
 		screen.bind();
 		renderer.clearColour(0.06f, 0.06f, 0.06f, 0.960f);
 		renderer2.render(EntityManager.entities.get(levelScene.n_mainCamera), lines);
 		levelScene.render(renderer);
+		pixelData = screen.readPixelData( 1, (int)viewportMouseHoverX, (int)viewportMouseHoverY);
 		screen.unbind();	
 		renderInterfaces();
 	}
@@ -94,6 +104,11 @@ public class LevelEditorLayer extends Layer {
 	}
 	
 	public void renderInterfaces() {
+		Transform camera_transform = EntityManager.entities.get(levelScene.n_mainCamera).getComponent(Transform.class);
+		origin = camera_transform.getPosition();
+		
+		CameraComponent camera = EntityManager.entities.get(levelScene.n_mainCamera).getComponent(CameraComponent.class);
+		ray_direction = Maths.calculateRayVector(ndsX, ndsY, camera);
 		
 		beginDockspace();	
 		beginScreen();
@@ -130,8 +145,8 @@ public class LevelEditorLayer extends Layer {
 	float cursorPosY;
 	float sizeX;
 	float sizeY;
-	float PosX;
-	float PosY;
+	float posX;
+	float posY;
 	float ndsX;
 	float ndsY;
 	float gameX;
@@ -144,6 +159,12 @@ public class LevelEditorLayer extends Layer {
 	float windowSizeY;
 	
 	float tabSizeY;
+	
+	Vector2f viewportSize;
+	Vector2f viewportCursor;
+	Vector2f viewportPos;
+	float viewportMouseHoverX;
+	float viewportMouseHoverY;
 	/**
      * Game Screen (using Framebuffer).
      */
@@ -152,7 +173,7 @@ public class LevelEditorLayer extends Layer {
 	       
         ImGui.pushStyleVar(ImGuiStyleVar.WindowPadding, 0, 0);
         ImGui.pushStyleVar(ImGuiStyleVar.WindowRounding, 0.0f);
-        ImGui.begin("Game", ImGuiWindowFlags.MenuBar | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoTitleBar);
+        ImGui.begin("Game", ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoTitleBar);
         
         cursorPosX = ImGui.getMousePosX();
         cursorPosY = ImGui.getMousePosY();
@@ -163,13 +184,13 @@ public class LevelEditorLayer extends Layer {
         windowSizeX = ImGui.getContentRegionAvailX();
     	windowSizeY = ImGui.getContentRegionAvailY();
         
-        PosX = ImGui.getWindowPosX();
-        PosY = ImGui.getWindowPosY();
+        posX = ImGui.getWindowPosX();
+        posY = ImGui.getWindowPosY();
         
         tabSizeY = sizeY - ImGui.getContentRegionAvailY();
         
-        ndsX = ((cursorPosX-PosX)/windowSizeX) * 2 - 1;
-        ndsY =  1 - 2 * ((cursorPosY-(tabSizeY + PosY))/windowSizeY);
+        ndsX = ((cursorPosX-posX)/windowSizeX) * 2 - 1;
+        ndsY =  1 - 2 * ((cursorPosY-(tabSizeY + posY))/windowSizeY);
         
         ndsX = Maths.clamp(-1, 1, ndsX);
         ndsY = Maths.clamp(-1, 1, ndsY);
@@ -191,28 +212,18 @@ public class LevelEditorLayer extends Layer {
 		float viewportY = ((windowSize.y/2.0f) - (aspectSize.y /2.0f)) + ImGui.getCursorPosY();
 		
 		ImGui.setCursorPos(viewportX, viewportY);
-        
+		
+		viewportPos = new Vector2f(ImGui.getWindowPosX(), ImGui.getWindowPosY());
+		viewportCursor = new Vector2f(ImGui.getWindowPosX() + ImGui.getCursorPosX(), ImGui.getWindowPosY() + ImGui.getCursorPosY());
+		viewportSize = new Vector2f(ImGui.getWindowSizeX(), ImGui.getWindowSizeY());
+		
+		viewportMouseHoverX =  cursorPosX - viewportCursor.x; 
+		viewportMouseHoverY = aspectHeight - (cursorPosY - viewportCursor.y);
+				
         ImGui.popStyleVar();
         ImGui.popStyleVar();
         
-        ImGui.beginMenuBar();
-        	
-        	menuSizeX = ImGui.getContentRegionAvailX();
-        	menuSizeY = sizeY - ImGui.getContentRegionAvailY();
-        	ImGui.setCursorPosX(menuSizeX/4);
-        	ImGui.pushItemWidth(menuSizeX/4);
-        	        	
-        	String[] items = levelScene.cameras.toArray(new String[levelScene.cameras.size()]);
-        	ImInt current_camera = new ImInt(levelScene.cameras.indexOf(levelScene.n_mainCamera));
-        	if(ImGui.combo("Camera", current_camera, items)) {
-        		
-        	}
-        	
-        	ImGui.popItemWidth();
-     
-        ImGui.endMenuBar();
-        
-        ImGui.image(screen.getTexture(), aspectWidth, aspectHeight, 0, 1, 1, 0);
+        ImGui.image(screen.getTexture(0), aspectWidth, aspectHeight, 0, 1, 1, 0);
         
         if(ImGui.isItemHovered()) {
         	if(ImGui.isMouseClicked(ImGuiButtonFlags.MouseButtonLeft)) {
@@ -222,22 +233,19 @@ public class LevelEditorLayer extends Layer {
         ImGui.end();
 	}
 	
-
+	Vector3f origin;
+	Vector3f ray_direction;
+	Vector3f position = new Vector3f();
+	Vector3f scale = new Vector3f();
+	
 	private void selectEntity() {
-		Transform camera_transform = EntityManager.entities.get(levelScene.n_mainCamera).getComponent(Transform.class);
-		Vector3f origin = camera_transform.getPosition();
 		
-		CameraComponent camera = EntityManager.entities.get(levelScene.n_mainCamera).getComponent(CameraComponent.class);
-		Vector3f ray_direction = Maths.calculateRayVector(ndsX, ndsY, camera);
-		
-		for(Entity entityRenderable: EntityManager.entities.values()) {
+		for(Entity entity: EntityManager.entities.values()) {
 			
-			if(!entityRenderable.isCamera()) {
-				Transform entity_transform = entityRenderable.getComponent(Transform.class);
-				Vector3f position = entity_transform.getPosition();
-				Vector3f scale = entity_transform.getScale();
-				if(Maths.intersectEntityuPlane(origin, ray_direction, position, scale, new Vector3f(0, 0, 1))) {
-					this.selectedEntity = entityRenderable.getName();
+			if(!entity.isCamera()) {
+				int id = EntityManager.getId(entity.getName());
+				if((int)pixelData[0] == id) {
+					this.selectedEntity = entity.getName();
 					break;
 				}
 			}
@@ -248,6 +256,20 @@ public class LevelEditorLayer extends Layer {
 		ImGui.begin("Assets");
         
 	        ImGui.text("screenX:"+ndsX+"  screenY:"+ndsY);
+	        
+	        ImGui.text("ViewPortX:"+viewportMouseHoverX+"  Y:"+viewportMouseHoverY);
+	        
+	        ImGui.text("r: "+pixelData[0] + " g: "+ pixelData[1] + " b: "+ pixelData[2]);
+	        ImGui.text("r: "+(int)pixelData[0] + " g: "+ pixelData[1] + " b: "+ pixelData[2]);
+	        
+	        ImGui.text("cameraX:"+origin.x+"  cameraY:"+origin.y+"  cameraZ:"+origin.z);
+	        ImGui.text("directionX:"+ray_direction.x+"  directionY:"+ray_direction.y+"  directionZ:"+ray_direction.z);
+	        
+	        float t = Maths.calculateIntersectPlane(origin, ray_direction, position, new Vector3f(0,0,1));
+	        ImGui.text("t:"+tabSizeY);
+	        
+	        Vector3f plane = new Vector3f(ray_direction).mul(t).add(origin);
+	        ImGui.text("planeX:"+plane.x+"  planeY:"+plane.y+"  planeZ:"+plane.z);
 	        
 	        CameraComponent camera = EntityManager.entities.get(levelScene.n_mainCamera).getComponent(CameraComponent.class);
 	        Vector4f gameViewCords = Maths.calculateGameViewportCords(camera, ndsX, ndsY);

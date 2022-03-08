@@ -23,6 +23,7 @@ import static org.lwjgl.opengl.GL20.glShaderSource;
 import static org.lwjgl.opengl.GL20.glUniform1f;
 import static org.lwjgl.opengl.GL20.glUniform1i;
 import static org.lwjgl.opengl.GL20.glUniform3f;
+import static org.lwjgl.opengl.GL20.glUniform4f;
 import static org.lwjgl.opengl.GL20.glUniformMatrix4fv;
 import static org.lwjgl.opengl.GL20.glUseProgram;
 import static org.lwjgl.opengl.GL20.glValidateProgram;
@@ -34,6 +35,7 @@ import java.nio.FloatBuffer;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import org.joml.Vector4f;
 import org.lwjgl.BufferUtils; 
 
 public class Shader {
@@ -97,6 +99,14 @@ public class Shader {
 		glUniform1f(location, value);
 	}
 	
+	public void loadInt(String uniformName, int value) {
+		if(!usingShader) {
+			start();
+		}
+		int location = glGetUniformLocation(programID, uniformName);
+		glUniform1i(location, value);
+	}
+	
 	public void loadTexture(String uniformName, int slot) {
 		if(!usingShader) {
 			start();
@@ -105,12 +115,20 @@ public class Shader {
 		glUniform1f(location, slot);
 	}
 	
-	public void loadVector(String uniformName, Vector3f vector) {
+	public void loadVector3(String uniformName, Vector3f vector) {
 		if(!usingShader) {
 			start();
 		}
 		int location = glGetUniformLocation(programID, uniformName);
 		glUniform3f(location, vector.x, vector.y, vector.z);
+	}
+	
+	public void loadVector4(String uniformName, Vector4f vector) {
+		if(!usingShader) {
+			start();
+		}
+		int location = glGetUniformLocation(programID, uniformName);
+		glUniform4f(location, vector.x, vector.y, vector.z, vector.w);
 	}
 	
 	public void loadBoolean(String uniformName, boolean value) {

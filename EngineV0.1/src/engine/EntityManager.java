@@ -21,7 +21,7 @@ public class EntityManager {
 	}
 
 	public static Map<String, Entity> entities = new HashMap<>();
-	
+	public static Map<String, Integer> entitiesIdMap = new HashMap<>();
 	
 	public static String createEntity(String name) {
 		String newName = name;
@@ -31,6 +31,22 @@ public class EntityManager {
 			newName = newName+" "+i;
 		}
 		return newName;		
+	}
+	
+	public static boolean add(Entity entity) {
+		if(!entities.containsKey(entity.getName())) {
+			entities.put(entity.getName(), entity);
+			entitiesIdMap.put(entity.getName(), entities.size());
+			return true;
+		}
+		return false;
+	}
+	
+	public static int getId(String entityname) {
+		if(entities.containsKey(entityname)) {
+			return entitiesIdMap.get(entityname);
+		}
+		return 0;
 	}
 
 	public static String[] getEntityTypes() {

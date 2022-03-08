@@ -124,7 +124,10 @@ public class LevelLoader {
 			
 			for(int i=0; i < entities.length; i++) {
 				entities[i].start();
-				EntityManager.entities.put(entities[i].getName(), entities[i]);
+				boolean success = EntityManager.add(entities[i]);
+				if(!success) {
+					System.out.println("Failed to Add " + entities[i].getName());
+				}
 			}
 		}
 	}

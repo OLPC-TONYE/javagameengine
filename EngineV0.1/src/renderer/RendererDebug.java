@@ -35,7 +35,7 @@ public class RendererDebug {
 		shader.loadMatrix("projectionMatrix", inGameCamera.getProjectionMatrix());
 		shader.loadMatrix("viewMatrix", inGameCamera.getViewMatrix());
 		
-		shader.loadVector("colour", new Vector3f(1,1,1));
+		shader.loadVector3("colour", new Vector3f(1,1,1));
 		
 			lines.bind();
 			
@@ -60,7 +60,7 @@ public class RendererDebug {
 		shader.loadMatrix("projectionMatrix", inGameCamera.getProjectionMatrix());
 		shader.loadMatrix("viewMatrix", inGameCamera.getViewMatrix());
 		
-		shader.loadVector("colour", new Vector3f(1,1,1));
+		shader.loadVector3("colour", new Vector3f(1,1,1));
 		
 		
 		for(VertexArrayObject line: lines) {

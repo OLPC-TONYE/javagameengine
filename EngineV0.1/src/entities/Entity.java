@@ -13,7 +13,6 @@ import entitiesFunctions.Function;
 public class Entity {
 	
 	protected String name;
-	protected long id;
 	
 	protected boolean modified;
 	

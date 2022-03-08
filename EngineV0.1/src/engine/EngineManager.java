@@ -2,8 +2,6 @@ package engine;
 
 import static org.lwjgl.opengl.GL11.glDeleteTextures;
 import static org.lwjgl.opengl.GL15.glDeleteBuffers;
-import static org.lwjgl.opengl.GL30.glDeleteFramebuffers;
-import static org.lwjgl.opengl.GL30.glDeleteRenderbuffers;
 import static org.lwjgl.opengl.GL30.glDeleteVertexArrays;
 
 import java.io.File;
@@ -93,12 +91,6 @@ public class EngineManager {
 		}
 		for(int texture:textures) {
 			glDeleteTextures(texture);
-		}
-		for(int framebuffer:framebuffers) {
-			glDeleteFramebuffers(framebuffer);
-			glDeleteTextures(framebuffer);
-			glDeleteRenderbuffers(framebuffer);
-			glDeleteFramebuffers(framebuffer);
 		}
 	}
 

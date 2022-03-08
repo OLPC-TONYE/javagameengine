@@ -5,6 +5,7 @@ import org.joml.Vector3f;
 import org.joml.Vector4f;
 
 import entitiesComponents.CameraComponent;
+import entitiesComponents.Transform;
 
 
 /**
@@ -64,6 +65,14 @@ public class Maths {
 		return tmp.mul(inverseProj.mul(inverseView));
 	}
 	
+	public static Vector4f calculateGameViewportCords(CameraComponent camera, Transform object) {
+        Vector4f tmp = new Vector4f(-10, 0, 0, 1);
+		Matrix4f inverseProj = camera.getProjectionMatrix().invert();
+		Matrix4f inverseView = camera.getViewMatrix().invert();
+		Matrix4f inverseTransform = object.getTransformationMatrix().invert();
+		return tmp.mul(inverseProj.mul(inverseView.mul(inverseTransform)));
+	}
+	
 	/**
      * Test whether the ray of <code>origin</code> and pointing at <code>direction</code> intersect the plane
      * given via normal <code>normal</code> and a point on the plane <code>plane</code>.
@@ -99,6 +108,7 @@ public class Maths {
 	
 	public static boolean intersectEntityuPlane(Vector3f origin, Vector3f direction, Vector3f position, Vector3f scale, Vector3f normal) {
 		float t = calculateIntersectPlane(origin, direction, position, normal);
+		
 		Vector3f plane = new Vector3f(direction).mul(t).add(origin);
 		return intersectSurfacePlane(plane, position, scale);
 	}

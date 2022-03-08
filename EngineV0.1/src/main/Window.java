@@ -90,11 +90,11 @@ public class Window {
 		glfwShowWindow(glfwWindow);
 		
 		GL.createCapabilities();
-				
-		glEnable(GL_DEPTH_TEST);
 		
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+		
+		glEnable(GL_DEPTH_TEST);
 		
 		return glfwWindow;
 	}
