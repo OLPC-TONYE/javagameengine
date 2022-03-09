@@ -45,9 +45,9 @@ public class Window {
 			
 	private static Window window = null;
 		
-	private Window(String title) {
-		this.width = 1080;
-		this.height = 720;
+	private Window(String title, int width, int height) {
+		this.width = width;
+		this.height = height;
 		this.title = title;
 	}
 
@@ -133,7 +133,7 @@ public class Window {
 
 	public static Window get() {
 		if(Window.window == null) {
-			Window.window = new Window("BUGGY ENGINE");
+			Window.window = new Window("BUGGY ENGINE", 1024, 600);
 		}
 		return Window.window;
 	}

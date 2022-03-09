@@ -38,7 +38,6 @@ public class LevelEditorLayer extends Layer {
 	
 	Renderer renderer;
 	Framebuffer screen;
-	Framebuffer picking;
 	
 	private Scene levelScene = new LevelEditorScene();
 	private String selectedEntity;
@@ -46,11 +45,11 @@ public class LevelEditorLayer extends Layer {
 	
 	VertexArrayObject lines;
 	float[] pixelData;
+	
 	@Override
 	public void attach() {
 		
 		screen = new Framebuffer(1024, 600);
-//		picking = new Framebuffer(1, 1024, 600);
 		renderer = new Renderer();
 		renderer2 = new RendererDebug();
 		
@@ -85,16 +84,11 @@ public class LevelEditorLayer extends Layer {
 
 	@Override
 	public void render() {
-//		picking.bind();
-//		renderer.clearColour(0.06f, 0.06f, 0.06f, 0.960f);
-//		levelScene.render(renderer);
-//		picking.unbind();
-		
 		screen.bind();
 		renderer.clearColour(0.06f, 0.06f, 0.06f, 0.960f);
 		renderer2.render(EntityManager.entities.get(levelScene.n_mainCamera), lines);
 		levelScene.render(renderer);
-		pixelData = screen.readPixelData( 1, (int)viewportMouseHoverX, (int)viewportMouseHoverY);
+		pixelData = screen.readPixelData(1, (int)viewportMouseHoverX , (int)viewportMouseHoverY);
 		screen.unbind();	
 		renderInterfaces();
 	}
@@ -218,8 +212,8 @@ public class LevelEditorLayer extends Layer {
 		viewportCursor = new Vector2f(ImGui.getWindowPosX() + ImGui.getCursorPosX(), ImGui.getWindowPosY() + ImGui.getCursorPosY());
 		viewportSize = new Vector2f(ImGui.getWindowSizeX(), ImGui.getWindowSizeY());
 		
-		viewportMouseHoverX =  cursorPosX - viewportCursor.x; 
-		viewportMouseHoverY = aspectHeight - (cursorPosY - viewportCursor.y);
+		viewportMouseHoverX =  ((cursorPosX - viewportCursor.x)/aspectWidth) * screen.getFramBufferWidth(); 
+		viewportMouseHoverY = ((aspectHeight - (cursorPosY - viewportCursor.y))/aspectHeight) * screen.getFramBufferHeight();
 				
         ImGui.popStyleVar();
         ImGui.popStyleVar();

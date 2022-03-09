@@ -23,11 +23,10 @@ import static org.lwjgl.opengl.GL11.glViewport;
 import static org.lwjgl.opengl.GL14.GL_DEPTH_COMPONENT32;
 import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT0;
 import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT1;
-import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT2;
-import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT3;
 import static org.lwjgl.opengl.GL30.GL_DEPTH_ATTACHMENT;
 import static org.lwjgl.opengl.GL30.GL_FRAMEBUFFER;
 import static org.lwjgl.opengl.GL30.GL_RENDERBUFFER;
+import static org.lwjgl.opengl.GL30.GL_RGB32F;
 import static org.lwjgl.opengl.GL30.glBindFramebuffer;
 import static org.lwjgl.opengl.GL30.glBindRenderbuffer;
 import static org.lwjgl.opengl.GL30.glDeleteFramebuffers;
@@ -63,7 +62,7 @@ public class Framebuffer {
 		this.height = height;
 		createFrameBuffer();
 		addTextureAttachment(0, GL_RGBA, GL_RGBA, width, height);
-		addTextureAttachment(1, GL30.GL_RGB32F, GL_RGB, width, height);
+		addTextureAttachment(1, GL_RGB32F, GL_RGB, width, height);
 		addDepthTexture(width, height);
 		addDepthBufferAttachment(width, height);
 		validate();
@@ -122,30 +121,29 @@ public class Framebuffer {
 	
 	protected boolean validate() {
 		if(GL30.glCheckFramebufferStatus(framebuffer) != GL30.GL_FRAMEBUFFER_COMPLETE) {
-			switch (GL30.glCheckFramebufferStatus(framebuffer)) {
+			switch (GL30.glCheckFramebufferStatus(framebuffer)) 
+			{
 				case GL30.GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER:
-					System.out.println("Incomplete Draw Buffer");
+					System.err.println("Incomplete Draw Buffer");
 					break;
 				case GL30.GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER:
-					System.out.println("Incomplete Read Buffer");
+					System.err.println("Incomplete Read Buffer");
 					break;
 				case GL30.GL_FRAMEBUFFER_UNSUPPORTED:
-					System.out.println("UnSupported");
+					System.err.println("UnSupported");
 					break;
 				case GL30.GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
-					System.out.println("Incomplete Attachment");
+					System.err.println("Incomplete Attachment");
 					break;
 				case GL30.GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE:
-					System.out.println("Incomplete Multisample");
+					System.err.println("Incomplete Multisample");
 					break;
 				case GL30.GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
-					System.out.println("Incomplete Missing Attachment");
+					System.err.println("Incomplete Missing Attachment");
 					break;
 				case GL30.GL_FRAMEBUFFER_UNDEFINED:
-					System.out.println("Undefined");
+					System.err.println("Undefined");
 					break;
-				default:
-					return true;
 			}
 		}
 		return true;
@@ -182,7 +180,7 @@ public class Framebuffer {
 	protected void addDepthBufferAttachment(int width, int height) {
 		depthBuffer = glGenRenderbuffers();
 		glBindRenderbuffer(GL_RENDERBUFFER, depthBuffer);
-		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT32, width, height);
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
 		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuffer);
 	}
 }
