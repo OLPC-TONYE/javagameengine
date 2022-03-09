@@ -1,13 +1,17 @@
 package renderer;
 
+
 import static org.lwjgl.opengl.GL11.GL_LINES;
+//import static org.lwjgl.opengl.GL11.GL_LINE_LOOP;
+import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
+import static org.lwjgl.opengl.GL11.GL_UNSIGNED_INT;
+import static org.lwjgl.opengl.GL11.glDrawElements;
 import static org.lwjgl.opengl.GL20.glDrawArrays;
 
-import java.util.ArrayList;
 import org.joml.Vector3f;
 
-import engine.EngineManager;
 import entities.Entity;
+import entities.DebugDrawableObject;
 import entitiesComponents.CameraComponent;
 
 import opengl.Shader;
@@ -22,59 +26,37 @@ public class RendererDebug {
 		shader.bindAttribute(0, "position");
 		shader.link();
 	}
-	
-	VertexArrayObject line = EngineManager.createLine(new float[]{	0, 0, 0, 0.5f, 0.5f, 0,
-			1f, 0, 0, -1.5f, 1.5f, 0,
-		});
-	
-	public void render(Entity camera, VertexArrayObject lines) {
+
+	public void drawLines(Entity camera, VertexArrayObject lines) {
 		CameraComponent inGameCamera = camera.getComponent(CameraComponent.class);
 		
 		shader.start();
-		
 		shader.loadMatrix("projectionMatrix", inGameCamera.getProjectionMatrix());
 		shader.loadMatrix("viewMatrix", inGameCamera.getViewMatrix());
-		
 		shader.loadVector3("colour", new Vector3f(1,1,1));
-		
 			lines.bind();
-			
 			shader.enableAttributeArray(0);
-			
 			glDrawArrays(GL_LINES, 0, lines.getCount());
-			
 			shader.disableAttributeArray(0);
-			
 			lines.unbind();
-		
-	
 		shader.stop();
 	}
 	
-	public void render(Entity camera, ArrayList<VertexArrayObject> lines) {
-		
+	public void drawArrow(Entity camera) {
 		CameraComponent inGameCamera = camera.getComponent(CameraComponent.class);
 		
-		shader.start();
+		VertexArrayObject arrow = DebugDrawableObject.createArrow(0.3f, 4);
 		
+		shader.start();
 		shader.loadMatrix("projectionMatrix", inGameCamera.getProjectionMatrix());
 		shader.loadMatrix("viewMatrix", inGameCamera.getViewMatrix());
-		
-		shader.loadVector3("colour", new Vector3f(1,1,1));
-		
-		
-		for(VertexArrayObject line: lines) {
-			line.bind();
-			
+		shader.loadVector3("colour", new Vector3f(1,0,0));
+			arrow.bind();
 			shader.enableAttributeArray(0);
-			
-			glDrawArrays(GL_LINES, 0, 2);
-			
+			glDrawElements(GL_TRIANGLES, arrow.getCount(), GL_UNSIGNED_INT, 0);
 			shader.disableAttributeArray(0);
-			
-			line.unbind();
-		}
-	
+			arrow.unbind();
 		shader.stop();
 	}
+
 }

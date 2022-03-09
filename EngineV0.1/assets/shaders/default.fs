@@ -12,7 +12,7 @@ uniform float entityId;
 
 void main() 
 {
-	vec4 colour = vec4(passColour, 1.0)
+	vec4 colour = vec4(passColour, 1.0);
 	vec4 tex_colour;
 	
 	if(hasTexture == 0) {

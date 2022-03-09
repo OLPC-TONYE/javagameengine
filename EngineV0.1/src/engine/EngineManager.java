@@ -54,7 +54,7 @@ public class EngineManager {
 		return create;
 	}
 	
-	public static VertexArrayObject createLine(float[] vertices) {
+	public static VertexArrayObject createLines(float[] vertices) {
 		VertexArrayObject line = new VertexArrayObject();
 		vaos.add(line.getId());
 		line.addVertexBufferObject("position", 0, 3, vertices);
@@ -66,7 +66,9 @@ public class EngineManager {
 		VertexArrayObject arrow = new VertexArrayObject();
 		vaos.add(arrow.getId());
 		arrow.addVertexBufferObject("indices", indices);
+		arrow.setCount(indices.length);
 		arrow.addVertexBufferObject("position", 0, 3, vertices);
+
 		return arrow;
 	}
 

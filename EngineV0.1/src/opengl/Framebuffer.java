@@ -120,30 +120,31 @@ public class Framebuffer {
 	}
 	
 	protected boolean validate() {
+		
 		if(GL30.glCheckFramebufferStatus(framebuffer) != GL30.GL_FRAMEBUFFER_COMPLETE) {
 			switch (GL30.glCheckFramebufferStatus(framebuffer)) 
 			{
 				case GL30.GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER:
 					System.err.println("Incomplete Draw Buffer");
-					break;
+					return false;
 				case GL30.GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER:
 					System.err.println("Incomplete Read Buffer");
-					break;
+					return false;
 				case GL30.GL_FRAMEBUFFER_UNSUPPORTED:
 					System.err.println("UnSupported");
-					break;
+					return false;
 				case GL30.GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
 					System.err.println("Incomplete Attachment");
-					break;
+					return false;
 				case GL30.GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE:
 					System.err.println("Incomplete Multisample");
-					break;
+					return false;
 				case GL30.GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
 					System.err.println("Incomplete Missing Attachment");
-					break;
+					return false;
 				case GL30.GL_FRAMEBUFFER_UNDEFINED:
 					System.err.println("Undefined");
-					break;
+					return false;
 			}
 		}
 		return true;

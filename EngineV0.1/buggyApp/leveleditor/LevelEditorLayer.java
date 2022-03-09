@@ -2,13 +2,11 @@ package leveleditor;
 
 import org.joml.Vector2f;
 import org.joml.Vector3f;
-import org.joml.Vector4f;
 
-import engine.EngineManager;
 import engine.EntityManager;
+import entities.DebugDrawableObject;
 import entities.Entity;
 import entities.Sprite;
-import entitiesComponents.CameraComponent;
 import entitiesComponents.Component;
 import entitiesComponents.SpriteRenderer;
 import entitiesComponents.Transform;
@@ -25,7 +23,6 @@ import imgui.type.ImInt;
 import imgui.type.ImString;
 import loaders.LevelLoader;
 import main.Window;
-import maths.ListofFloats;
 import maths.Maths;
 import opengl.Framebuffer;
 import opengl.VertexArrayObject;
@@ -59,21 +56,7 @@ public class LevelEditorLayer extends Layer {
 		levelScene.init();	
 		levelScene.findCameras();
 		
-		float fExtent = 10.0f;
-		float fStep = 1.0f;
-		float y = -0.5f;
-		int iLine;
-		
-		ListofFloats linesvertices = new ListofFloats();
-		for(iLine = (int) -fExtent; iLine <= fExtent; iLine += fStep) {
-			// Draw Z lines
-			float[] verticesZ = new float[]{iLine, y, fExtent, iLine, y, -fExtent};
-			linesvertices.add(verticesZ);
-		
-			float[] verticesX = new float[]{fExtent, y, iLine, -fExtent, y, iLine};
-			linesvertices.add(verticesX);
-		}
-		lines = EngineManager.createLine(linesvertices.toArray());
+		lines = DebugDrawableObject.makeGridlines(0, 10.0f, 1.0f, -0.5f);
 	}
 
 	@Override
@@ -85,8 +68,10 @@ public class LevelEditorLayer extends Layer {
 	@Override
 	public void render() {
 		screen.bind();
+		renderer.clear();
 		renderer.clearColour(0.06f, 0.06f, 0.06f, 0.960f);
-		renderer2.render(EntityManager.entities.get(levelScene.n_mainCamera), lines);
+		renderer2.drawLines(EntityManager.entities.get(levelScene.n_mainCamera), lines);
+		renderer2.drawArrow(EntityManager.entities.get(levelScene.n_mainCamera));
 		levelScene.render(renderer);
 		pixelData = screen.readPixelData(1, (int)viewportMouseHoverX , (int)viewportMouseHoverY);
 		screen.unbind();	
@@ -99,22 +84,7 @@ public class LevelEditorLayer extends Layer {
 	}
 	
 	public void renderInterfaces() {
-		Transform camera_transform = EntityManager.entities.get(levelScene.n_mainCamera).getComponent(Transform.class);
-		origin = camera_transform.getPosition();
-		
-		CameraComponent camera = EntityManager.entities.get(levelScene.n_mainCamera).getComponent(CameraComponent.class);
-		ray_direction = Maths.calculateRayVector(ndsX, ndsY, camera);
-		
-		beginDockspace();	
-		beginScreen();
-		beginAssetExplorer();
-				
-		beginEntityInspector();
-		beginEntityExplorer();
-		
-		ImGui.showDemoWindow();
-		// For Dock space
-    	ImGui.end();
+		beginDockspace();
 	}
 	
 	private void beginDockspace() {
@@ -134,6 +104,16 @@ public class LevelEditorLayer extends Layer {
 		
 		int dockspace_id = ImGui.getID("ActualDockspace");
 		ImGui.dockSpace(dockspace_id);
+			
+		beginScreen();
+		beginAssetExplorer();
+				
+		beginEntityInspector();
+		beginEntityExplorer();
+		
+		ImGui.showDemoWindow();
+		// For Dock space
+    	ImGui.end();
 	}
 	
 	float cursorPosX;
@@ -228,11 +208,6 @@ public class LevelEditorLayer extends Layer {
         ImGui.end();
 	}
 	
-	Vector3f origin;
-	Vector3f ray_direction;
-	Vector3f position = new Vector3f();
-	Vector3f scale = new Vector3f();
-	
 	private void selectEntity() {
 		
 		for(Entity entity: EntityManager.entities.values()) {
@@ -255,11 +230,6 @@ public class LevelEditorLayer extends Layer {
 	        ImGui.text("ViewPortX:"+viewportMouseHoverX+"  Y:"+viewportMouseHoverY);
 	        
 	        ImGui.text("r: "+(int)pixelData[0] + " g: "+ pixelData[1] + " b: "+ pixelData[2]);
-	        
-	        CameraComponent camera = EntityManager.entities.get(levelScene.n_mainCamera).getComponent(CameraComponent.class);
-	        Vector4f gameViewCords = Maths.calculateGameViewportCords(camera, ndsX, ndsY);
-			
-			ImGui.text("gameCordX:"+gameViewCords.x+"  gameCordY:"+gameViewCords.y);
 			
 		ImGui.end();
 	}

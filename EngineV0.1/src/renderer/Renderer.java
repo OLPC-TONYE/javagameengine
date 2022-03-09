@@ -35,15 +35,16 @@ public class Renderer {
 		shader.link();
 	}
 	
-	public void clearColour() {
+	public void clear() {
 		GL11.glClear(GL_COLOR_BUFFER_BIT);
 		GL11.glClear(GL_DEPTH_BUFFER_BIT);
+	}
+	
+	public void clearColour() {
 		GL11.glClearColor(1, 1, 1, 1);
 	}
 	
 	public void clearColour(float red, float green, float blue, float alpha) {
-		GL11.glClear(GL_COLOR_BUFFER_BIT);
-		GL11.glClear(GL_DEPTH_BUFFER_BIT);
 		GL11.glClearColor(red, green, blue, alpha);
 	}
 	
@@ -57,6 +58,7 @@ public class Renderer {
 		
 		shader.start();
 		
+//		Load Entity Id
 		shader.loadFloat("entityId", EntityManager.getId(entity.getName()));
 	
 		Transform transformation = entity.getComponent(Transform.class);
