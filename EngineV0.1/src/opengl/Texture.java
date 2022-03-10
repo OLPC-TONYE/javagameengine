@@ -35,6 +35,7 @@ public class Texture {
 
 	public Texture(String filename) {
 		this.filepath = "assets/textures/"+filename+".png";
+		this.name = filename;
 		loadTexture(filepath);
 	}
 	

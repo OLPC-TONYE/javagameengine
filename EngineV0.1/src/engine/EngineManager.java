@@ -32,7 +32,6 @@ public class EngineManager {
 	public static Texture getTexture(String textureName) {
 		File file = new File("assets/textures/"+textureName+".png");
 		if (EngineManager.textureAssets.containsKey(file.getAbsolutePath())) {
-			System.out.println("Texture Found");
 			return EngineManager.textureAssets.get(file.getAbsolutePath());
 		}else {
 			System.out.println("Texture Not Found, Creating");

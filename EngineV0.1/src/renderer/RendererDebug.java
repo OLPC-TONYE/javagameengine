@@ -27,13 +27,13 @@ public class RendererDebug {
 		shader.link();
 	}
 
-	public void drawLines(Entity camera, VertexArrayObject lines) {
+	public void drawLines(Entity camera, VertexArrayObject lines, Vector3f colour) {
 		CameraComponent inGameCamera = camera.getComponent(CameraComponent.class);
 		
 		shader.start();
 		shader.loadMatrix("projectionMatrix", inGameCamera.getProjectionMatrix());
 		shader.loadMatrix("viewMatrix", inGameCamera.getViewMatrix());
-		shader.loadVector3("colour", new Vector3f(1,1,1));
+		shader.loadVector3("colour", colour);
 			lines.bind();
 			shader.enableAttributeArray(0);
 			glDrawArrays(GL_LINES, 0, lines.getCount());
@@ -45,7 +45,7 @@ public class RendererDebug {
 	public void drawArrow(Entity camera) {
 		CameraComponent inGameCamera = camera.getComponent(CameraComponent.class);
 		
-		VertexArrayObject arrow = DebugDrawableObject.createArrow(0.3f, 4);
+		VertexArrayObject arrow = DebugDrawableObject.createArrow(0.08f, 0.5f);
 		
 		shader.start();
 		shader.loadMatrix("projectionMatrix", inGameCamera.getProjectionMatrix());

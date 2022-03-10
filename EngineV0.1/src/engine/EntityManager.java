@@ -30,7 +30,7 @@ public class EntityManager {
 			i++;
 			newName = newName+" "+i;
 		}
-		return newName;		
+		return newName;
 	}
 	
 	public static boolean add(Entity entity) {

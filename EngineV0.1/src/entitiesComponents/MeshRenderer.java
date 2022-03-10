@@ -3,6 +3,8 @@ package entitiesComponents;
 import org.joml.Vector3f;
 
 import engine.EngineManager;
+import imgui.ImGui;
+import imgui.flag.ImGuiColorEditFlags;
 import opengl.VertexArrayObject;
 
 public class MeshRenderer extends Component{
@@ -34,15 +36,13 @@ public class MeshRenderer extends Component{
 	};
 
 	VertexArrayObject mesh;
-	Vector3f colour = new Vector3f(1, 1, 1);;
+	Vector3f colour = new Vector3f(1, 1, 1);
+	
+	String textureName = "white";
 	
 	@Override
 	public void prepare() {
-		if(entity.getComponent(TextureComponent.class)!= null) {
-			TextureComponent texture = entity.getComponent(TextureComponent.class);
-			texture.start();
-			mesh = EngineManager.loadToVAO(positions, indices, textureCoords);
-		}
+		mesh = EngineManager.loadToVAO(positions, indices, textureCoords);
 	}
 
 	@Override
@@ -58,5 +58,43 @@ public class MeshRenderer extends Component{
 		return this.mesh;
 	}
 
+	public String getTexture() {
+		return this.getTexture();
+	}
+	
+	public int getTextureID() {
+		return EngineManager.getTexture(textureName).getTextureID();
+	}
+	
+	public void setTexture(String textureName) {
+		this.textureName = textureName;
+	}
+	
+	@Override
+	public void UI() {
+		
+		Vector3f val = colour;
+		float[] imFloat = {val.x, val.y, val.z};
+		if(ImGui.colorEdit3("Colour", imFloat, ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.NoDragDrop)) {
+			this.colour.set(imFloat);
+		}
+		
+		ImGui.pushID("Texture Preview");
+		ImGui.text("Preview: ");
+		ImGui.sameLine();
+		if(ImGui.imageButton(getTextureID(), 
+				30, 30, textureCoords[0], textureCoords[1], textureCoords[4], textureCoords[5])) {
+//        	ImGui.openPopup("Tilemap");
+        }
+		if (ImGui.beginDragDropTarget()) {
+            final Object payload = ImGui.acceptDragDropPayload("payload_type");
+            if (payload != null) {
+                setTexture((String) payload);
+//                this.entity.modified();
+            }
+            ImGui.endDragDropTarget();
+        }
+		ImGui.popID();
+	}
 
 }

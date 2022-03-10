@@ -19,7 +19,6 @@ import entities.Entity;
 import entitiesComponents.CameraComponent;
 import entitiesComponents.MeshRenderer;
 import entitiesComponents.SpriteRenderer;
-import entitiesComponents.TextureComponent;
 import entitiesComponents.Transform;
 import opengl.Shader;
 import opengl.VertexArrayObject;
@@ -76,34 +75,44 @@ public class Renderer {
 			sprite = entity.getComponent(SpriteRenderer.class);
 			mesh = sprite.getMesh();
 			
-			shader.loadVector3("colour", sprite.getSprite().getColour());
+			shader.loadVector3("colour", sprite.getColour());
 		}
-		
-		shader.loadBoolean("hasTexture", entity.getComponent(TextureComponent.class)!= null);
-		
+				
 		mesh.bind();
-		glEnableVertexAttribArray(0);
+		shader.enableAttributeArray(0);
 		
-		if(entity.getComponent(TextureComponent.class)!= null) {
-			
+		if(entity.getComponent(SpriteRenderer.class)!= null) {	
+			sprite = entity.getComponent(SpriteRenderer.class);
+			shader.loadBoolean("hasTexture", true);
 			glEnableVertexAttribArray(1);
 			
-			TextureComponent texture = entity.getComponent(TextureComponent.class);
 			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, texture.getTextureID());
+			glBindTexture(GL_TEXTURE_2D, sprite.getTextureID());
+		}else if(entity.getComponent(MeshRenderer.class)!= null) {
+			meshr = entity.getComponent(MeshRenderer.class);
+			shader.loadBoolean("hasTexture", true);
+			glEnableVertexAttribArray(1);
+			
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, meshr.getTextureID());
 		}
-		
+	
 		glDrawElements(GL_TRIANGLES, mesh.getCount(), GL_UNSIGNED_INT, 0);
 		
-		glDisableVertexAttribArray(0);
+		shader.disableAttributeArray(0);
 		
-		if(entity.getComponent(TextureComponent.class)!= null) {
+		if(entity.getComponent(SpriteRenderer.class)!= null) {	
+			glDisableVertexAttribArray(1);
+			
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, 0);
+		}else if(entity.getComponent(MeshRenderer.class)!= null) {
 			glDisableVertexAttribArray(1);
 			
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, 0);
 		}
-		
+
 		mesh.unbind();
 		
 		shader.stop();

@@ -1,13 +1,17 @@
 package leveleditor;
 
+import java.util.Collection;
+
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
+import engine.EngineManager;
 import engine.EntityManager;
 import entities.DebugDrawableObject;
 import entities.Entity;
-import entities.Sprite;
+import entitiesComponents.CameraComponent;
 import entitiesComponents.Component;
+import entitiesComponents.MeshRenderer;
 import entitiesComponents.SpriteRenderer;
 import entitiesComponents.Transform;
 import imgui.ImGui;
@@ -25,6 +29,7 @@ import loaders.LevelLoader;
 import main.Window;
 import maths.Maths;
 import opengl.Framebuffer;
+import opengl.Texture;
 import opengl.VertexArrayObject;
 import renderer.Renderer;
 import renderer.RendererDebug;
@@ -51,8 +56,24 @@ public class LevelEditorLayer extends Layer {
 		renderer2 = new RendererDebug();
 		
 		LevelLoader.ready();		
-		LevelLoader.load();
+//		LevelLoader.load();
+		
+		Entity camera = new Entity();
+		camera.setName("Editor Camera");
+		CameraComponent n = new CameraComponent();
+		n.setCameraProjection(0);
+		n.setNEAR_PLANE(0.01f);
+		n.setFAR_PLANE(1000f);
+		n.setHeight(320);
+		n.setWidth(510);
+		n.setFOV(70);
+		
+		camera.addComponent(n);
+		camera.addComponent(new Transform(new Vector3f(0, 0, 15)));
+		camera.start();
+		EntityManager.add(camera);
 		System.out.println("Level Loaded");
+		
 		levelScene.init();	
 		levelScene.findCameras();
 		
@@ -70,8 +91,7 @@ public class LevelEditorLayer extends Layer {
 		screen.bind();
 		renderer.clear();
 		renderer.clearColour(0.06f, 0.06f, 0.06f, 0.960f);
-		renderer2.drawLines(EntityManager.entities.get(levelScene.n_mainCamera), lines);
-		renderer2.drawArrow(EntityManager.entities.get(levelScene.n_mainCamera));
+		renderer2.drawLines(EntityManager.entities.get(levelScene.n_mainCamera), lines, new Vector3f(1,1,1));
 		levelScene.render(renderer);
 		pixelData = screen.readPixelData(1, (int)viewportMouseHoverX , (int)viewportMouseHoverY);
 		screen.unbind();	
@@ -83,7 +103,7 @@ public class LevelEditorLayer extends Layer {
 		levelScene.update(dt);
 	}
 	
-	public void renderInterfaces() {
+	private void renderInterfaces() {
 		beginDockspace();
 	}
 	
@@ -224,13 +244,31 @@ public class LevelEditorLayer extends Layer {
 
 	private void beginAssetExplorer() {
 		ImGui.begin("Assets");
-        
-	        ImGui.text("screenX:"+ndsX+"  screenY:"+ndsY);
-	        
-	        ImGui.text("ViewPortX:"+viewportMouseHoverX+"  Y:"+viewportMouseHoverY);
-	        
-	        ImGui.text("r: "+(int)pixelData[0] + " g: "+ pixelData[1] + " b: "+ pixelData[2]);
+		Collection<Texture> textures = EngineManager.textureAssets.values();
+		for(Texture texture: textures) {
 			
+			float WindowPosX = ImGui.getWindowPosX();
+        	float WindowSizeX = ImGui.getWindowSizeX();
+        	float ItemSpacingX = ImGui.getStyle().getItemSpacingX();
+        	float windowX2 = WindowPosX + WindowSizeX;
+        	
+        	
+    		ImGui.imageButton(texture.getTextureID(), 100, 100);
+            if (ImGui.beginDragDropSource()) {
+                ImGui.setDragDropPayload("payload_type", texture.getName());
+                ImGui.text("Drag started : "+ texture.getName());
+                ImGui.endDragDropSource();
+            }
+    		
+    		float lastPosX = ImGui.getItemRectMaxX();
+    		float nextPosX = lastPosX + ItemSpacingX + 100;
+    		
+    		if(nextPosX < windowX2) {
+    			ImGui.sameLine();
+    		}
+			
+		}
+		
 		ImGui.end();
 	}
 	
@@ -252,10 +290,30 @@ public class LevelEditorLayer extends Layer {
 						Entity new_Entity = new Entity();
 						String new_entityName = EntityManager.createEntity("Sprite");
 						new_Entity.setName(new_entityName);
-						new_Entity.addComponent(new Transform(new Vector3f(0,0,0)));
-						new_Entity.addComponent(new SpriteRenderer(new Sprite(new Vector3f(0,1,1))));
+						new_Entity.addComponent(new Transform(new Vector3f(0,0,10)));
+						new_Entity.addComponent(new SpriteRenderer("spritesheet"));
+						boolean success = EntityManager.add(new_Entity);
+						if(!success) {
+							System.out.println("Failed to Add " + new_Entity.getName());
+						}
 						new_Entity.start();
-						EntityManager.entities.put(new_entityName, new_Entity);
+						this.selectedEntity = new_entityName;
+					}
+					
+					if(ImGui.menuItem("Cube")) {
+						Entity new_Entity = new Entity();
+						String new_entityName = EntityManager.createEntity("Cube");
+						new_Entity.setName(new_entityName);
+						new_Entity.addComponent(new Transform(new Vector3f(0,0,5)));
+						MeshRenderer m = new MeshRenderer();
+						m.setTexture("first");
+						new_Entity.addComponent(m);
+						boolean success = EntityManager.add(new_Entity);
+						if(!success) {
+							System.out.println("Failed to Add " + new_Entity.getName());
+						}
+						new_Entity.start();
+						this.selectedEntity = new_entityName;
 					}
 					
 					ImGui.endMenu();

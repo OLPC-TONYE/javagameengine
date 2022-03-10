@@ -74,7 +74,7 @@ public class LevelEditorScene extends Scene{
 			Entity current_camera = EntityManager.entities.get(n_mainCamera);
 			for(Entity entityRenderable: EntityManager.entities.values()) {
 				
-				if(entityRenderable.isRenderable()) {
+				if(!entityRenderable.isCamera()) {
 					renderer.render(current_camera, entityRenderable);
 				}
 				
