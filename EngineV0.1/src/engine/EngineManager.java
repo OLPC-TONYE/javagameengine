@@ -71,6 +71,15 @@ public class EngineManager {
 		return arrow;
 	}
 
+	public static VertexArrayObject create3DArrow(float[] vertices) {
+		VertexArrayObject arrow = new VertexArrayObject();
+		vaos.add(arrow.getId());
+		arrow.setCount(vertices.length/3);
+		arrow.addVertexBufferObject("position", 0, 3, vertices);
+
+		return arrow;
+	}
+	
 	public static void addVBOS(int vboID) {
 		vbos.add(vboID);
 	}

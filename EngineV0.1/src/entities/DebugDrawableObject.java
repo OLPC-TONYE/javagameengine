@@ -68,5 +68,85 @@ public class DebugDrawableObject {
 		
 		return EngineManager.createArrow(vertices, indices);
 	}
+	
+	/**
+	 * 
+	 * @param height
+	 *          the height of the arrow
+	 * @param length
+	 *          the length of the body
+	 *          
+	 * @return <code>VertexArrayObject</code>
+	 */
+	public static VertexArrayObject create3DArrow(float height, float length) {
+		
+		float w = length/2;			// Length of Arrow
+		float h = w - height;	// Arrow Head
+		
+		float[] vertices = new float[] {
+			-w, 0, 0,			// 	0 Arrow Body
+			w, 0, 0,			//	1 Arrow Body
+			(h), height, 0,		//	2 Arrow Head
+			(w+0.02f), 0, 0,		//	3 Arrow Head
+			(h), -height, 0,		//	4 Arrow Head
+		};
+		
+		return EngineManager.create3DArrow(vertices);
+	}
+	
+	/**
+	 * 
+	 * @param height
+	 *          the height of the arrow
+	 * @param length
+	 *          the length of the body
+	 *          
+	 * @return <code>VertexArrayObject</code>
+	 */
+	public static VertexArrayObject create3DArrowCone(float height, float length) {
+		
+		float w = length/2;			// Length of Arrow
+		float h = w - height;	// Arrow Head
+		
+		float angle = 10f;
+		
+		ListofFloats vertices = new ListofFloats();
+		
+		vertices.add(new float[] {
+				-w, 0, 0,			// 	0 Arrow Body
+				w, 0, 0,			//	1 Arrow Body
+				(w+0.02f), 0, 0,		//	3 Arrow Head
+		});
+		
+		float GL_PI = 3.142f;
+		for(angle = 0.0f; angle < (2.0f*GL_PI ); angle += (GL_PI/8.0f)) {
+			vertices.add(new float[] {
+					h, (float) (0.05f*Math.sin(angle)), (float) (0.05f*Math.cos(angle)), //
+			});
+		}
+		
+		return EngineManager.create3DArrow(vertices.toArray());
+	}
+	
+	public static VertexArrayObject createArrowSquare(float height, float length) {
+		
+		float w = length/2;			// Length of Arrow
+		float h = w - height;	// Arrow Head
+		
+		float[] vertices = new float[] {
+			-w, 0, 0,			// 	0 Arrow Body
+			w, 0, 0,			//	1 Arrow Body
+			(h), height, 0,		//	2 Arrow Head
+			(h), -height, 0,		//	3 Arrow Head
+			(h+0.05f), height, 0,		//	4 Arrow Head
+			(h), -height, 0,		//	2 Arrow Head
+			(h+0.05f), -height, 0,		//	4 Arrow Head
+			(h+0.05f), height, 0,		//	3 Arrow Head		
+		};
+		
+		return EngineManager.create3DArrow(vertices);
+	}
+	
+//	Add 3DArrowCube
 
 }

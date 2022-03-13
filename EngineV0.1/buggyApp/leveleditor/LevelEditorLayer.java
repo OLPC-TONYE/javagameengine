@@ -14,6 +14,7 @@ import entitiesComponents.Component;
 import entitiesComponents.MeshRenderer;
 import entitiesComponents.SpriteRenderer;
 import entitiesComponents.Transform;
+import gui.Guizmos;
 import imgui.ImGui;
 import imgui.ImVec2;
 import imgui.flag.ImGuiButtonFlags;
@@ -45,6 +46,8 @@ public class LevelEditorLayer extends Layer {
 	private String selectedEntity;
 	private RendererDebug renderer2;
 	
+	Guizmos guizmo;
+	
 	VertexArrayObject lines;
 	float[] pixelData;
 	
@@ -54,6 +57,9 @@ public class LevelEditorLayer extends Layer {
 		screen = new Framebuffer(1024, 600);
 		renderer = new Renderer();
 		renderer2 = new RendererDebug();
+		
+		guizmo = new Guizmos();
+		guizmo.init();
 		
 		LevelLoader.ready();		
 //		LevelLoader.load();
@@ -93,6 +99,8 @@ public class LevelEditorLayer extends Layer {
 		renderer.clearColour(0.06f, 0.06f, 0.06f, 0.960f);
 		renderer2.drawLines(EntityManager.entities.get(levelScene.n_mainCamera), lines, new Vector3f(1,1,1));
 		levelScene.render(renderer);
+		guizmo.render(EntityManager.entities.get(levelScene.n_mainCamera));
+//		renderer2.draw3DArrowCone(EntityManager.entities.get(levelScene.n_mainCamera));
 		pixelData = screen.readPixelData(1, (int)viewportMouseHoverX , (int)viewportMouseHoverY);
 		screen.unbind();	
 		renderInterfaces();
@@ -236,6 +244,7 @@ public class LevelEditorLayer extends Layer {
 				int id = EntityManager.getId(entity.getName());
 				if((int)pixelData[0] == id) {
 					this.selectedEntity = entity.getName();
+					this.guizmo.attachTo(entity);
 					break;
 				}
 			}

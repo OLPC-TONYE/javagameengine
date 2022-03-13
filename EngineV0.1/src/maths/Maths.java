@@ -96,7 +96,19 @@ public class Maths {
                 return t;
         }
         return -1.0f;				
-	} 
+	}
+	
+	public static Matrix4f getTransformationMatrix(Vector3f position, Vector3f rotation, Vector3f scale) {
+		Matrix4f transformationMatrix = new Matrix4f();
+		
+		transformationMatrix.identity();
+		transformationMatrix.translate(position);
+		transformationMatrix.rotate((float)Math.toRadians(rotation.x), new Vector3f(1, 0, 0));
+		transformationMatrix.rotate((float)Math.toRadians(rotation.y), new Vector3f(0, 1, 0));
+		transformationMatrix.rotate((float)Math.toRadians(rotation.z), new Vector3f(0, 0, 1));
+		transformationMatrix.scale(scale);
+		return transformationMatrix;
+	}
 	
 	public static boolean intersectSurfacePlane(Vector3f plane, Vector3f position, Vector3f scale) {
 		float distance = plane.distance(position);
@@ -111,6 +123,35 @@ public class Maths {
 		
 		Vector3f plane = new Vector3f(direction).mul(t).add(origin);
 		return intersectSurfacePlane(plane, position, scale);
+	}
+	
+	
+	public static Matrix4f mul(Matrix4f matrix, float scalar) {
+		Matrix4f Matrix = new Matrix4f(matrix);
+		
+		float m00, m01, m02, m03;
+	    float m10, m11, m12, m13;
+	    float m20, m21, m22, m23;
+	    float m30, m31, m32, m33;
+	    
+	    m00 = Matrix.m00() * scalar;
+	    m01 = Matrix.m01() * scalar;
+	    m02 = Matrix.m02() * scalar;
+	    m03 = Matrix.m03() * scalar;
+	    m10 = Matrix.m10() * scalar;
+	    m11 = Matrix.m11() * scalar;
+	    m12 = Matrix.m12() * scalar;
+	    m13 = Matrix.m13() * scalar;
+	    m20 = Matrix.m20() * scalar;
+	    m21 = Matrix.m21() * scalar;
+	    m22 = Matrix.m22() * scalar;
+	    m23 = Matrix.m23() * scalar;
+	    m30 = Matrix.m30() * scalar;
+	    m31 = Matrix.m31() * scalar;
+	    m32 = Matrix.m32() * scalar;
+	    m33 = Matrix.m33() * scalar;
+	    
+		return Matrix.set(m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23, m30, m31, m32, m33);
 	}
 
 }

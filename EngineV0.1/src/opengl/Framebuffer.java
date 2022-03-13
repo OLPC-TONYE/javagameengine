@@ -23,6 +23,7 @@ import static org.lwjgl.opengl.GL11.glViewport;
 import static org.lwjgl.opengl.GL14.GL_DEPTH_COMPONENT32;
 import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT0;
 import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT1;
+import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT2;
 import static org.lwjgl.opengl.GL30.GL_DEPTH_ATTACHMENT;
 import static org.lwjgl.opengl.GL30.GL_FRAMEBUFFER;
 import static org.lwjgl.opengl.GL30.GL_RENDERBUFFER;
@@ -63,6 +64,7 @@ public class Framebuffer {
 		createFrameBuffer();
 		addTextureAttachment(0, GL_RGBA, GL_RGBA, width, height);
 		addTextureAttachment(1, GL_RGB32F, GL_RGB, width, height);
+		addTextureAttachment(2, GL_RGB32F, GL_RGB, width, height);
 		addDepthTexture(width, height);
 		addDepthBufferAttachment(width, height);
 		validate();
@@ -115,7 +117,7 @@ public class Framebuffer {
 	protected void createFrameBuffer() {
 		framebuffer = glGenFramebuffers();
 		glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-		int[] bufs = new int[] { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1};
+		int[] bufs = new int[] { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2};
 		GL20.glDrawBuffers(bufs);
 	}
 	

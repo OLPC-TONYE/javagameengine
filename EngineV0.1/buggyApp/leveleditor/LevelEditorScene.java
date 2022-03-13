@@ -45,25 +45,36 @@ public class LevelEditorScene extends Scene{
 			camera.setPosition(position.sub(rate, 0, 0));
 		}
 		
-		if(KeyListener.isKeyPressed(GLFW.GLFW_KEY_RIGHT)) {
-			Vector3f position = camera.getRotation();
-			camera.setRotation(position.add(0, rate, 0));
-		}
-		
-		if(KeyListener.isKeyPressed(GLFW.GLFW_KEY_LEFT)) {
-			Vector3f position = camera.getRotation();
-			camera.setRotation(position.sub(0, rate, 0));
-		}
-		
-		if(KeyListener.isKeyPressed(GLFW.GLFW_KEY_DOWN)) {
+		if(KeyListener.isKeyPressed(GLFW.GLFW_KEY_Q)) {
 			Vector3f position = camera.getPosition();
 			camera.setPosition(position.add(0, 0, rate));
 		}
 		
-		if(KeyListener.isKeyPressed(GLFW.GLFW_KEY_UP)) {
+		if(KeyListener.isKeyPressed(GLFW.GLFW_KEY_E)) {
 			Vector3f position = camera.getPosition();
 			camera.setPosition(position.sub(0, 0, rate));
 		}
+		
+		if(KeyListener.isKeyPressed(GLFW.GLFW_KEY_RIGHT)) {
+			Vector3f position = camera.getRotation();
+			camera.setRotation(position.add(0, rate * 4, 0));
+		}
+		
+		if(KeyListener.isKeyPressed(GLFW.GLFW_KEY_LEFT)) {
+			Vector3f position = camera.getRotation();
+			camera.setRotation(position.sub(0, rate * 4, 0));
+		}
+		
+		if(KeyListener.isKeyPressed(GLFW.GLFW_KEY_DOWN)) {
+			Vector3f position = camera.getRotation();
+			camera.setRotation(position.add(rate, 0, 0));
+		}
+		
+		if(KeyListener.isKeyPressed(GLFW.GLFW_KEY_UP)) {
+			Vector3f position = camera.getRotation();
+			camera.setRotation(position.sub(rate, 0, 0));
+		}
+		
 		
 	}
 	

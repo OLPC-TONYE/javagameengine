@@ -62,7 +62,6 @@ public class Renderer {
 	
 		Transform transformation = entity.getComponent(Transform.class);
 		shader.loadMatrix("transformationMatrix", transformation.getTransformationMatrix());
-		
 		shader.loadMatrix("projectionMatrix", inGameCamera.getProjectionMatrix());
 		shader.loadMatrix("viewMatrix", inGameCamera.getViewMatrix());
 		
