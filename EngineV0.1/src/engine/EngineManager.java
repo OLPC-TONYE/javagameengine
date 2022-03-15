@@ -28,15 +28,29 @@ public class EngineManager {
 	protected static List<Integer> framebuffers = new ArrayList<Integer>();
 	
 	public static Map<String, Texture> textureAssets = new HashMap<>();
+	public static Map<String, Texture> iconTextureAssets = new HashMap<>();
 	
 	public static Texture getTexture(String textureName) {
-		File file = new File("assets/textures/"+textureName+".png");
+		String path = "assets/textures/"+textureName+".png";
+		File file = new File(path);
 		if (EngineManager.textureAssets.containsKey(file.getAbsolutePath())) {
 			return EngineManager.textureAssets.get(file.getAbsolutePath());
 		}else {
 			System.out.println("Texture Not Found, Creating");
-			Texture texture = new Texture(textureName);
+			Texture texture = new Texture(path, textureName);
 			EngineManager.textureAssets.put(file.getAbsolutePath(), texture);
+			return texture;
+		}
+	}
+	
+	public static Texture getIconTexture(String textureName) {
+		String path = "res/icons/"+textureName+".png";
+		File file = new File(path);
+		if (EngineManager.iconTextureAssets.containsKey(file.getAbsolutePath())) {
+			return EngineManager.iconTextureAssets.get(file.getAbsolutePath());
+		}else {
+			Texture texture = new Texture(path, textureName);
+			EngineManager.iconTextureAssets.put(file.getAbsolutePath(), texture);
 			return texture;
 		}
 	}

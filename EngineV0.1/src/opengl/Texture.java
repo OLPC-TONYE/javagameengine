@@ -33,8 +33,8 @@ public class Texture {
 	// Image Properties
 	private int width, height;
 
-	public Texture(String filename) {
-		this.filepath = "assets/textures/"+filename+".png";
+	public Texture(String file_path, String filename) {
+		this.filepath = file_path;
 		this.name = filename;
 		loadTexture(filepath);
 	}

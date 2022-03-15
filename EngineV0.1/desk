@@ -39,8 +39,8 @@ Collapsed=0
 DockId=0x00000007,0
 
 [Window][Dear ImGui Demo]
-Pos=1059,80
-Size=554,680
+Pos=1071,87
+Size=547,880
 Collapsed=1
 
 [Window][Example: Property editor]
@@ -59,7 +59,7 @@ Size=843,446
 Collapsed=0
 
 [Window][Stacked 1]
-Pos=625,380
+Pos=626,380
 Size=430,228
 Collapsed=0
 
@@ -69,8 +69,8 @@ Size=500,500
 Collapsed=0
 
 [Window][Example: Documents]
-Pos=60,60
-Size=701,982
+Pos=116,8
+Size=799,824
 Collapsed=0
 
 [Window][Lettuce]
@@ -157,6 +157,16 @@ Collapsed=0
 [Window][Delete?]
 Pos=703,414
 Size=273,160
+Collapsed=0
+
+[Window][Stacked 2]
+Pos=724,448
+Size=231,92
+Collapsed=0
+
+[Window][FileExplorer]
+Pos=526,216
+Size=800,420
 Collapsed=0
 
 [Table][0xD0F0C6E3,2]

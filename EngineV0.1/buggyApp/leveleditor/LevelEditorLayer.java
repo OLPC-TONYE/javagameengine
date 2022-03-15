@@ -14,6 +14,10 @@ import entitiesComponents.Component;
 import entitiesComponents.MeshRenderer;
 import entitiesComponents.SpriteRenderer;
 import entitiesComponents.Transform;
+import events.AppLayerEvent;
+import events.EventHandler;
+import events.EventLevel;
+import gui.FileExplorer;
 import gui.Guizmos;
 import imgui.ImGui;
 import imgui.ImVec2;
@@ -138,6 +142,8 @@ public class LevelEditorLayer extends Layer {
 				
 		beginEntityInspector();
 		beginEntityExplorer();
+		
+		EventHandler.handle(EventLevel.ApplicationLayer);
 		
 		ImGui.showDemoWindow();
 		// For Dock space
@@ -284,8 +290,14 @@ public class LevelEditorLayer extends Layer {
 	ImString new_entityName = new ImString();
 	ImInt new_entityType = new ImInt();
 	
+
 	private void beginEntityExplorer() {
 		ImGui.begin("EntityExplorer");
+		
+			if(ImGui.button("Open")) {
+				FileExplorer.open();
+				EventHandler.queue(new FetchFileEvent());
+			}
 			
 			if(ImGui.beginPopupContextWindow(ImGuiPopupFlags.MouseButtonRight)) {
 				
@@ -313,9 +325,9 @@ public class LevelEditorLayer extends Layer {
 						Entity new_Entity = new Entity();
 						String new_entityName = EntityManager.createEntity("Cube");
 						new_Entity.setName(new_entityName);
-						new_Entity.addComponent(new Transform(new Vector3f(0,0,5)));
+						new_Entity.addComponent(new Transform(new Vector3f(0,0,10)));
 						MeshRenderer m = new MeshRenderer();
-						m.setTexture("first");
+						m.setTexture("white");
 						new_Entity.addComponent(m);
 						boolean success = EntityManager.add(new_Entity);
 						if(!success) {
@@ -383,4 +395,26 @@ public class LevelEditorLayer extends Layer {
 		ImGui.end();
 	}
 
+}
+
+class FetchFileEvent extends AppLayerEvent{
+
+	public FetchFileEvent() {
+		super("FetchFileName");
+	}
+
+	@Override
+	public void onEvent() {
+		if(FileExplorer.onClose == 1) {
+			EngineManager.getTexture("white");
+		}
+	}
+
+	@Override
+	public boolean handle() {
+		
+		FileExplorer.render();
+		return FileExplorer.onClose > 0;
+	}
+	
 }
