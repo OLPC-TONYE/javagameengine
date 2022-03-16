@@ -39,13 +39,13 @@ Collapsed=0
 DockId=0x00000007,0
 
 [Window][Dear ImGui Demo]
-Pos=1071,87
-Size=547,880
-Collapsed=1
+Pos=1005,74
+Size=517,808
+Collapsed=0
 
 [Window][Example: Property editor]
 Pos=60,66
-Size=528,668
+Size=959,839
 Collapsed=0
 
 [Window][Example: Custom rendering]
@@ -165,13 +165,17 @@ Size=231,92
 Collapsed=0
 
 [Window][FileExplorer]
-Pos=526,216
+Pos=293,112
 Size=800,420
 Collapsed=0
 
+[Window][DockSpace Demo]
+Size=1680,988
+Collapsed=0
+
 [Table][0xD0F0C6E3,2]
-Column 0  Weight=1.0000
-Column 1  Weight=1.0000
+Column 0  Weight=1.1670
+Column 1  Weight=0.8330
 
 [Docking][Data]
 DockSpace         ID=0xA086D808 Pos=68,184 Size=685,850 CentralNode=1 Selected=0x8BB04FA5

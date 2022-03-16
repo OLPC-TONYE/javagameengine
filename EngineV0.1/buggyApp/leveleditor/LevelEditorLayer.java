@@ -14,9 +14,9 @@ import entitiesComponents.Component;
 import entitiesComponents.MeshRenderer;
 import entitiesComponents.SpriteRenderer;
 import entitiesComponents.Transform;
-import events.AppLayerEvent;
 import events.EventHandler;
 import events.EventLevel;
+import events.ImGuiLayerRenderEvent;
 import gui.FileExplorer;
 import gui.Guizmos;
 import imgui.ImGui;
@@ -143,7 +143,7 @@ public class LevelEditorLayer extends Layer {
 		beginEntityInspector();
 		beginEntityExplorer();
 		
-		EventHandler.handle(EventLevel.ApplicationLayer);
+		EventHandler.handle(EventLevel.ImGuiLayerRender);
 		
 		ImGui.showDemoWindow();
 		// For Dock space
@@ -397,7 +397,7 @@ public class LevelEditorLayer extends Layer {
 
 }
 
-class FetchFileEvent extends AppLayerEvent{
+class FetchFileEvent extends ImGuiLayerRenderEvent{
 
 	public FetchFileEvent() {
 		super("FetchFileName");
@@ -406,7 +406,7 @@ class FetchFileEvent extends AppLayerEvent{
 	@Override
 	public void onEvent() {
 		if(FileExplorer.onClose == 1) {
-			EngineManager.getTexture("white");
+			EngineManager.getTextureWithPath(FileExplorer.getFetchedFile().getAbsolutePath());
 		}
 	}
 

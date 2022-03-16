@@ -43,6 +43,18 @@ public class EngineManager {
 		}
 	}
 	
+	public static Texture getTextureWithPath(String texture_path) {
+		File file = new File(texture_path);
+		if (EngineManager.textureAssets.containsKey(file.getAbsolutePath())) {
+			return EngineManager.textureAssets.get(file.getAbsolutePath());
+		}else {
+			System.out.println("Texture Not Found, Creating "+file.getName().split("\\.")[0]);
+			Texture texture = new Texture(texture_path, file.getName().split("\\.")[0]);
+			EngineManager.textureAssets.put(file.getAbsolutePath(), texture);
+			return texture;
+		}
+	}
+	
 	public static Texture getIconTexture(String textureName) {
 		String path = "res/icons/"+textureName+".png";
 		File file = new File(path);
