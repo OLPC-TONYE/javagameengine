@@ -58,7 +58,7 @@ public class SpriteRenderer extends Component {
 	}
 	
 	@Override
-	public void update() {
+	public void update(double dt) {
 
 		if(entity.ifModified()) {
 			if(isTilemap) {

@@ -1,17 +1,17 @@
 package leveleditor;
 
-import java.util.Collection;
-
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+import org.lwjgl.glfw.GLFW;
 
 import engine.EngineManager;
 import engine.EntityManager;
-import entities.DebugDrawableObject;
+import entities.Drawable;
 import entities.Entity;
 import entitiesComponents.CameraComponent;
 import entitiesComponents.Component;
 import entitiesComponents.MeshRenderer;
+import entitiesComponents.ScriptComponent;
 import entitiesComponents.SpriteRenderer;
 import entitiesComponents.Transform;
 import events.EventHandler;
@@ -30,6 +30,7 @@ import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImBoolean;
 import imgui.type.ImInt;
 import imgui.type.ImString;
+import listeners.KeyListener;
 import loaders.LevelLoader;
 import main.Window;
 import maths.Maths;
@@ -40,6 +41,7 @@ import renderer.Renderer;
 import renderer.RendererDebug;
 import scenes.Layer;
 import scenes.Scene;
+import scripting.EntityScript;
 
 public class LevelEditorLayer extends Layer {
 	
@@ -65,8 +67,7 @@ public class LevelEditorLayer extends Layer {
 		guizmo = new Guizmos();
 		guizmo.init();
 		
-		LevelLoader.ready();		
-//		LevelLoader.load();
+		LevelLoader.ready();
 		
 		Entity camera = new Entity();
 		camera.setName("Editor Camera");
@@ -81,18 +82,25 @@ public class LevelEditorLayer extends Layer {
 		camera.addComponent(n);
 		camera.addComponent(new Transform(new Vector3f(0, 0, 15)));
 		camera.start();
+		
 		EntityManager.add(camera);
 		System.out.println("Level Loaded");
 		
 		levelScene.init();	
-		levelScene.findCameras();
+		levelScene.setCamera(camera.getName());
 		
-		lines = DebugDrawableObject.makeGridlines(0, 10.0f, 1.0f, -0.5f);
+		EntityManager.entities.get(levelScene.main_camera).addComponent(new ScriptComponent());
+		ScriptComponent controller = EntityManager.entities.get(levelScene.main_camera).getComponent(ScriptComponent.class);
+		controller.bind(new CameraController());
+		
+		lines = Drawable.makeGridlines(0, 10.0f, 1.0f, -0.5f);
 	}
 
 	@Override
 	public void detach() {
 		levelScene.close();
+		renderer.clear();
+		renderer.clearColour(0.06f, 0.06f, 0.06f, 0.0f);
 		screen.cleanup();
 	}
 
@@ -100,11 +108,10 @@ public class LevelEditorLayer extends Layer {
 	public void render() {
 		screen.bind();
 		renderer.clear();
-		renderer.clearColour(0.06f, 0.06f, 0.06f, 0.960f);
-		renderer2.drawLines(EntityManager.entities.get(levelScene.n_mainCamera), lines, new Vector3f(1,1,1));
+		renderer.clearColour(0.06f, 0.06f, 0.06f, 0.0f);
+		renderer2.drawLines(EntityManager.entities.get(levelScene.main_camera), lines, new Vector3f(1,1,1));
 		levelScene.render(renderer);
-		guizmo.render(EntityManager.entities.get(levelScene.n_mainCamera));
-//		renderer2.draw3DArrowCone(EntityManager.entities.get(levelScene.n_mainCamera));
+		guizmo.render(EntityManager.entities.get(levelScene.main_camera));
 		pixelData = screen.readPixelData(1, (int)viewportMouseHoverX , (int)viewportMouseHoverY);
 		screen.unbind();	
 		renderInterfaces();
@@ -252,6 +259,8 @@ public class LevelEditorLayer extends Layer {
 					this.selectedEntity = entity.getName();
 					this.guizmo.attachTo(entity);
 					break;
+				}else {
+					this.guizmo.dettach();
 				}
 			}
 		}
@@ -259,8 +268,7 @@ public class LevelEditorLayer extends Layer {
 
 	private void beginAssetExplorer() {
 		ImGui.begin("Assets");
-		Collection<Texture> textures = EngineManager.textureAssets.values();
-		for(Texture texture: textures) {
+		for(Texture texture: EngineManager.textureAssets.values()) {
 			
 			float WindowPosX = ImGui.getWindowPosX();
         	float WindowSizeX = ImGui.getWindowSizeX();
@@ -415,6 +423,79 @@ class FetchFileEvent extends ImGuiLayerRenderEvent{
 		
 		FileExplorer.render();
 		return FileExplorer.onClose > 0;
+	}
+	
+}
+
+class CameraController extends EntityScript {
+
+	@Override
+	public void onCreate() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onDestroy() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void update(double dt) {
+		
+		Transform camera = getComponent(Transform.class);
+		float rate = (float) (5 * dt);
+		if(KeyListener.isKeyPressed(GLFW.GLFW_KEY_W)) {
+			Vector3f position = camera.getPosition();
+			camera.setPosition(position.add(0, rate, 0));
+		}
+		
+		if(KeyListener.isKeyPressed(GLFW.GLFW_KEY_S)) {
+			Vector3f position = camera.getPosition();
+			camera.setPosition(position.sub(0, rate, 0));
+		}
+		
+		if(KeyListener.isKeyPressed(GLFW.GLFW_KEY_D)) {
+			Vector3f position = camera.getPosition();
+			camera.setPosition(position.add(rate, 0, 0));
+		}
+		
+		if(KeyListener.isKeyPressed(GLFW.GLFW_KEY_A)) {
+			Vector3f position = camera.getPosition();
+			camera.setPosition(position.sub(rate, 0, 0));
+		}
+		
+		if(KeyListener.isKeyPressed(GLFW.GLFW_KEY_Q)) {
+			Vector3f position = camera.getPosition();
+			camera.setPosition(position.add(0, 0, rate));
+		}
+		
+		if(KeyListener.isKeyPressed(GLFW.GLFW_KEY_E)) {
+			Vector3f position = camera.getPosition();
+			camera.setPosition(position.sub(0, 0, rate));
+		}
+		
+		if(KeyListener.isKeyPressed(GLFW.GLFW_KEY_RIGHT)) {
+			Vector3f position = camera.getRotation();
+			camera.setRotation(position.add(0, rate * 4, 0));
+		}
+		
+		if(KeyListener.isKeyPressed(GLFW.GLFW_KEY_LEFT)) {
+			Vector3f position = camera.getRotation();
+			camera.setRotation(position.sub(0, rate * 4, 0));
+		}
+		
+		if(KeyListener.isKeyPressed(GLFW.GLFW_KEY_DOWN)) {
+			Vector3f position = camera.getRotation();
+			camera.setRotation(position.add(rate, 0, 0));
+		}
+		
+		if(KeyListener.isKeyPressed(GLFW.GLFW_KEY_UP)) {
+			Vector3f position = camera.getRotation();
+			camera.setRotation(position.sub(rate, 0, 0));
+		}
+	
 	}
 	
 }

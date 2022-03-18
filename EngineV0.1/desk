@@ -41,7 +41,7 @@ DockId=0x00000007,0
 [Window][Dear ImGui Demo]
 Pos=1005,74
 Size=517,808
-Collapsed=0
+Collapsed=1
 
 [Window][Example: Property editor]
 Pos=60,66

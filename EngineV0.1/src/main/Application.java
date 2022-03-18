@@ -8,8 +8,8 @@ import org.lwjgl.glfw.GLFW;
 import engine.EngineManager;
 import gui.ImGuiLayer;
 import leveleditor.LevelEditorLayer;
+import leveleditor.LevelTestLayer;
 import listeners.KeyListener;
-import scenes.Layer;
 import scenes.LayerPile;
 
 public class Application{
@@ -17,7 +17,7 @@ public class Application{
 	private static Window window = Window.get();
 	private static long windowReference;
 	
-	private LayerPile layers = new LayerPile();
+	private LayerPile pile = new LayerPile();
 	
 	public Application() {
 		
@@ -26,26 +26,26 @@ public class Application{
 	public void launch() {
 		run();
 	}
-	
-	public void stackLayer(Layer layer){
-		layers.stack(layer);
-	}
-	
-	public void unstack() {
-		layers.unstack();
-	}
-	
+
 	private void update(double dt) {
-		layers.update(dt);
+		pile.update(dt);
 		
 		if(KeyListener.isKeyPressed(GLFW.GLFW_KEY_SPACE)) {
-			layers.stack(new LevelEditorLayer());
+			pile.pileOntop(new LevelEditorLayer());
+		}
+		
+		if(KeyListener.isKeyPressed(GLFW.GLFW_KEY_Z)) {
+			pile.pileOntop(new LevelTestLayer());
+		}
+		
+		if(KeyListener.isKeyPressed(GLFW.GLFW_KEY_ESCAPE)) {
+			pile.unstack(new LevelTestLayer());
 		}
 	}
 	
 	private void render() {
 		ImGuiLayer.beginFrame();
-		layers.render();
+		pile.render();
 		ImGuiLayer.endFrame();
 	}
 
@@ -111,7 +111,7 @@ public class Application{
 		}
 		EngineManager.cleanUp();
 		ImGuiLayer.endImGui();
-		layers.unstackAll();
+		pile.unstackAll();
 		window.closeWindow();
 		
 	}

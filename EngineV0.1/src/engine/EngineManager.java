@@ -26,7 +26,7 @@ public class EngineManager {
 	protected static List<Integer> vbos = new ArrayList<Integer>();
 	protected static List<Integer> textures = new ArrayList<Integer>();
 	protected static List<Integer> framebuffers = new ArrayList<Integer>();
-	
+		
 	public static Map<String, Texture> textureAssets = new HashMap<>();
 	public static Map<String, Texture> iconTextureAssets = new HashMap<>();
 	
@@ -96,13 +96,20 @@ public class EngineManager {
 
 		return arrow;
 	}
+	
+	public static VertexArrayObject createArrow(float[] vertices) {
+		VertexArrayObject arrow = new VertexArrayObject();
+		vaos.add(arrow.getId());
+		arrow.setCount(vertices.length/3);
+		arrow.addVertexBufferObject("position", 0, 3, vertices);
+		return arrow;
+	}
 
 	public static VertexArrayObject create3DArrow(float[] vertices) {
 		VertexArrayObject arrow = new VertexArrayObject();
 		vaos.add(arrow.getId());
 		arrow.setCount(vertices.length/3);
 		arrow.addVertexBufferObject("position", 0, 3, vertices);
-
 		return arrow;
 	}
 	

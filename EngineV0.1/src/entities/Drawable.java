@@ -5,7 +5,7 @@ import maths.ListofFloats;
 import opengl.VertexArrayObject;
 	
 
-public class DebugDrawableObject {
+public class Drawable {
 	
 	/**
 	 * 
@@ -33,8 +33,8 @@ public class DebugDrawableObject {
 		}
 		
 		return EngineManager.createLines(vertices.toArray());
-		
 	}
+	
 	/**
 	 * 
 	 * @param height
@@ -67,6 +67,25 @@ public class DebugDrawableObject {
 		};
 		
 		return EngineManager.createArrow(vertices, indices);
+	}
+	
+	public static VertexArrayObject createArrowSquare(float height, float length) {
+		
+		float w = length/2;			// Length of Arrow
+		float h = w - height;	// Arrow Head
+		
+		float[] vertices = new float[] {
+			-w, 0, 0,			// 	0 Arrow Body
+			w, 0, 0,			//	1 Arrow Body
+			(h), height, 0,		//	2 Arrow Head
+			(h), -height, 0,		//	3 Arrow Head
+			(h+0.05f), height, 0,		//	4 Arrow Head
+			(h), -height, 0,		//	2 Arrow Head
+			(h+0.05f), -height, 0,		//	4 Arrow Head
+			(h+0.05f), height, 0,		//	3 Arrow Head		
+		};
+		
+		return EngineManager.createArrow(vertices);
 	}
 	
 	/**
@@ -126,25 +145,6 @@ public class DebugDrawableObject {
 		}
 		
 		return EngineManager.create3DArrow(vertices.toArray());
-	}
-	
-	public static VertexArrayObject createArrowSquare(float height, float length) {
-		
-		float w = length/2;			// Length of Arrow
-		float h = w - height;	// Arrow Head
-		
-		float[] vertices = new float[] {
-			-w, 0, 0,			// 	0 Arrow Body
-			w, 0, 0,			//	1 Arrow Body
-			(h), height, 0,		//	2 Arrow Head
-			(h), -height, 0,		//	3 Arrow Head
-			(h+0.05f), height, 0,		//	4 Arrow Head
-			(h), -height, 0,		//	2 Arrow Head
-			(h+0.05f), -height, 0,		//	4 Arrow Head
-			(h+0.05f), height, 0,		//	3 Arrow Head		
-		};
-		
-		return EngineManager.create3DArrow(vertices);
 	}
 	
 //	Add 3DArrowCube

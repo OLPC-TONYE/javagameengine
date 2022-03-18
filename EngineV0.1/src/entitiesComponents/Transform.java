@@ -32,7 +32,7 @@ public class Transform extends Component{
 	}
 	
 	@Override
-	public void update() {
+	public void update(double dt) {
 		
 	}
 	

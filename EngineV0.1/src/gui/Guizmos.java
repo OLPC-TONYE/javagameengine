@@ -9,7 +9,7 @@ import static org.lwjgl.opengl.GL11.glDrawArrays;
 import static org.lwjgl.opengl.GL11.glLineWidth;
 import org.joml.Vector3f;
 
-import entities.DebugDrawableObject;
+import entities.Drawable;
 import entities.Entity;
 import entitiesComponents.CameraComponent;
 import entitiesComponents.Transform;
@@ -28,6 +28,8 @@ public class Guizmos
 	
 	Shader shader;
 	
+	boolean attached;
+	
 	public void init() {
 		shader = new Shader("guizmo");
 		shader.bindAttribute(0, "position");
@@ -41,39 +43,42 @@ public class Guizmos
 		Transform entity_transform = entity.getComponent(Transform.class);	
 		world_position = entity_transform.getPosition();
 		world_rotation = entity_transform.getRotation();
+		attached = true;
+	}
+	
+	public void dettach() {
+		attached = false;
 	}
 
 	public void render(Entity camera) {
 		
-		CameraComponent inGameCamera = camera.getComponent(CameraComponent.class);
-		
-		VertexArrayObject arrows = DebugDrawableObject.create3DArrowCone(0.03f, 0.5f);	
-		
-		Vector3f scale = new Vector3f(1, 1, 1);
-		
-		shader.start();
-		shader.loadMatrix("projectionMatrix", inGameCamera.getProjectionMatrix());
-		shader.loadMatrix("viewMatrix", inGameCamera.getViewMatrix());
-		
-		arrows.bind();
-		shader.enableAttributeArray(0);
-		
-		shader.loadVector3("colour", new Vector3f(0,0,1));
-		shader.loadMatrix("transformationMatrix", Maths.getTransformationMatrix(world_position, world_rotation, scale).translate(0.26f, 0, 0.03f));
-		drawArrow(arrows);
-		
-		shader.loadVector3("colour", new Vector3f(0,1,0));
-		shader.loadMatrix("transformationMatrix", Maths.getTransformationMatrix(world_position, world_rotation, scale).translate(0, 0.26f, 0.03f).rotateZ((float) Math.toRadians(90)));	
-		drawArrow(arrows);
-		
-		shader.loadVector3("colour", new Vector3f(1,0,0));
-		shader.loadMatrix("transformationMatrix", Maths.getTransformationMatrix(world_position, world_rotation, scale).translate(0, 0, 0.27f).rotateY((float) Math.toRadians(-90)));
-		drawArrow(arrows);
-		
-		shader.disableAttributeArray(0);
-		arrows.unbind();
-		
-		shader.stop();
+		if (attached) {
+			CameraComponent inGameCamera = camera.getComponent(CameraComponent.class);
+			VertexArrayObject arrows = Drawable.create3DArrowCone(0.03f, 0.5f);
+			Vector3f scale = new Vector3f(1, 1, 1);
+			shader.start();
+			shader.loadMatrix("projectionMatrix", inGameCamera.getProjectionMatrix());
+			shader.loadMatrix("viewMatrix", inGameCamera.getViewMatrix());
+			arrows.bind();
+			shader.enableAttributeArray(0);
+			shader.loadVector3("colour", new Vector3f(0, 0, 1));
+			shader.loadMatrix("transformationMatrix",
+					Maths.getTransformationMatrix(world_position, world_rotation, scale).translate(0.26f, 0, 0.03f));
+			drawArrow(arrows);
+			shader.loadVector3("colour", new Vector3f(0, 1, 0));
+			shader.loadMatrix("transformationMatrix",
+					Maths.getTransformationMatrix(world_position, world_rotation, scale).translate(0, 0.26f, 0.03f)
+							.rotateZ((float) Math.toRadians(90)));
+			drawArrow(arrows);
+			shader.loadVector3("colour", new Vector3f(1, 0, 0));
+			shader.loadMatrix("transformationMatrix",
+					Maths.getTransformationMatrix(world_position, world_rotation, scale).translate(0, 0, 0.27f)
+							.rotateY((float) Math.toRadians(-90)));
+			drawArrow(arrows);
+			shader.disableAttributeArray(0);
+			arrows.unbind();
+			shader.stop();
+		}
 	}
 	
 	private void drawArrow(VertexArrayObject arrows) {

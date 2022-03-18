@@ -17,7 +17,7 @@ public abstract class Component {
 	public boolean firstTimeStart = true;
 	
 	public abstract void prepare();
-	public abstract void update();
+	public abstract void update(double dt);
 
 	public void start() {
 		prepare();

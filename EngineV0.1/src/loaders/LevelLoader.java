@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -82,16 +83,6 @@ public class LevelLoader {
 					.create();
 		}	
 	}
-
-	public static void save(Object gameObject) {
-		try {
-			FileWriter typist = new FileWriter(new File("level.txt"));
-			typist.append(LevelLoader.serializer.toJson(gameObject));
-			typist.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
 	
 	public static void save() {
 		try {
@@ -132,7 +123,21 @@ public class LevelLoader {
 		}
 	}
 	
-	
+	public static ArrayList<Entity> loadToScene() {
+		String fileData = LevelLoader.serializer.toJson(EntityManager.entities.values());
+
+		if(!fileData.equals("")) {
+			Entity[] entities = serializer.fromJson(fileData, Entity[].class);
+			ArrayList<Entity> gameObjects = new ArrayList<Entity>();
+			for(int i=0; i < entities.length; i++) {
+				entities[i].start();
+				gameObjects.add(entities[i]);
+			}
+			
+			return gameObjects;
+		}
+		return null;
+	}
 	
 	
 }

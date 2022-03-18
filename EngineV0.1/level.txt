@@ -754,46 +754,6 @@
     ]
   },
   {
-    "name": "Camera",
-    "id": 0,
-    "modified": false,
-    "components": [
-      {
-        "type": "entitiesComponents.CameraComponent",
-        "properties": {
-          "NEAR_PLANE": 0.01,
-          "FAR_PLANE": 1000.0,
-          "FOV": 70.0,
-          "width": 510.0,
-          "height": 320.0,
-          "CameraProjection": 0,
-          "firstTimeStart": true
-        }
-      },
-      {
-        "type": "entitiesComponents.Transform",
-        "properties": {
-          "position": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 10.0
-          },
-          "rotation": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "scale": {
-            "x": 1.0,
-            "y": 1.0,
-            "z": 1.0
-          },
-          "firstTimeStart": true
-        }
-      }
-    ]
-  },
-  {
     "name": "Sprite 1",
     "id": 0,
     "modified": false,

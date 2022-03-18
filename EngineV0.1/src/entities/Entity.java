@@ -8,17 +8,13 @@ import entitiesComponents.CameraComponent;
 import entitiesComponents.Component;
 import entitiesComponents.MeshRenderer;
 import entitiesComponents.SpriteRenderer;
-import entitiesFunctions.Function;
 
 public class Entity {
 	
 	protected String name;
-	
 	protected boolean modified;
 	
 	protected List<Component> components = new ArrayList<Component>();
-	protected List<Function> functions;
-	
 	
 	public String getName(){
 		return name;
@@ -78,9 +74,9 @@ public class Entity {
 		this.modified = false;
 	}
 	
-	public void update() {
+	public void update(double dt) {
 		for(int i=0; i < components.size(); i++) {
-			components.get(i).update();
+			components.get(i).update(dt);
 		}
 		this.updated();
 	}

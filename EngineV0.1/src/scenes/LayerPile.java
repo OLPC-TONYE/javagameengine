@@ -11,22 +11,38 @@ public class LayerPile {
 		this.layers = new ArrayList<Layer>();
 	}
 	
-	public void stack(Layer layer) {
+	public void pileOntop(Layer layer) {
 		if(!contains(layer)) {
 			this.layers.add(layer);
 			layer.attach();
 		}	
 	}
 	
-	public void unstack() {
-		layers.get(layers.size()-1).detach();
-		this.layers.remove(layers.size()-1);
+
+	public void unstack(Layer layer) {
+		// TODO Auto-generated method stub
+		if(contains(layer)) {
+			for(Layer clayer: layers) {
+				if (clayer.getClass() == layer.getClass()) {
+					layers.remove(clayer);
+					break;
+				}
+			}
+		}
+	}
+	
+	public void pushOff() {
+		if(layers.size()>0) {
+			int top_layer = layers.size()-1;
+			layers.get(top_layer).detach();
+			this.layers.remove(top_layer);
+		}		
 	}
 	
 	public void render() {
 		if(!layers.isEmpty()) {
 			this.layers.get(layers.size()-1).render();
-		}
+		}	
 	}
 	
 	public void update(double dt) {
