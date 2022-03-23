@@ -80,7 +80,7 @@ public class LevelEditorLayer extends Layer {
 		n.setFOV(70);
 		
 		camera.addComponent(n);
-		camera.addComponent(new Transform(new Vector3f(0, 0, 15)));
+		camera.addComponent(new Transform(new Vector3f(0, 0, 1)));
 		camera.start();
 		
 		EntityManager.add(camera);
@@ -111,6 +111,7 @@ public class LevelEditorLayer extends Layer {
 		renderer.clearColour(0.06f, 0.06f, 0.06f, 0.0f);
 		renderer2.drawLines(EntityManager.entities.get(levelScene.main_camera), lines, new Vector3f(1,1,1));
 		levelScene.render(renderer);
+		renderer2.draw3DArrowCube(EntityManager.entities.get(levelScene.main_camera));
 		guizmo.render(EntityManager.entities.get(levelScene.main_camera));
 		pixelData = screen.readPixelData(1, (int)viewportMouseHoverX , (int)viewportMouseHoverY);
 		screen.unbind();	
@@ -429,6 +430,9 @@ class FetchFileEvent extends ImGuiLayerRenderEvent{
 
 class CameraController extends EntityScript {
 
+	private double angleXZ;
+	private double angleYZ;
+
 	@Override
 	public void onCreate() {
 		// TODO Auto-generated method stub
@@ -444,56 +448,75 @@ class CameraController extends EntityScript {
 	@Override
 	public void update(double dt) {
 		
-		Transform camera = getComponent(Transform.class);
+		
+		Transform transform = getComponent(Transform.class);
 		float rate = (float) (5 * dt);
+		
+		
 		if(KeyListener.isKeyPressed(GLFW.GLFW_KEY_W)) {
-			Vector3f position = camera.getPosition();
-			camera.setPosition(position.add(0, rate, 0));
+			angleXZ = 360;
+			double radian = Math.toRadians(angleXZ);
+			transform.getPosition().set((float) Math.sin(radian), 0f, (float) Math.cos(radian));			
+			transform.getRotation().set(0, 0, 0);
 		}
 		
 		if(KeyListener.isKeyPressed(GLFW.GLFW_KEY_S)) {
-			Vector3f position = camera.getPosition();
-			camera.setPosition(position.sub(0, rate, 0));
+			angleXZ = 180;
+			double radian = Math.toRadians(angleXZ);
+			transform.getPosition().set((float) Math.sin(radian), 0f, (float) Math.cos(radian));
+			transform.getRotation().set(0, 180, 0);
 		}
 		
 		if(KeyListener.isKeyPressed(GLFW.GLFW_KEY_D)) {
-			Vector3f position = camera.getPosition();
-			camera.setPosition(position.add(rate, 0, 0));
+			angleXZ = 90;
+			double radian = Math.toRadians(angleXZ);
+			transform.getPosition().set((float) Math.sin(radian), 0f, (float) Math.cos(radian));
+			transform.getRotation().set(0, 270, 0);
 		}
 		
 		if(KeyListener.isKeyPressed(GLFW.GLFW_KEY_A)) {
-			Vector3f position = camera.getPosition();
-			camera.setPosition(position.sub(rate, 0, 0));
+			angleXZ = 270;
+			double radian = Math.toRadians(angleXZ);
+			transform.getPosition().set((float) Math.sin(radian), 0f, (float) Math.cos(radian));
+			transform.getRotation().set(0, 90, 0);
 		}
 		
 		if(KeyListener.isKeyPressed(GLFW.GLFW_KEY_Q)) {
-			Vector3f position = camera.getPosition();
-			camera.setPosition(position.add(0, 0, rate));
+			Vector3f position = transform.getPosition();
+			transform.setPosition(position.add(0, 0, rate));
 		}
 		
 		if(KeyListener.isKeyPressed(GLFW.GLFW_KEY_E)) {
-			Vector3f position = camera.getPosition();
-			camera.setPosition(position.sub(0, 0, rate));
+			Vector3f position = transform.getPosition();
+			transform.setPosition(position.sub(0, 0, rate));
 		}
 		
 		if(KeyListener.isKeyPressed(GLFW.GLFW_KEY_RIGHT)) {
-			Vector3f position = camera.getRotation();
-			camera.setRotation(position.add(0, rate * 4, 0));
+			angleXZ += rate * 0.05f;
+			double radian = Math.toRadians(angleXZ);
+			transform.getPosition().set((float) Math.sin(radian), 0f, (float) Math.cos(radian));
+			transform.getRotation().set(0, (360-angleXZ), 0);
 		}
 		
 		if(KeyListener.isKeyPressed(GLFW.GLFW_KEY_LEFT)) {
-			Vector3f position = camera.getRotation();
-			camera.setRotation(position.sub(0, rate * 4, 0));
+			angleXZ -= rate * 0.05f;
+			double radian = Math.toRadians(angleXZ);
+			transform.getPosition().set((float) Math.sin(radian), 0f, (float) Math.cos(radian));
+			transform.getRotation().set(0, (360-angleXZ), 0);
 		}
 		
 		if(KeyListener.isKeyPressed(GLFW.GLFW_KEY_DOWN)) {
-			Vector3f position = camera.getRotation();
-			camera.setRotation(position.add(rate, 0, 0));
+			angleYZ -= rate * 0.05f;
+			double radian = Math.toRadians(angleYZ);
+			transform.getPosition().set(0f, (float) Math.sin(radian), (float) Math.cos(radian));
+			transform.getRotation().set((angleYZ), 0, 0);
 		}
 		
 		if(KeyListener.isKeyPressed(GLFW.GLFW_KEY_UP)) {
-			Vector3f position = camera.getRotation();
-			camera.setRotation(position.sub(rate, 0, 0));
+			angleYZ += rate * 0.05f;
+			double radian = Math.toRadians(angleYZ);
+			transform.getPosition().set(0f, (float) Math.sin(radian), (float) Math.cos(radian));
+			transform.getRotation().set((angleYZ), 0, 0);
 		}
 	
 	}

@@ -66,22 +66,20 @@ public class RendererDebug {
 		shader.stop();
 	}
 	
-	public void draw3DArrow(Entity camera) {
+	public void drawArrowSquare(Entity camera) {
 		CameraComponent inGameCamera = camera.getComponent(CameraComponent.class);
 		
-		VertexArrayObject arrow = Drawable.create3DArrow(0.05f, 0.5f);
+		VertexArrayObject arrow = Drawable.createArrowSquare(0.08f, 0.5f);
 		
 		shader.start();
 		shader.loadMatrix("projectionMatrix", inGameCamera.getProjectionMatrix());
 		shader.loadMatrix("viewMatrix", inGameCamera.getViewMatrix());
 		shader.loadVector3("colour", new Vector3f(1,0,0));
 			arrow.bind();
-			shader.enableAttributeArray(0);
 			glLineWidth(2.5f);
 			glDrawArrays(GL_LINES, 0, 2);
 			glLineWidth(1f);
-			glDrawArrays(GL_TRIANGLES, 2, 3);
-			shader.disableAttributeArray(0);
+			glDrawArrays(GL_TRIANGLES, 2, arrow.getCount()-2);
 			arrow.unbind();
 		shader.stop();
 	}
@@ -101,6 +99,26 @@ public class RendererDebug {
 			glDrawArrays(GL_LINES, 0, 2);
 			glLineWidth(1f);
 			glDrawArrays(GL_TRIANGLE_FAN, 2, arrow.getCount()-2);
+			shader.disableAttributeArray(0);
+			arrow.unbind();
+		shader.stop();
+	}
+	
+	public void draw3DArrowCube(Entity camera) {
+		CameraComponent inGameCamera = camera.getComponent(CameraComponent.class);
+		
+		VertexArrayObject arrow = Drawable.create3DArrowCube(0.05f, 0.5f);
+		
+		shader.start();
+		shader.loadMatrix("projectionMatrix", inGameCamera.getProjectionMatrix());
+		shader.loadMatrix("viewMatrix", inGameCamera.getViewMatrix());
+		shader.loadVector3("colour", new Vector3f(1,0,0));
+			arrow.bind();
+			shader.enableAttributeArray(0);
+			glLineWidth(2.5f);
+			glDrawArrays(GL_LINES, 0, 2);
+			glLineWidth(1f);
+			glDrawArrays(GL_TRIANGLES, 2, arrow.getCount()-2);
 			shader.disableAttributeArray(0);
 			arrow.unbind();
 		shader.stop();

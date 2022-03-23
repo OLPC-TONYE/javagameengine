@@ -87,31 +87,7 @@ public class Drawable {
 		
 		return EngineManager.createArrow(vertices);
 	}
-	
-	/**
-	 * 
-	 * @param height
-	 *          the height of the arrow
-	 * @param length
-	 *          the length of the body
-	 *          
-	 * @return <code>VertexArrayObject</code>
-	 */
-	public static VertexArrayObject create3DArrow(float height, float length) {
-		
-		float w = length/2;			// Length of Arrow
-		float h = w - height;	// Arrow Head
-		
-		float[] vertices = new float[] {
-			-w, 0, 0,			// 	0 Arrow Body
-			w, 0, 0,			//	1 Arrow Body
-			(h), height, 0,		//	2 Arrow Head
-			(w+0.02f), 0, 0,		//	3 Arrow Head
-			(h), -height, 0,		//	4 Arrow Head
-		};
-		
-		return EngineManager.create3DArrow(vertices);
-	}
+
 	
 	/**
 	 * 
@@ -147,6 +123,65 @@ public class Drawable {
 		return EngineManager.create3DArrow(vertices.toArray());
 	}
 	
-//	Add 3DArrowCube
-
+	public static VertexArrayObject create3DArrowCube(float height, float length) {
+		
+		float w = length/2;			// Length of Arrow
+		float h = w - height;	// Arrow Head
+		float h2 = h/2;
+		
+		float[] vertices = new float[] {
+			-w, 0, 0,			// 	0 Arrow Body
+			w, 0, 0,			//	1 Arrow Body
+			
+			(h), height, height,		//	2 Arrow Head
+			(h), -height, height,		//	3 Arrow Head
+			(h+h2), height, height,		//	4 Arrow Head
+			
+			(h), -height, height,		//	2 Arrow Head
+			(h+h2), -height, height,		//	4 Arrow Head
+			(h+h2), height, height,		//	3 Arrow Head	
+//			=======================
+			(h), height, -height,		//	2 Arrow Head
+			(h), -height, -height,		//	3 Arrow Head
+			(h+h2), height, -height,		//	4 Arrow Head
+			
+			(h), -height, -height,		//	2 Arrow Head
+			(h+h2), -height, -height,		//	4 Arrow Head
+			(h+h2), height, -height,		//	3 Arrow Head
+//			==========================
+			(h+h2), height, height,		//	2 Arrow Head
+			(h+h2), -height, height,		//	3 Arrow Head
+			(h+h2), height, -height,		//	4 Arrow Head
+			
+			(h+h2), -height, height,		//	2 Arrow Head
+			(h+h2), -height, -height,		//	4 Arrow Head
+			(h+h2), height, -height,		//	3 Arrow Head
+//			========================
+			(h), height, height,		//	2 Arrow Head
+			(h), -height, height,		//	3 Arrow Head
+			(h), height, -height,		//	4 Arrow Head
+			
+			(h), -height, height,		//	2 Arrow Head
+			(h), -height, -height,		//	4 Arrow Head
+			(h), height, -height,		//	3 Arrow Head
+//			========================
+			(h), -height, height,		//	2 Arrow Head
+			(h+h2), -height, height,		//	3 Arrow Head
+			(h), -height, -height,		//	4 Arrow Head
+			
+			(h+h2), -height, height,		//	2 Arrow Head
+			(h+h2), -height, -height,		//	4 Arrow Head
+			(h), -height, -height,		//	3 Arrow Head
+//			========================
+			(h), height, height,		//	2 Arrow Head
+			(h+h2), height, height,		//	3 Arrow Head
+			(h), height, -height,		//	4 Arrow Head
+			
+			(h+h2), height, height,		//	2 Arrow Head
+			(h+h2), height, -height,		//	4 Arrow Head
+			(h), height, -height,		//	3 Arrow Head
+		};
+		
+		return EngineManager.create3DArrow(vertices);
+	}
 }
