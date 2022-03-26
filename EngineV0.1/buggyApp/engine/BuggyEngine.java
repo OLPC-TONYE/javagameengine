@@ -1,17 +1,18 @@
 package engine;
 
+import leveleditor.LevelEditorLayer;
 import main.Application;
 
-public class BuggyEngine{
-	
-	private final static Application app = new Application();
-	
-	public static void main(String[] args) throws InterruptedException {
-		app.launch();
-	}
-	
-	public static Application get() {
-		return app;
+public class BuggyEngine extends Application{
+		
+	public BuggyEngine() {
+		super("BuGGy");
+		get().launch(() -> {
+			pileOnTop(new LevelEditorLayer());
+		});
 	}
 
+	public static void main(String[] args) {
+		new BuggyEngine();
+	}
 }

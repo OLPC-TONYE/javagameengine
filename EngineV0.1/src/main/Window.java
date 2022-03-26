@@ -11,11 +11,13 @@ import static org.lwjgl.glfw.GLFW.glfwDefaultWindowHints;
 import static org.lwjgl.glfw.GLFW.glfwGetWindowSize;
 import static org.lwjgl.glfw.GLFW.glfwInit;
 import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
+import static org.lwjgl.glfw.GLFW.glfwPollEvents;
 import static org.lwjgl.glfw.GLFW.glfwSetCursorPosCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetKeyCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetMouseButtonCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetScrollCallback;
 import static org.lwjgl.glfw.GLFW.glfwShowWindow;
+import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
 import static org.lwjgl.glfw.GLFW.glfwSwapInterval;
 import static org.lwjgl.glfw.GLFW.glfwWindowHint;
 import static org.lwjgl.opengl.GL11.GL_BLEND;
@@ -40,18 +42,16 @@ import listeners.MouseListener;
 public class Window {
 	
 	private int width, height;
-	private String title;
 	public long glfwWindow;
 			
 	private static Window window = null;
 		
-	private Window(String title, int width, int height) {
+	private Window(int width, int height) {
 		this.width = width;
 		this.height = height;
-		this.title = title;
 	}
 
-	public long create() {
+	public long create(String title) {
 		// Setup Error Callback
 		GLFWErrorCallback.createPrint(System.err).set();
 		
@@ -106,8 +106,9 @@ public class Window {
 		GLFW.glfwSetErrorCallback(null).free();
 	}
 	
-	public void swapBuffers() {
-		GLFW.glfwSwapBuffers(glfwWindow);
+	public void update() {
+		glfwPollEvents();
+		glfwSwapBuffers(glfwWindow);
 	}
 	
 	public void changeTitle(String title) {
@@ -133,7 +134,7 @@ public class Window {
 
 	public static Window get() {
 		if(Window.window == null) {
-			Window.window = new Window("BUGGY ENGINE", 1024, 600);
+			Window.window = new Window(1024, 600);
 		}
 		return Window.window;
 	}

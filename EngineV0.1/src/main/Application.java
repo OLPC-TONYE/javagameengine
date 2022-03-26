@@ -1,71 +1,66 @@
 package main;
 
-import static org.lwjgl.glfw.GLFW.glfwPollEvents;
 import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
-
-import org.lwjgl.glfw.GLFW;
 
 import engine.EngineManager;
 import gui.ImGuiLayer;
-import leveleditor.LevelEditorLayer;
-import leveleditor.LevelTestLayer;
-import listeners.KeyListener;
-import scenes.LayerPile;
 
 public class Application{
 
-	private static Window window = Window.get();
-	private static long windowReference;
-	
-	private LayerPile pile = new LayerPile();
-	
-	public Application() {
-		
+	public interface ApplicationCommands {	
+		void run();
 	}
 	
-	public void launch() {
+	private static Window window;
+	private static long windowReference;
+	private static Application app;
+	private static String appName;
+	
+	protected LayerPile pile;
+	
+	public Application(String appName) {
+		Application.appName = appName;
+		pile = new LayerPile();
+	}
+	
+	public static Application get() {
+		if(app == null) {
+			app = new Application(appName);
+		}
+		return app;
+	}
+	
+	private void init() {
+		window = Window.get();
+		windowReference = window.create(appName);
+		ImGuiLayer.begin();
+	}
+	
+	public void launch(ApplicationCommands commands) {
+		init();
+		commands.run();
 		run();
 	}
-
-	private void update(double dt) {
-		pile.update(dt);
-		
-		if(KeyListener.isKeyPressed(GLFW.GLFW_KEY_SPACE)) {
-			pile.pileOntop(new LevelEditorLayer());
-		}
-		
-		if(KeyListener.isKeyPressed(GLFW.GLFW_KEY_Z)) {
-			pile.pileOntop(new LevelTestLayer());
-		}
-		
-		if(KeyListener.isKeyPressed(GLFW.GLFW_KEY_ESCAPE)) {
-			pile.unstack(new LevelTestLayer());
-		}
+	
+	public void pileOnTop(Layer layer) {
+		get().pile.pileOntop(layer);
 	}
 	
-	private void render() {
-		ImGuiLayer.beginFrame();
-		pile.render();
-		ImGuiLayer.endFrame();
+	public void pushOffPile(Layer layer) {
+		get().pile.pushOff(layer);
 	}
-
-	@SuppressWarnings("unused")
+	
 	private void run() {
-		
-//		CREATE MAIN WINDOW
-		windowReference = window.create();
-//		PREPARE IMGUI
-		ImGuiLayer.beginImGui();		
+
+			
 		final int MAX_FRAMES_PER_SECOND = 60;
-		final int MAX_UPDATES_PER_SECOND = 60;
+		final int MAX_UPDATES_PER_SECOND = 30;
 		
 		final double updateOptimalTime = 1000000000 / MAX_UPDATES_PER_SECOND;
 		final double frameOptimalTime = 1000000000 / MAX_FRAMES_PER_SECOND;
 		
-		double updateDeltaTime = 0;
-		double frameDeltaTime = 0;
-		int frames = 0;
-		int updates = 0;
+		double updateDeltaTime = 0, frameDeltaTime = 0;
+		int frames = 0, updates = 0;
 		
 		long startTime = System.nanoTime();
 		long timer = System.currentTimeMillis();
@@ -77,21 +72,20 @@ public class Application{
 			frameDeltaTime += (currentTime - startTime);
 			startTime = currentTime;
 			
-			// POLL EVENTS
-			glfwPollEvents();
-			
 			if(updateDeltaTime >= updateOptimalTime) {
 				
-				
-				update(updateDeltaTime/1000000000);
+//				UPDATE GAME
+				pile.update(updateDeltaTime / 1000000000);
 				
 				updates++;
 				updateDeltaTime -= updateOptimalTime;
 			}
-			
+					
 			if(frameDeltaTime >= frameOptimalTime) {
-				
-				render();
+							
+				ImGuiLayer.beginFrame();
+				pile.render();
+				ImGuiLayer.endFrame();
 				
 				frames++;
 				frameDeltaTime -= frameOptimalTime;
@@ -99,20 +93,21 @@ public class Application{
 	
 			if(System.currentTimeMillis() - timer >= 1000) {
 		
-//				System.out.println("UPS: "+ updates + ", FPS: " + frames);
+				System.out.println("UPS: "+ updates + ", FPS: " + frames);
 
 				updates = 0;
 				frames = 0;
 				timer += 1000;			
 			}
 			
-			window.swapBuffers();
+			window.update();
 						
 		}
 		EngineManager.cleanUp();
-		ImGuiLayer.endImGui();
+		ImGuiLayer.end();
 		pile.unstackAll();
 		window.closeWindow();
 		
 	}
+	
 }

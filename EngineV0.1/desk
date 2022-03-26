@@ -1,6 +1,6 @@
 [Window][DockspaceBackground]
 Pos=0,0
-Size=1024,600
+Size=1680,988
 Collapsed=0
 
 [Window][Debug##Default]
@@ -9,8 +9,8 @@ Size=400,400
 Collapsed=0
 
 [Window][Assets]
-Pos=184,406
-Size=662,186
+Pos=298,664
+Size=1095,316
 Collapsed=0
 DockId=0x00000004,0
 
@@ -21,26 +21,26 @@ Collapsed=0
 DockId=0x00000002,0
 
 [Window][Game]
-Pos=184,34
-Size=662,370
+Pos=298,34
+Size=1095,628
 Collapsed=0
 DockId=0x00000001,0
 
 [Window][EntityInspector]
-Pos=848,34
-Size=168,558
+Pos=1395,34
+Size=277,946
 Collapsed=0
 DockId=0x00000006,0
 
 [Window][EntityExplorer]
 Pos=8,34
-Size=174,558
+Size=288,946
 Collapsed=0
 DockId=0x00000007,0
 
 [Window][Dear ImGui Demo]
-Pos=997,63
-Size=517,808
+Pos=994,25
+Size=521,900
 Collapsed=1
 
 [Window][Example: Property editor]
@@ -252,7 +252,7 @@ Column 2  Width=76
 
 [Docking][Data]
 DockSpace         ID=0xA086D808 Pos=68,184 Size=685,850 CentralNode=1 Selected=0x8BB04FA5
-DockSpace         ID=0xD6BDBBC4 Window=0x6CE2B512 Pos=8,34 Size=1008,558 Split=X Selected=0x83199EB2
+DockSpace         ID=0xD6BDBBC4 Window=0x6CE2B512 Pos=8,34 Size=1664,946 Split=X Selected=0x83199EB2
   DockNode        ID=0x00000007 Parent=0xD6BDBBC4 SizeRef=288,946 Selected=0x3468653E
   DockNode        ID=0x00000009 Parent=0xD6BDBBC4 SizeRef=1374,946 Split=X
     DockNode      ID=0x00000005 Parent=0x00000009 SizeRef=1095,946 Split=Y

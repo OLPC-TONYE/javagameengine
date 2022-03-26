@@ -22,7 +22,7 @@ public class ImGuiLayer {
     public static ImGuiImplGlfw imGuiGlfw = new ImGuiImplGlfw();
     public static ImGuiImplGl3 imGuiGl3 = new ImGuiImplGl3();
 
-    public static void beginImGui() {
+    public static void begin() {
     	
     	ImGui.createContext();
     	
@@ -54,7 +54,7 @@ public class ImGuiLayer {
         imGuiGl3.init(glslVersion);
     }
     
-    public static void endImGui() {
+    public static void end() {
     	imGuiGl3.dispose();
         imGuiGlfw.dispose();
         ImGui.destroyContext();

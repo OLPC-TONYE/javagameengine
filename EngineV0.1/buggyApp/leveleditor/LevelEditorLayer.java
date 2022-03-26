@@ -23,6 +23,8 @@ import imgui.ImGui;
 import imgui.ImVec2;
 import imgui.flag.ImGuiButtonFlags;
 import imgui.flag.ImGuiCond;
+import imgui.flag.ImGuiDragDropFlags;
+import imgui.flag.ImGuiMouseCursor;
 import imgui.flag.ImGuiPopupFlags;
 import imgui.flag.ImGuiStyleVar;
 import imgui.flag.ImGuiTreeNodeFlags;
@@ -32,6 +34,8 @@ import imgui.type.ImInt;
 import imgui.type.ImString;
 import listeners.KeyListener;
 import loaders.LevelLoader;
+import main.Application;
+import main.Layer;
 import main.Window;
 import maths.Maths;
 import opengl.Framebuffer;
@@ -39,7 +43,6 @@ import opengl.Texture;
 import opengl.VertexArrayObject;
 import renderer.Renderer;
 import renderer.RendererDebug;
-import scenes.Layer;
 import scenes.Scene;
 import scripting.EntityScript;
 
@@ -122,6 +125,9 @@ public class LevelEditorLayer extends Layer
 	@Override
 	public void update(double dt) {
 		levelScene.update(dt);
+		if(KeyListener.isKeyPressed(GLFW.GLFW_KEY_Z)) {
+			Application.get().pileOnTop(new LevelTestLayer());
+		}
 	}
 
 	private void renderInterfaces() {
@@ -306,19 +312,30 @@ public class LevelEditorLayer extends Layer
 	private void showChildren(String parent) {
 		if (EntityManager.hasChildren(parent)) {
 			for (String child : EntityManager.getChildrenOf(parent)) {
-				boolean open = ImGui.treeNodeEx(child, ImGuiTreeNodeFlags.DefaultOpen | ImGuiTreeNodeFlags.OpenOnArrow);
+				boolean open = ImGui.treeNodeEx(child, ImGuiTreeNodeFlags.OpenOnArrow);
 				if (ImGui.beginDragDropSource()) {
 					ImGui.setDragDropPayload("child", child);
-					ImGui.text("Drag started : " + child);
+					ImGui.text(child);
 					ImGui.endDragDropSource();
 				}
 				if (ImGui.beginDragDropTarget()) {
-					Object payload = ImGui.acceptDragDropPayload("child");
-					if (payload != null) {
-						String childaccept = (String) payload;
-						EntityManager.makeChildOf(childaccept, child);
-						payload = null;
+					Object payload_check = ImGui.acceptDragDropPayload("child", ImGuiDragDropFlags.AcceptPeekOnly);
+					boolean check = true;
+					if (payload_check != null) {
+						check = EntityManager.isAbove( (String)payload_check, child);				
+						payload_check = null;
 					}
+					if(check) {
+						ImGui.setMouseCursor(ImGuiMouseCursor.NotAllowed);
+					}
+					if(!check) {
+						Object payload = ImGui.acceptDragDropPayload("child");
+						if (payload != null) {
+							String childaccept = (String) ImGui.acceptDragDropPayload("child");
+							EntityManager.makeChildOf(childaccept, child);
+							payload = null;
+						}
+					}				
 					ImGui.endDragDropTarget();
 				}
 				if (ImGui.beginPopupContextItem(ImGuiPopupFlags.MouseButtonRight)) {
@@ -349,16 +366,28 @@ public class LevelEditorLayer extends Layer
 				boolean open = ImGui.treeNodeEx(root, ImGuiTreeNodeFlags.DefaultOpen | ImGuiTreeNodeFlags.OpenOnArrow);
 				if (ImGui.beginDragDropSource()) {
 					ImGui.setDragDropPayload("child", root);
-					ImGui.text("Drag started : " + root);
+					ImGui.text(root);
 					ImGui.endDragDropSource();
 				}
 				if (ImGui.beginDragDropTarget()) {
-					Object payload = ImGui.acceptDragDropPayload("child");
-					if (payload != null) {
-						String childaccept = (String) payload;
-						EntityManager.makeChildOf(childaccept, root);
-						payload = null;
+					Object payload_check = ImGui.acceptDragDropPayload("child", ImGuiDragDropFlags.AcceptPeekOnly);
+					boolean check = true;
+					if (payload_check != null) {
+						check = EntityManager.isAbove( (String)payload_check, root);
+										
+						payload_check = null;
 					}
+					if(check) {
+						ImGui.setMouseCursor(ImGuiMouseCursor.NotAllowed);
+					}
+					if(!check) {
+						Object payload = ImGui.acceptDragDropPayload("child");
+						if (payload != null) {
+							String childaccept = (String) ImGui.acceptDragDropPayload("child");
+							EntityManager.makeChildOf(childaccept, root);
+							payload = null;
+						}
+					}				
 					ImGui.endDragDropTarget();
 				}
 				if (ImGui.beginPopupContextItem(ImGuiPopupFlags.MouseButtonRight)) {
@@ -513,7 +542,7 @@ class CameraController extends EntityScript
 	public void update(double dt) {
 
 		Transform transform = getComponent(Transform.class);
-		float rate = (float) (5 * dt);
+		float rate = (float) (50 * dt);
 
 		if (KeyListener.isKeyPressed(GLFW.GLFW_KEY_W)) {
 			angleXZ = 360;
@@ -554,28 +583,28 @@ class CameraController extends EntityScript
 		}
 
 		if (KeyListener.isKeyPressed(GLFW.GLFW_KEY_RIGHT)) {
-			angleXZ += rate * 0.05f;
+			angleXZ += rate;
 			double radian = Math.toRadians(angleXZ);
 			transform.getPosition().set((float) 5 * Math.sin(radian), 0f, (float) 5 * Math.cos(radian));
 			transform.getRotation().set(0, (360 - angleXZ), 0);
 		}
 
 		if (KeyListener.isKeyPressed(GLFW.GLFW_KEY_LEFT)) {
-			angleXZ -= rate * 0.05f;
+			angleXZ -= rate;
 			double radian = Math.toRadians(angleXZ);
 			transform.getPosition().set((float) 5 * Math.sin(radian), 0f, (float) 5 * Math.cos(radian));
 			transform.getRotation().set(0, (360 - angleXZ), 0);
 		}
 
 		if (KeyListener.isKeyPressed(GLFW.GLFW_KEY_DOWN)) {
-			angleYZ -= rate * 0.05f;
+			angleYZ -= rate;
 			double radian = Math.toRadians(angleYZ);
 			transform.getPosition().set(0f, (float) Math.sin(radian), (float) 5 * Math.cos(radian));
 			transform.getRotation().set((angleYZ), 0, 0);
 		}
 
 		if (KeyListener.isKeyPressed(GLFW.GLFW_KEY_UP)) {
-			angleYZ += rate * 0.05f;
+			angleYZ += rate;
 			double radian = Math.toRadians(angleYZ);
 			transform.getPosition().set(0f, (float) Math.sin(radian), (float) Math.cos(radian));
 			transform.getRotation().set((angleYZ), 0, 0);

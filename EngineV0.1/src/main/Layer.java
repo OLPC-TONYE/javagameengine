@@ -1,4 +1,4 @@
-package scenes;
+package main;
 
 public abstract class Layer {
 	

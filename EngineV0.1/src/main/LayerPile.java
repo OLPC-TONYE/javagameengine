@@ -1,4 +1,4 @@
-package scenes;
+package main;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,9 +18,7 @@ public class LayerPile {
 		}	
 	}
 	
-
-	public void unstack(Layer layer) {
-		// TODO Auto-generated method stub
+	public void pushOff(Layer layer) {
 		if(contains(layer)) {
 			for(Layer clayer: layers) {
 				if (clayer.getClass() == layer.getClass()) {
@@ -30,24 +28,18 @@ public class LayerPile {
 			}
 		}
 	}
-	
-	public void pushOff() {
-		if(layers.size()>0) {
-			int top_layer = layers.size()-1;
-			layers.get(top_layer).detach();
-			this.layers.remove(top_layer);
-		}		
-	}
-	
+
 	public void render() {
 		if(!layers.isEmpty()) {
-			this.layers.get(layers.size()-1).render();
+			int top_layer = layers.size()-1;
+			this.layers.get(top_layer).render();
 		}	
 	}
 	
 	public void update(double dt) {
 		if(!layers.isEmpty()) {
-			this.layers.get(layers.size()-1).update(dt);
+			int top_layer = layers.size()-1;
+			this.layers.get(top_layer).update(dt);
 		} 
 	}
 

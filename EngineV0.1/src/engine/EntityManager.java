@@ -46,6 +46,19 @@ public class EntityManager {
 		return false;
 	}
 	
+	public static boolean isAbove(String nameOfParent, String nameOfEntity) {		
+		if(hasParent(nameOfEntity)) {
+			String parent = getParentOf(nameOfEntity);
+			if(parent == nameOfParent) {
+				return true;
+			}	
+			if(hasParent(parent)) {
+				return isAbove(nameOfParent, parent);
+			}
+		}
+		return false;
+	}
+	
 	public static boolean hasChildren(String nameOfEntity) {
 		List<String> children = hierarchy.get(nameOfEntity);
 		if(children.size()>0) {
@@ -133,6 +146,7 @@ public class EntityManager {
 		makeChildOf("Balls", "Circle");
 		makeChildOf("Box", "Square");
 		showTree();
+		System.out.println(isAbove("Circle", "Ball 1"));
 		moveUpHierarchy("Box");
 		showTree();
 	}

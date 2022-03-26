@@ -1,7 +1,11 @@
 package leveleditor;
 
+import org.lwjgl.glfw.GLFW;
+
+import listeners.KeyListener;
+import main.Application;
+import main.Layer;
 import renderer.Renderer;
-import scenes.Layer;
 import scenes.Scene;
 
 public class LevelTestLayer extends Layer
@@ -33,8 +37,10 @@ public class LevelTestLayer extends Layer
 
 	@Override
 	public void update(double dt) {
-		// TODO Auto-generated method stub
 		levelScene.update(dt);
+		if(KeyListener.isKeyPressed(GLFW.GLFW_KEY_ESCAPE)) {
+			Application.get().pushOffPile(this);
+		}
 	}
 
 }
