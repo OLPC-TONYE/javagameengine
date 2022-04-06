@@ -10,6 +10,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import entities.Entity;
+import entitiesComponents.CameraComponent;
+import entitiesComponents.Transform;
 import opengl.Texture;
 import opengl.VertexArrayObject;
 
@@ -79,39 +82,62 @@ public class EngineManager {
 		return create;
 	}
 	
-	public static VertexArrayObject createLines(float[] vertices) {
-		VertexArrayObject line = new VertexArrayObject();
-		vaos.add(line.getId());
-		line.addVertexBufferObject("position", 0, 3, vertices);
-		line.setCount(vertices.length/3);
-		return line;
+	public static VertexArrayObject loadToVAO(float[] vertices, int[] indices) {
+		VertexArrayObject vao = new VertexArrayObject();
+		vaos.add(vao.getId());
+		vao.addVertexBufferObject("indices", indices);
+		vao.setCount(indices.length);
+		vao.addVertexBufferObject("positions", 0, 3, vertices);
+		return vao;
 	}
 	
-	public static VertexArrayObject createArrow(float[] vertices, int[] indices) {
-		VertexArrayObject arrow = new VertexArrayObject();
-		vaos.add(arrow.getId());
-		arrow.addVertexBufferObject("indices", indices);
-		arrow.setCount(indices.length);
-		arrow.addVertexBufferObject("position", 0, 3, vertices);
+	public static VertexArrayObject loadToVAO(float[] positions) {
+		VertexArrayObject vao = new VertexArrayObject();
+		vaos.add(vao.getId());
+		vao.addVertexBufferObject("position", 0, 3, positions);
+		vao.setCount(positions.length/3);
+		return vao;
+	}
+		
+	public static Entity createCamera() {
+		Entity camera = new Entity();
+		camera.setName("Camera");
+		camera.addComponent(new Transform());
+		CameraComponent cp = new CameraComponent();
+		cp.setCameraProjection(ENGINE_CAMERA_PERSPECTIVE);
+		cp.setPerpsProperties(0.01f, 1000f, 70);
+		cp.setCameraSize(510, 320);
+		cp.setClearColour(0.06f, 0.06f, 0.06f, 0.0f);
 
-		return arrow;
+		camera.addComponent(cp);
+		return camera;
 	}
 	
-	public static VertexArrayObject createArrow(float[] vertices) {
-		VertexArrayObject arrow = new VertexArrayObject();
-		vaos.add(arrow.getId());
-		arrow.setCount(vertices.length/3);
-		arrow.addVertexBufferObject("position", 0, 3, vertices);
-		return arrow;
-	}
+	public static Entity create2DCamera() {
+		Entity camera = new Entity();
+		camera.setName("Camera");
+		camera.addComponent(new Transform());
+		CameraComponent cp = new CameraComponent();
+		cp.setCameraProjection(ENGINE_CAMERA_ORTHOGRAPHIC);
+		cp.setOrthoProperties(1f, -1f, 70, 5);
+		cp.setCameraSize(510, 320);
 
-	public static VertexArrayObject create3DArrow(float[] vertices) {
-		VertexArrayObject arrow = new VertexArrayObject();
-		vaos.add(arrow.getId());
-		arrow.setCount(vertices.length/3);
-		arrow.addVertexBufferObject("position", 0, 3, vertices);
-		return arrow;
+		camera.addComponent(cp);
+		return camera;
 	}
+	
+	public static Entity create3DCamera() {
+		Entity camera = new Entity();
+		camera.setName("Camera");
+		camera.addComponent(new Transform());
+		CameraComponent cp = new CameraComponent();
+		cp.setCameraProjection(ENGINE_CAMERA_PERSPECTIVE);
+		cp.setPerpsProperties(0.01f, 1000f, 70);
+		cp.setCameraSize(510, 320);
+		camera.addComponent(cp);
+		return camera;
+	}
+	
 	
 	public static void addVBOS(int vboID) {
 		vbos.add(vboID);

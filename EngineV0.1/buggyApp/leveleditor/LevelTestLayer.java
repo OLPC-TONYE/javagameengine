@@ -6,6 +6,7 @@ import listeners.KeyListener;
 import main.Application;
 import main.Layer;
 import renderer.Renderer;
+import renderer.Renderer3D;
 import scenes.Scene;
 
 public class LevelTestLayer extends Layer
@@ -16,7 +17,7 @@ public class LevelTestLayer extends Layer
 
 	@Override
 	public void attach() {
-		renderer = new Renderer();
+		renderer = new Renderer3D();
 		LevelTestScene play = new LevelTestScene();
 		play.init();
 		play.findCameras();
@@ -30,8 +31,6 @@ public class LevelTestLayer extends Layer
 
 	@Override
 	public void render() {
-		renderer.clear();
-		renderer.clearColour(0.06f, 0.06f, 0.06f, 0.0f);
 		levelScene.render(renderer);
 	}
 

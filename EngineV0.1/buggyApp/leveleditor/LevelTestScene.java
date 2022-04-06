@@ -4,9 +4,10 @@ import java.util.ArrayList;
 
 import engine.EntityManager;
 import entities.Entity;
-import loaders.LevelLoader;
+import entitiesComponents.CameraComponent;
 import renderer.Renderer;
 import scenes.Scene;
+import scenes.SceneLoader;
 
 public class LevelTestScene extends Scene{
 	
@@ -16,8 +17,8 @@ public class LevelTestScene extends Scene{
 	public void init() {
 		// TODO Auto-generated method stub
 		game_objects = new ArrayList<>();
-		LevelLoader.ready();
-		game_objects = LevelLoader.loadToScene();
+		SceneLoader.ready();
+		game_objects = SceneLoader.loadToScene();
 	}
 	
 	@Override
@@ -36,13 +37,16 @@ public class LevelTestScene extends Scene{
 	@Override
 	public void render(Renderer renderer) {
 		if(main_camera!= null) {
-			Entity current_camera = EntityManager.entities.get(main_camera);
-			for(Entity entity: game_objects) {		
-				if(!entity.isCamera()) {
-					renderer.render(current_camera, entity);
+			float[] colour = main_camera.getComponent(CameraComponent.class).getClearColour();
+			renderer.clear();
+			renderer.clearColour(colour[0], colour[1], colour[2], colour[3]);
+			for(Entity entityRenderable: game_objects) {		
+				if(!entityRenderable.isCamera()) {
+					addToRenderList(entityRenderable);
 				}
 			}
-
+			renderer.render(this);
+			renderList.clear();
 		}
 	}
 	
@@ -50,14 +54,13 @@ public class LevelTestScene extends Scene{
 		ArrayList<String> cameras = new ArrayList<>();
 		for(Entity camera: game_objects) {
 			if(camera.isCamera()) {
-				String n_camera = camera.getName();
-				if(!cameras.contains(n_camera)) {
+				if(!cameras.contains(camera.getName())) {
 					cameras.add(camera.getName());
 				}	
 			}
 		}
 		if(!cameras.isEmpty()) {
-			main_camera = cameras.get(0);
+			main_camera = EntityManager.world_entities.get(cameras.get(0));
 		}
 	}
 

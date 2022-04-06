@@ -7,7 +7,7 @@ import imgui.ImGui;
 import imgui.flag.ImGuiColorEditFlags;
 import opengl.VertexArrayObject;
 
-public class MeshRenderer extends Component{
+public class MeshComponent extends Component{
 
 	float[] positions = {			
 			/* */-0.5f,0.5f,-0.5f, /* */-0.5f,-0.5f,-0.5f, /* */0.5f,-0.5f,-0.5f, /* */0.5f,0.5f,-0.5f,	

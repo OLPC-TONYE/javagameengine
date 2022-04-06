@@ -8,9 +8,8 @@ import engine.EngineManager;
 import engine.EntityManager;
 import entities.Drawable;
 import entities.Entity;
-import entitiesComponents.CameraComponent;
 import entitiesComponents.Component;
-import entitiesComponents.MeshRenderer;
+import entitiesComponents.MeshComponent;
 import entitiesComponents.ScriptComponent;
 import entitiesComponents.SpriteRenderer;
 import entitiesComponents.Transform;
@@ -30,10 +29,7 @@ import imgui.flag.ImGuiStyleVar;
 import imgui.flag.ImGuiTreeNodeFlags;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImBoolean;
-import imgui.type.ImInt;
-import imgui.type.ImString;
 import listeners.KeyListener;
-import loaders.LevelLoader;
 import main.Application;
 import main.Layer;
 import main.Window;
@@ -41,61 +37,52 @@ import maths.Maths;
 import opengl.Framebuffer;
 import opengl.Texture;
 import opengl.VertexArrayObject;
-import renderer.Renderer;
+import renderer.Renderer3D;
 import renderer.RendererDebug;
 import scenes.Scene;
+import scenes.SceneLoader;
 import scripting.EntityScript;
 
 public class LevelEditorLayer extends Layer
 {
 
-	Renderer renderer;
+	Renderer3D renderer;
+	RendererDebug renderer2;
+	
 	Framebuffer screen;
 
 	Scene levelScene = new LevelEditorScene();
 	String selectedEntity;
-	RendererDebug renderer2;
-
+	
 	Guizmos guizmo;
 
 	VertexArrayObject lines;
+	VertexArrayObject camera;
 	float[] pixelData;
 
+	Entity editorCamera;
 	@Override
 	public void attach() {
 
 		screen = new Framebuffer(1024, 600);
-		renderer = new Renderer();
+		renderer = new Renderer3D();
 		renderer2 = new RendererDebug();
 
 		guizmo = new Guizmos();
 		guizmo.init();
 
-		LevelLoader.ready();
+		SceneLoader.ready();
 
-		Entity camera = new Entity();
-		camera.setName("Editor Camera");
-		CameraComponent n = new CameraComponent();
-		n.setCameraProjection(0);
-		n.setNEAR_PLANE(0.01f);
-		n.setFAR_PLANE(1000f);
-		n.setHeight(320);
-		n.setWidth(510);
-		n.setFOV(70);
+		editorCamera = EngineManager.createCamera();
+		editorCamera.start();
 
-		camera.addComponent(n);
-		camera.addComponent(new Transform(new Vector3f(0, 0, 1)));
-		camera.start();
-
-		EntityManager.add(camera);
 		System.out.println("Level Loaded");
 
 		levelScene.init();
-		levelScene.setCamera(camera.getName());
+		levelScene.setCamera(editorCamera);
 
-		EntityManager.entities.get(levelScene.main_camera).addComponent(new ScriptComponent());
-		ScriptComponent controller = EntityManager.entities.get(levelScene.main_camera)
-				.getComponent(ScriptComponent.class);
+		editorCamera.addComponent(new ScriptComponent());
+		ScriptComponent controller = editorCamera.getComponent(ScriptComponent.class);
 		controller.bind(new CameraController());
 
 		lines = Drawable.makeGridlines(0, 10.0f, 1.0f, -0.5f);
@@ -114,9 +101,10 @@ public class LevelEditorLayer extends Layer
 		screen.bind();
 		renderer.clear();
 		renderer.clearColour(0.06f, 0.06f, 0.06f, 0.0f);
-		renderer2.drawLines(EntityManager.entities.get(levelScene.main_camera), lines, new Vector3f(1, 1, 1));
+		renderer2.drawLines(levelScene.main_camera, lines, new Vector3f(1, 1, 1), new Vector3f(), new Vector3f(), new Vector3f(1));
 		levelScene.render(renderer);
-		guizmo.render(EntityManager.entities.get(levelScene.main_camera));
+		levelScene.render(renderer2);
+		guizmo.render(levelScene.main_camera);
 		pixelData = screen.readPixelData(1, (int) viewportMouseHoverX, (int) viewportMouseHoverY);
 		screen.unbind();
 		renderInterfaces();
@@ -124,10 +112,11 @@ public class LevelEditorLayer extends Layer
 
 	@Override
 	public void update(double dt) {
+		editorCamera.update(dt);
 		levelScene.update(dt);
 		if(KeyListener.isKeyPressed(GLFW.GLFW_KEY_Z)) {
 			Application.get().pileOnTop(new LevelTestLayer());
-		}
+		}		
 	}
 
 	private void renderInterfaces() {
@@ -151,6 +140,8 @@ public class LevelEditorLayer extends Layer
 		int dockspace_id = ImGui.getID("ActualDockspace");
 		ImGui.dockSpace(dockspace_id);
 
+		mainMenu();
+		
 		beginScreen();
 		beginAssetExplorer();
 
@@ -163,25 +154,35 @@ public class LevelEditorLayer extends Layer
 		// For Dock space
 		ImGui.end();
 	}
-
-	float cursorPosX;
-	float cursorPosY;
-	float sizeX;
-	float sizeY;
-	float posX;
-	float posY;
-	float ndsX;
-	float ndsY;
-	float gameX;
-	float gameY;
-
-	float menuSizeX;
-	float menuSizeY;
-
-	float windowSizeX;
-	float windowSizeY;
-
-	float tabSizeY;
+	
+	private void mainMenu() {
+		if(ImGui.beginMenuBar()) {
+			
+			if(ImGui.beginMenu("File")) {
+				
+				if(ImGui.menuItem("New")) {
+					
+				}
+				
+				if(ImGui.menuItem("Open")) {
+					
+				}
+				
+				if(ImGui.menuItem("Save")) {
+					
+				}
+				
+				ImGui.endMenu();
+			}
+			
+			if(ImGui.beginMenu("View")) {
+				
+				ImGui.endMenu();
+			}
+			
+			ImGui.endMenuBar();
+		}
+	}
 
 	Vector2f viewportSize;
 	Vector2f viewportCursor;
@@ -199,22 +200,21 @@ public class LevelEditorLayer extends Layer
 		ImGui.pushStyleVar(ImGuiStyleVar.WindowRounding, 0.0f);
 		ImGui.begin("Game", ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoTitleBar);
 
-		cursorPosX = ImGui.getMousePosX();
-		cursorPosY = ImGui.getMousePosY();
+		float cursorPosX = ImGui.getMousePosX();
+		float cursorPosY = ImGui.getMousePosY();
 
-		sizeX = ImGui.getWindowSizeX();
-		sizeY = ImGui.getWindowSizeY();
+		float sizeY = ImGui.getWindowSizeY();
 
-		windowSizeX = ImGui.getContentRegionAvailX();
-		windowSizeY = ImGui.getContentRegionAvailY();
+		float windowSizeX = ImGui.getContentRegionAvailX();
+		float windowSizeY = ImGui.getContentRegionAvailY();
 
-		posX = ImGui.getWindowPosX();
-		posY = ImGui.getWindowPosY();
+		float posX = ImGui.getWindowPosX();
+		float posY = ImGui.getWindowPosY();
 
-		tabSizeY = sizeY - ImGui.getContentRegionAvailY();
+		float tabSizeY = sizeY - ImGui.getContentRegionAvailY();
 
-		ndsX = ((cursorPosX - posX) / windowSizeX) * 2 - 1;
-		ndsY = 1 - 2 * ((cursorPosY - (tabSizeY + posY)) / windowSizeY);
+		float ndsX = ((cursorPosX - posX) / windowSizeX) * 2 - 1;
+		float ndsY = 1 - 2 * ((cursorPosY - (tabSizeY + posY)) / windowSizeY);
 
 		ndsX = Maths.clamp(-1, 1, ndsX);
 		ndsY = Maths.clamp(-1, 1, ndsY);
@@ -261,17 +261,14 @@ public class LevelEditorLayer extends Layer
 
 	private void selectEntity() {
 
-		for (Entity entity : EntityManager.entities.values()) {
-
-			if (!entity.isCamera()) {
-				int id = EntityManager.getId(entity.getName());
-				if ((int) pixelData[0] == id) {
-					this.selectedEntity = entity.getName();
-					this.guizmo.attachTo(entity);
-					break;
-				} else {
-					this.guizmo.dettach();
-				}
+		for (Entity entity : EntityManager.world_entities.values()) {
+			int id = EntityManager.getId(entity.getName());
+			if ((int) pixelData[0] == id) {
+				this.selectedEntity = entity.getName();
+				this.guizmo.attachTo(entity);
+				break;
+			} else {
+				this.guizmo.dettach();
 			}
 		}
 	}
@@ -303,9 +300,6 @@ public class LevelEditorLayer extends Layer
 
 		ImGui.end();
 	}
-
-	ImString new_entityName = new ImString();
-	ImInt new_entityType = new ImInt();
 
 	String explorer_deleteFlag = null;
 
@@ -418,7 +412,34 @@ public class LevelEditorLayer extends Layer
 			if (ImGui.beginMenu("Add Entity")) {
 
 				if (ImGui.menuItem("Empty Entity")) {
-
+					Entity new_Entity = new Entity();
+					new_Entity.addComponent(new Transform(new Vector3f(0, 0, -1)));
+					boolean success = EntityManager.add(new_Entity, "Empty Entity");
+					if (!success) {
+						System.out.println("Failed to Add " + new_Entity.getName());
+					}
+					new_Entity.start();
+					this.selectedEntity = new_Entity.getName();
+				}
+				
+				if (ImGui.menuItem("Camera 2D")) {
+					Entity new_Entity = EngineManager.create2DCamera();
+					boolean success = EntityManager.add(new_Entity, "2D Camera");
+					if (!success) {
+						System.out.println("Failed to Add " + new_Entity.getName());
+					}
+					new_Entity.start();
+					this.selectedEntity = new_Entity.getName();
+				}
+				
+				if (ImGui.menuItem("Camera 3D")) {
+					Entity new_Entity = EngineManager.create3DCamera();
+					boolean success = EntityManager.add(new_Entity, "3D Camera");
+					if (!success) {
+						System.out.println("Failed to Add " + new_Entity.getName());
+					}
+					new_Entity.start();
+					this.selectedEntity = new_Entity.getName();
 				}
 
 				if (ImGui.menuItem("Sprite")) {
@@ -436,7 +457,7 @@ public class LevelEditorLayer extends Layer
 				if (ImGui.menuItem("Cube")) {
 					Entity new_Entity = new Entity();
 					new_Entity.addComponent(new Transform(new Vector3f(0, 0, -1)));
-					MeshRenderer m = new MeshRenderer();
+					MeshComponent m = new MeshComponent();
 					m.setTexture("white");
 					new_Entity.addComponent(m);
 					boolean success = EntityManager.add(new_Entity, "Cube");
@@ -466,7 +487,7 @@ public class LevelEditorLayer extends Layer
 
 		if (this.selectedEntity != null) {
 			ImGui.text(selectedEntity);
-			Entity entity = EntityManager.entities.get(selectedEntity);
+			Entity entity = EntityManager.world_entities.get(selectedEntity);
 
 			if (ImGui.beginPopupContextWindow(ImGuiPopupFlags.MouseButtonRight)) {
 
@@ -542,7 +563,7 @@ class CameraController extends EntityScript
 	public void update(double dt) {
 
 		Transform transform = getComponent(Transform.class);
-		float rate = (float) (50 * dt);
+		float rate = (float) (150 * dt);
 
 		if (KeyListener.isKeyPressed(GLFW.GLFW_KEY_W)) {
 			angleXZ = 360;

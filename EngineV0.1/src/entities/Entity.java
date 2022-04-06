@@ -6,7 +6,7 @@ import java.util.List;
 
 import entitiesComponents.CameraComponent;
 import entitiesComponents.Component;
-import entitiesComponents.MeshRenderer;
+import entitiesComponents.MeshComponent;
 import entitiesComponents.SpriteRenderer;
 
 public class Entity {
@@ -94,7 +94,7 @@ public class Entity {
 	}
 	
 	public boolean isRenderable() {
-		if(this.getComponent(SpriteRenderer.class) != null | this.getComponent(MeshRenderer.class) != null) {
+		if(this.getComponent(SpriteRenderer.class) != null | this.getComponent(MeshComponent.class) != null) {
 			return true;
 		}
 		return false;

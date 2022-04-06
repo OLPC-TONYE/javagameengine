@@ -21,14 +21,10 @@ public class EntityManager {
 
 	}
 
-	public static Map<String, Entity> entities = new HashMap<>();
-	public static Map<String, Integer> entitiesIdMap = new HashMap<>();
+	public static Map<String, Entity> world_entities = new HashMap<>();
+	public static Map<String, Integer> ids = new HashMap<>();
 	
 	public static Map<String, ArrayList<String>> hierarchy = new HashMap<>();
-	
-	public boolean isChild() {
-		return false;
-	}
 	
 	public static boolean isParentOf(String nameOfEntity, String nameOfChild) {
 		List<String> children = hierarchy.get(nameOfEntity);
@@ -178,7 +174,7 @@ public class EntityManager {
 	private static String getAvailName(String name) {
 		String newName = name;
 		int count = 0;
-		while(entities.containsKey(newName)) {
+		while(world_entities.containsKey(newName)) {
 			count++;
 			newName = name+" "+count;
 		}
@@ -186,8 +182,8 @@ public class EntityManager {
 	}
 	
 	private static int getAvailIdentifier() {
-		int entityId = 0;
-		while(entitiesIdMap.containsValue(entityId)) {
+		int entityId = 1;
+		while(ids.containsValue(entityId)) {
 			entityId++;
 		}
 		return entityId;
@@ -195,7 +191,7 @@ public class EntityManager {
 	
 	public static boolean add(Entity entity) {
 		String entityName = getAvailName(entity.getName());
-		if(!entities.containsKey(entityName)) {
+		if(!world_entities.containsKey(entityName)) {
 			addEntity(entity, entityName);
 			return true;
 		}
@@ -204,7 +200,7 @@ public class EntityManager {
 	
 	public static boolean add(Entity entity, String name) {
 		String entityName = getAvailName(name);
-		if(!entities.containsKey(entityName)) {
+		if(!world_entities.containsKey(entityName)) {
 			entity.setName(entityName);
 			addEntity(entity, entityName);
 			return true;
@@ -213,13 +209,13 @@ public class EntityManager {
 	}
 	
 	private static void addEntity(Entity entity, String entityName) {
-		entities.put(entityName, entity);
-		entitiesIdMap.put(entityName, getAvailIdentifier());
+		world_entities.put(entityName, entity);
+		ids.put(entityName, getAvailIdentifier());
 		hierarchy.put(entityName, new ArrayList<>());
 	}
 	
 	public static boolean remove(String nameOfEntity) {
-		if(entities.containsKey(nameOfEntity)) {
+		if(world_entities.containsKey(nameOfEntity)) {
 			if(hasChildren(nameOfEntity)) {
 				List<String> children = getChildrenOf(nameOfEntity);
 				for(int i=0; i<children.size();i++) {
@@ -236,14 +232,14 @@ public class EntityManager {
 	}
 	
 	private static void removeEntity(String nameOfEntity) {
-		entities.remove(nameOfEntity);
-		entitiesIdMap.remove(nameOfEntity);
+		world_entities.remove(nameOfEntity);
+		ids.remove(nameOfEntity);
 		hierarchy.remove(nameOfEntity);
 	}
 	
 	public static int getId(String entityname) {
-		if(entities.containsKey(entityname)) {
-			return entitiesIdMap.get(entityname);
+		if(world_entities.containsKey(entityname)) {
+			return ids.get(entityname);
 		}
 		return 0;
 	}

@@ -22,17 +22,17 @@ public class Drawable {
 	 */
 	public static VertexArrayObject makeGridlines(float from, float fExtent, float fStep, float y) {
 		
-		ListofFloats vertices = new ListofFloats();
+		ListofFloats positions = new ListofFloats();
 		for(int iLine = (int) (from-fExtent); iLine <= (from+fExtent); iLine += fStep) {
 			// Draw Z lines
 			float[] verticesZ = new float[]{iLine, y, fExtent, iLine, y, -fExtent};
-			vertices.add(verticesZ);
+			positions.add(verticesZ);
 		
 			float[] verticesX = new float[]{fExtent, y, iLine, -fExtent, y, iLine};
-			vertices.add(verticesX);
+			positions.add(verticesX);
 		}
 		
-		return EngineManager.createLines(vertices.toArray());
+		return EngineManager.loadToVAO(positions.toArray());
 	}
 	
 	/**
@@ -66,7 +66,7 @@ public class Drawable {
 				4, 5, 6,
 		};
 		
-		return EngineManager.createArrow(vertices, indices);
+		return EngineManager.loadToVAO(vertices, indices);
 	}
 	
 	public static VertexArrayObject createArrowSquare(float height, float length) {
@@ -85,7 +85,7 @@ public class Drawable {
 			(h+0.05f), height, 0,		//	3 Arrow Head		
 		};
 		
-		return EngineManager.createArrow(vertices);
+		return EngineManager.loadToVAO(vertices);
 	}
 
 	
@@ -120,7 +120,7 @@ public class Drawable {
 			});
 		}
 		
-		return EngineManager.create3DArrow(vertices.toArray());
+		return EngineManager.loadToVAO(vertices.toArray());
 	}
 	
 	public static VertexArrayObject create3DArrowCube(float height, float length) {
@@ -182,6 +182,25 @@ public class Drawable {
 			(h), height, -height,		//	3 Arrow Head
 		};
 		
-		return EngineManager.create3DArrow(vertices);
+		return EngineManager.loadToVAO(vertices);
 	}
+	
+	public static VertexArrayObject create3DCamera() {
+		
+		float[] positions = new float[] {
+				/*0*/0.3f,0.3f,-0.25f, /*1*/-0.3f,0.3f,-0.25f, /*2*/0.0f,0.45f,-0.25f,
+				/*3*/0.0f,0.0f,0.0f, 
+				/*4*/0.3f,0.25f,-0.25f, 
+				/*5*/0.3f,-0.25f,-0.25f,
+				/*6*/-0.3f,-0.25f,-0.25f,
+				/*7*/-0.3f,0.25f,-0.25f,	
+		};
+		
+		int[] indices = new int[] {
+				0,2,1,  3,5,4, 3,6,5, 3,7,6, 3,4,7
+		};
+		
+		return EngineManager.loadToVAO(positions, indices);
+	}
+	
 }
