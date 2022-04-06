@@ -1,4 +1,4 @@
-package loaders;
+package scenes;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -70,13 +70,13 @@ class ComponentDeserializer implements JsonSerializer<Component>, JsonDeserializ
 	
 }
 
-public class LevelLoader {
+public class SceneLoader {
 	
 	public static Gson serializer = null;
 	
 	public static void ready() {
-		if(LevelLoader.serializer == null) {
-			LevelLoader.serializer = new GsonBuilder()
+		if(SceneLoader.serializer == null) {
+			SceneLoader.serializer = new GsonBuilder()
 					.setPrettyPrinting()
 					.registerTypeAdapter(Component.class, new ComponentDeserializer())
 					.registerTypeAdapter(Entity.class, new EntityDeserializer())
@@ -89,12 +89,12 @@ public class LevelLoader {
 			FileWriter typist = new FileWriter(new File("level.txt"));
 			
 			// First Stop All Entity & Their Components
-			for(Entity entity: EntityManager.entities.values()) {
+			for(Entity entity: EntityManager.world_entities.values()) {
 				entity.stop();
 			}
 			
 			// Write Entities Into File
-			typist.write(LevelLoader.serializer.toJson(EntityManager.entities.values()));
+			typist.write(SceneLoader.serializer.toJson(EntityManager.world_entities.values()));
 			typist.close();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -124,7 +124,7 @@ public class LevelLoader {
 	}
 	
 	public static ArrayList<Entity> loadToScene() {
-		String fileData = LevelLoader.serializer.toJson(EntityManager.entities.values());
+		String fileData = SceneLoader.serializer.toJson(EntityManager.world_entities.values());
 
 		if(!fileData.equals("")) {
 			Entity[] entities = serializer.fromJson(fileData, Entity[].class);
