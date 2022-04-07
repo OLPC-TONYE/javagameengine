@@ -39,8 +39,8 @@ Collapsed=0
 DockId=0x00000007,0
 
 [Window][Dear ImGui Demo]
-Pos=561,58
-Size=521,900
+Pos=802,3
+Size=520,900
 Collapsed=1
 
 [Window][Example: Property editor]
@@ -165,7 +165,7 @@ Size=231,92
 Collapsed=0
 
 [Window][FileExplorer]
-Pos=293,112
+Pos=316,111
 Size=800,420
 Collapsed=0
 

@@ -58,8 +58,10 @@ public class LevelEditorLayer extends Layer
 
 	VertexArrayObject lines;
 	VertexArrayObject camera;
+	
 	float[] pixelData;
-
+	float[] guizmo_pixelData = new float[3];
+	
 	Entity editorCamera;
 	@Override
 	public void attach() {
@@ -106,6 +108,7 @@ public class LevelEditorLayer extends Layer
 		levelScene.render(renderer2);
 		guizmo.render(levelScene.main_camera);
 		pixelData = screen.readPixelData(1, (int) viewportMouseHoverX, (int) viewportMouseHoverY);
+		guizmo_pixelData = screen.readPixelData(2, (int) viewportMouseHoverX, (int) viewportMouseHoverY);
 		screen.unbind();
 		renderInterfaces();
 	}
@@ -114,9 +117,10 @@ public class LevelEditorLayer extends Layer
 	public void update(double dt) {
 		editorCamera.update(dt);
 		levelScene.update(dt);
+		guizmo.update(dt, guizmo_pixelData);
 		if(KeyListener.isKeyPressed(GLFW.GLFW_KEY_Z)) {
 			Application.get().pileOnTop(new LevelTestLayer());
-		}		
+		}
 	}
 
 	private void renderInterfaces() {
@@ -260,17 +264,22 @@ public class LevelEditorLayer extends Layer
 	}
 
 	private void selectEntity() {
-
-		for (Entity entity : EntityManager.world_entities.values()) {
-			int id = EntityManager.getId(entity.getName());
-			if ((int) pixelData[0] == id) {
-				this.selectedEntity = entity.getName();
-				this.guizmo.attachTo(entity);
-				break;
-			} else {
-				this.guizmo.dettach();
+		
+		if(guizmo_pixelData[0] >= 1 | guizmo_pixelData[1] >= 1 | guizmo_pixelData[2] >= 1) {
+			
+		}else {
+			for (Entity entity : EntityManager.world_entities.values()) {
+				int id = EntityManager.getId(entity.getName());
+				if ((int) pixelData[0] == id) {
+					this.selectedEntity = entity.getName();
+					this.guizmo.attachTo(entity);
+					break;
+				} else {
+					this.guizmo.dettach();
+				}
 			}
 		}
+		
 	}
 
 	private void beginAssetExplorer() {

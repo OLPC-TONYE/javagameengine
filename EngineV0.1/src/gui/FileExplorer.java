@@ -11,6 +11,7 @@ import imgui.ImVec2;
 import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiCond;
 import imgui.flag.ImGuiMouseButton;
+import imgui.flag.ImGuiStyleVar;
 import imgui.flag.ImGuiTreeNodeFlags;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImBoolean;
@@ -259,22 +260,19 @@ public class FileExplorer
 	private static void showFileHierarchy() {
 //		File Explorer Hierarchy
 		ImGui.beginChild("File Hierachy", 150, ImGui.getContentRegionAvailY()-35);
-        
-		ImDrawList draw_list = ImGui.getWindowDrawList();
-		
+        		
 		File root = new File(root_dir);
 		File my_computer = new File(my_computer_dir);
 		
 //		Add Child On TreeOpen
 			
 		if(root.isDirectory()) {
-			float xPoint = ImGui.getCursorScreenPosX() + 1;
-	        float yPoint = ImGui.getCursorScreenPosY();
-			draw_list.addImage(EngineManager.getIconTexture(folder_icon).getTextureID(), xPoint, yPoint, xPoint+24, yPoint+18);
-			boolean open = ImGui.treeNodeEx(root.getName(), ImGuiTreeNodeFlags.AllowItemOverlap|ImGuiTreeNodeFlags.OpenOnArrow);
+			boolean open = ImGui.treeNodeEx("      "+root.getName(), ImGuiTreeNodeFlags.AllowItemOverlap|ImGuiTreeNodeFlags.OpenOnArrow);
 			if(ImGui.isItemHovered() && ImGui.isMouseDoubleClicked(ImGuiMouseButton.Left)){
 				openDirectory(root);
 			}
+			ImGui.sameLine(ImGui.getFont().getFontSize());
+			ImGui.image(EngineManager.getIconTexture(folder_icon).getTextureID(), 24, 18);
 			if(open) {
 				showChildren(root);
 				ImGui.treePop();
@@ -282,13 +280,12 @@ public class FileExplorer
 		}
 		
 		if(my_computer.isDirectory()) {
-			float xPoint = ImGui.getCursorScreenPosX() + 1;
-	        float yPoint = ImGui.getCursorScreenPosY();
-			draw_list.addImage(EngineManager.getIconTexture(folder_icon).getTextureID(), xPoint, yPoint, xPoint+24, yPoint+18);
-			boolean open = ImGui.treeNodeEx(my_computer.getName(), ImGuiTreeNodeFlags.AllowItemOverlap|ImGuiTreeNodeFlags.OpenOnArrow);
+			boolean open = ImGui.treeNodeEx("      "+my_computer.getName(), ImGuiTreeNodeFlags.AllowItemOverlap|ImGuiTreeNodeFlags.OpenOnArrow);
 			if(ImGui.isItemHovered() && ImGui.isMouseDoubleClicked(ImGuiMouseButton.Left)){
 				openDirectory(my_computer);
 			}
+			ImGui.sameLine(ImGui.getFont().getFontSize());
+			ImGui.image(EngineManager.getIconTexture(folder_icon).getTextureID(), 24, 18);
 			if(open) {
 				showChildren(my_computer);
 				ImGui.treePop();
@@ -296,6 +293,7 @@ public class FileExplorer
 		}
 	
 		ImGui.endChild();
+		
 //		
 //		================================================
 	}
@@ -310,13 +308,13 @@ public class FileExplorer
 			
 			if(children_list[i].isDirectory()) {
 				ImGui.pushID(i);
-				float xPoint = ImGui.getCursorScreenPosX() + 1;
-		        float yPoint = ImGui.getCursorScreenPosY();
-		        ImGui.getWindowDrawList().addImage(EngineManager.getIconTexture(folder_icon).getTextureID(), xPoint, yPoint, xPoint+24, yPoint+18);
-				boolean open = ImGui.treeNodeEx(children_list[i].getName(), ImGuiTreeNodeFlags.AllowItemOverlap|ImGuiTreeNodeFlags.OpenOnArrow);
+				float width = ImGui.getCursorPosX();
+				boolean open = ImGui.treeNodeEx("      "+children_list[i].getName(), ImGuiTreeNodeFlags.AllowItemOverlap|ImGuiTreeNodeFlags.OpenOnArrow);
 				if(ImGui.isItemHovered() && ImGui.isMouseDoubleClicked(ImGuiMouseButton.Left)){
 					openDirectory(children_list[i]);
 				}
+				ImGui.sameLine(width+ImGui.getFont().getFontSize());
+				ImGui.image(EngineManager.getIconTexture(folder_icon).getTextureID(), 24, 18);
 				if(open) {
 					showChildren(children_list[i]);
 					ImGui.treePop();

@@ -6,10 +6,12 @@ public class MouseListener {
 	private static MouseListener instance;
 	private double scrollX, scrollY;
 	private double xPos, yPos, lastY, lastX;
+	private double startDragX, startDragY, dragX, dragY;
+	
+	private int mouseButtonDown= 0;
 	
 	private boolean mouseButtonPressed[] = new boolean[3];
 	private boolean isDragging;
-	
 
 	private MouseListener() {
 		this.scrollX = 0;
@@ -29,21 +31,31 @@ public class MouseListener {
 	}
 	
 	public static void mousePosCallback(long window, double xpos, double ypos) {
+		if(get().mouseButtonDown >= 1) {
+			get().isDragging = true;
+		}
 		get().lastX = get().xPos;
 		get().lastY = get().yPos;
 		get().xPos = xpos;
 		get().yPos = ypos;
 		
-		get().isDragging = get().mouseButtonPressed[0] || get().mouseButtonPressed[1] || get().mouseButtonPressed[2];
+		if(!get().isDragging) {
+			get().startDragX = get().xPos;
+			get().startDragY = get().yPos;
+		}	
+		
+		get().dragX = get().xPos - get().startDragX;
+		get().dragY = get().yPos - get().startDragY;
 	}
 	
 	public static void mouseButtonCallback(long window, int button, int action, int mods) {
 		if(action == GLFW.GLFW_PRESS) {
+			get().mouseButtonDown++;
 			if (button < get().mouseButtonPressed.length) {
 				get().mouseButtonPressed[button] = true;
-				get().isDragging = true;
 			}
 		}else if (action == GLFW.GLFW_RELEASE) {
+			get().mouseButtonDown--;
 			if (button < get().mouseButtonPressed.length) {
 				get().mouseButtonPressed[button] = false;
 				get().isDragging = false;
@@ -79,6 +91,14 @@ public class MouseListener {
 		return (float)(get().lastY - get().yPos);
 	}
 	
+	public static float getDragX() {
+		return (float)get().dragX;
+	}
+	
+	public static float getDragY() {
+		return (float)get().dragY;
+	}
+	
 	public static float getScrollX() {
 		return (float)get().scrollX;
 	}
@@ -88,6 +108,14 @@ public class MouseListener {
 	}
 	
 	public static boolean isDragging() {
+		return get().isDragging;
+	}
+	
+	public static boolean isClicked() {
+		return get().isDragging;
+	}
+	
+	public static boolean isReleased() {
 		return get().isDragging;
 	}
 	
