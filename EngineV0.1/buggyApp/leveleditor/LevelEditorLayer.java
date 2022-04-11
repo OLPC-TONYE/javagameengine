@@ -664,9 +664,7 @@ class CameraController extends EntityScript
 		}else if(phi_deg >= 90 && phi_deg <= 180) {
 			rot.y = (90 + (90 -(Math.abs(phi_deg)-90)));
 		}
-		
-		System.out.print("phi: "+ (float)Math.toDegrees(phi)+ " theta: " +  (float) Math.toDegrees(theta) + " rotY: " + rot.y);
-		System.out.println(" --- x: "+x+ " y: " + y + " z: " + (float) z);
+
 	}
 
 }
