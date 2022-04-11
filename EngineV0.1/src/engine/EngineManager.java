@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.joml.Vector3f;
+
 import entities.Entity;
 import entitiesComponents.CameraComponent;
 import entitiesComponents.Transform;
@@ -102,7 +104,7 @@ public class EngineManager {
 	public static Entity createCamera() {
 		Entity camera = new Entity();
 		camera.setName("Camera");
-		camera.addComponent(new Transform());
+		camera.addComponent(new Transform(new Vector3f(0, 0, 10)));
 		CameraComponent cp = new CameraComponent();
 		cp.setCameraProjection(ENGINE_CAMERA_PERSPECTIVE);
 		cp.setPerpsProperties(0.01f, 1000f, 70);

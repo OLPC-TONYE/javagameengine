@@ -30,6 +30,7 @@ import imgui.flag.ImGuiTreeNodeFlags;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImBoolean;
 import listeners.KeyListener;
+import listeners.MouseListener;
 import main.Application;
 import main.Layer;
 import main.Window;
@@ -552,9 +553,8 @@ class FetchFileEvent extends ImGuiLayerRenderEvent
 
 class CameraController extends EntityScript
 {
-
-	private double angleXZ;
-	private double angleYZ;
+	
+	private Transform cameraTransform;
 
 	@Override
 	public void onCreate() {
@@ -570,76 +570,103 @@ class CameraController extends EntityScript
 
 	@Override
 	public void update(double dt) {
-
-		Transform transform = getComponent(Transform.class);
-		float rate = (float) (150 * dt);
-
+		
+		cameraTransform = getComponent(Transform.class);
+		float speed = (float) (1 * dt);
+		
+		if(MouseListener.mouseButtonDown(1) && MouseListener.isDragging() ) {
+			moveCamera(speed * 0.25 * MouseListener.getDx(), speed * 0.25 * MouseListener.getDy(), 0);
+		}
+		
 		if (KeyListener.isKeyPressed(GLFW.GLFW_KEY_W)) {
-			angleXZ = 360;
-			double radian = Math.toRadians(angleXZ);
-			transform.getPosition().set((float) Math.sin(radian), 0f, (float) Math.cos(radian));
-			transform.getRotation().set(0, 0, 0);
+			cameraTransform.translateZ(speed);
 		}
 
 		if (KeyListener.isKeyPressed(GLFW.GLFW_KEY_S)) {
-			angleXZ = 180;
-			double radian = Math.toRadians(angleXZ);
-			transform.getPosition().set((float) Math.sin(radian), 0f, (float) Math.cos(radian));
-			transform.getRotation().set(0, 180, 0);
+			cameraTransform.translateZ(-speed);
 		}
 
 		if (KeyListener.isKeyPressed(GLFW.GLFW_KEY_D)) {
-			angleXZ = 90;
-			double radian = Math.toRadians(angleXZ);
-			transform.getPosition().set((float) Math.sin(radian), 0f, (float) Math.cos(radian));
-			transform.getRotation().set(0, 270, 0);
+
 		}
 
 		if (KeyListener.isKeyPressed(GLFW.GLFW_KEY_A)) {
-			angleXZ = 270;
-			double radian = Math.toRadians(angleXZ);
-			transform.getPosition().set((float) Math.sin(radian), 0f, (float) Math.cos(radian));
-			transform.getRotation().set(0, 90, 0);
+
 		}
 
 		if (KeyListener.isKeyPressed(GLFW.GLFW_KEY_Q)) {
-			Vector3f position = transform.getPosition();
-			transform.setPosition(position.add(0, 0, rate));
+			moveCamera(0, 0, speed);
 		}
 
 		if (KeyListener.isKeyPressed(GLFW.GLFW_KEY_E)) {
-			Vector3f position = transform.getPosition();
-			transform.setPosition(position.sub(0, 0, rate));
+			moveCamera(0, 0, -speed);
 		}
 
 		if (KeyListener.isKeyPressed(GLFW.GLFW_KEY_RIGHT)) {
-			angleXZ += rate;
-			double radian = Math.toRadians(angleXZ);
-			transform.getPosition().set((float) 5 * Math.sin(radian), 0f, (float) 5 * Math.cos(radian));
-			transform.getRotation().set(0, (360 - angleXZ), 0);
+			moveCamera(speed, 0, 0);
 		}
 
 		if (KeyListener.isKeyPressed(GLFW.GLFW_KEY_LEFT)) {
-			angleXZ -= rate;
-			double radian = Math.toRadians(angleXZ);
-			transform.getPosition().set((float) 5 * Math.sin(radian), 0f, (float) 5 * Math.cos(radian));
-			transform.getRotation().set(0, (360 - angleXZ), 0);
+			moveCamera(-speed, 0, 0);
 		}
 
 		if (KeyListener.isKeyPressed(GLFW.GLFW_KEY_DOWN)) {
-			angleYZ -= rate;
-			double radian = Math.toRadians(angleYZ);
-			transform.getPosition().set(0f, (float) Math.sin(radian), (float) 5 * Math.cos(radian));
-			transform.getRotation().set((angleYZ), 0, 0);
+			moveCamera(0, speed, 0);
 		}
 
 		if (KeyListener.isKeyPressed(GLFW.GLFW_KEY_UP)) {
-			angleYZ += rate;
-			double radian = Math.toRadians(angleYZ);
-			transform.getPosition().set(0f, (float) Math.sin(radian), (float) Math.cos(radian));
-			transform.getRotation().set((angleYZ), 0, 0);
+//			Remember camera moves opposite
+			moveCamera(0, -speed, 0);
 		}
 
+	}
+	
+	private void moveCamera(double dx, double dy, double dz) {
+		
+		Vector3f pos = cameraTransform.getPosition();
+		Vector3f rot = cameraTransform.getRotation();
+		
+		double r = pos.distance(0, 0, 0);
+		double theta = Math.acos(pos.y/r);
+		double phi = Math.atan2(-pos.z, pos.x);
+		
+		theta += dy;
+		phi += dx;
+		r += dz;
+		
+		if(phi > 180) {
+			phi = -(phi-180);
+		}
+				
+		theta = Maths.clamp(0, Math.PI, theta);	
+				
+		float x = (float) (r * Math.sin(theta) * Math.cos(phi));
+		float z = (float) (-r * Math.sin(theta) * Math.sin(phi));
+		float y = (float) (r * Math.cos(theta));
+		
+		cameraTransform.setPosition(new Vector3f(x, y, z));
+		
+		float theta_deg = (float)Math.toDegrees(theta);
+		if(theta_deg <= 90) {
+			rot.x = 90 - theta_deg ;
+		}else if (theta_deg > 90) {
+			theta_deg -= 90;
+			rot.x = -theta_deg ;
+		}
+		
+		float phi_deg = (float)Math.toDegrees(phi);
+		if(phi_deg <= 0 && phi_deg >= -90) {
+			rot.y = -(90 - Math.abs(phi_deg));
+		}else if(phi_deg <= -90 && phi_deg >= -180) {
+			rot.y = (Math.abs(phi_deg)-90);
+		}else if(phi_deg >= 0 && phi_deg <= 90) {
+			rot.y = -(90 + (Math.abs(phi_deg)));
+		}else if(phi_deg >= 90 && phi_deg <= 180) {
+			rot.y = (90 + (90 -(Math.abs(phi_deg)-90)));
+		}
+		
+		System.out.print("phi: "+ (float)Math.toDegrees(phi)+ " theta: " +  (float) Math.toDegrees(theta) + " rotY: " + rot.y);
+		System.out.println(" --- x: "+x+ " y: " + y + " z: " + (float) z);
 	}
 
 }

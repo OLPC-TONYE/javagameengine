@@ -20,8 +20,16 @@ public class Maths {
 		}else if( value < min) {
 			value = min;
 		}
-		return value;	
-		
+		return value;		
+	}
+	
+	public static double clamp(double min, double max, double value) {
+		if(value>max) {
+			value = max;
+		}else if( value < min) {
+			value = min;
+		}
+		return value;		
 	}
 	
 	public static Vector3f calculateRay(float ndsX, float ndsY, CameraComponent camera) {
