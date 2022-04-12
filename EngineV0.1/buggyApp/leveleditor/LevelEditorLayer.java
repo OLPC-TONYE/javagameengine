@@ -34,7 +34,6 @@ import listeners.MouseListener;
 import main.Application;
 import main.Layer;
 import main.Window;
-import maths.Maths;
 import opengl.Framebuffer;
 import opengl.Texture;
 import opengl.VertexArrayObject;
@@ -43,6 +42,7 @@ import renderer.RendererDebug;
 import scenes.Scene;
 import scenes.SceneLoader;
 import scripting.EntityScript;
+import tools.Maths;
 
 public class LevelEditorLayer extends Layer
 {

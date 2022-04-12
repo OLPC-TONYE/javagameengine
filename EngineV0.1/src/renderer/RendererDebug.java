@@ -27,10 +27,10 @@ import entities.Entity;
 import entities.Drawable;
 import entitiesComponents.CameraComponent;
 import entitiesComponents.Transform;
-import maths.Maths;
 import opengl.Shader;
 import opengl.VertexArrayObject;
 import scenes.Scene;
+import tools.Maths;
 
 public class RendererDebug extends Renderer{
 	

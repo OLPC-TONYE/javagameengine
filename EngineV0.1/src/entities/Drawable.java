@@ -1,8 +1,8 @@
 package entities;
 
 import engine.EngineManager;
-import maths.ListofFloats;
 import opengl.VertexArrayObject;
+import tools.ListofFloats;
 	
 
 public class Drawable {

@@ -14,9 +14,9 @@ import entities.Entity;
 import entitiesComponents.CameraComponent;
 import entitiesComponents.Transform;
 import listeners.MouseListener;
-import maths.Maths;
 import opengl.Shader;
 import opengl.VertexArrayObject;
+import tools.Maths;
 
 public class Guizmos
 {

@@ -9,8 +9,8 @@ public class Transform extends Component{
 	private Vector3f rotation;
 	private Vector3f scale;
 	
-	private Vector3f translation;
-	private Vector3f n_rotation;
+	private Vector3f translate;
+	private Vector3f rotate;
 	
 	private Matrix4f transformationMatrix;
 	
@@ -21,8 +21,8 @@ public class Transform extends Component{
 		this.rotation = new Vector3f();
 		this.scale = new Vector3f(1, 1, 1);
 		
-		this.translation = new Vector3f();
-		this.n_rotation = new Vector3f();
+		this.translate = new Vector3f();
+		this.rotate = new Vector3f();
 		calcTransformationMatrix();
 	}
 	
@@ -31,8 +31,8 @@ public class Transform extends Component{
 		this.rotation = new Vector3f();
 		this.scale = new Vector3f(1, 1, 1);
 		
-		this.translation = new Vector3f();
-		this.n_rotation = new Vector3f();
+		this.translate = new Vector3f();
+		this.rotate = new Vector3f();
 		calcTransformationMatrix();
 	}
 	
@@ -41,8 +41,8 @@ public class Transform extends Component{
 		this.rotation = rotation;
 		this.scale = scale;
 		
-		this.translation = new Vector3f();
-		this.n_rotation = new Vector3f();
+		this.translate = new Vector3f();
+		this.rotate = new Vector3f();
 		calcTransformationMatrix();
 	}
 
@@ -58,11 +58,11 @@ public class Transform extends Component{
 			this.modified = false;
 		}
 		
-		if(!this.translation.equals(0, 0, 0) | !this.n_rotation.equals(0, 0, 0)) {
-			transform(translation, n_rotation);
+		if(!this.translate.equals(0, 0, 0) | !this.rotate.equals(0, 0, 0)) {
+			transform(translate, rotate);
 			
-			this.translation = new Vector3f();
-			this.n_rotation = new Vector3f();
+			this.translate = new Vector3f();
+			this.rotate = new Vector3f();
 		}
 		
 	}
@@ -95,72 +95,72 @@ public class Transform extends Component{
 	}
 	
 	public void rotate(float x, float y, float z) {
-		this.n_rotation = new Vector3f(x, y, z);
+		this.rotate = new Vector3f(x, y, z);
 		this.modified = true;
 	}
 	
 	public void rotateZ(float z) {
-		this.n_rotation = new Vector3f(0, 0, z);
+		this.rotate = new Vector3f(0, 0, z);
 		this.modified = true;
 	}
 	
 	public void rotateZ(double z) {
-		this.n_rotation = new Vector3f(0, 0, (float)z);
+		this.rotate = new Vector3f(0, 0, (float)z);
 		this.modified = true;
 	}
 	
 	public void rotateY(float y) {
-		this.n_rotation = new Vector3f(0, y, 0);
+		this.rotate = new Vector3f(0, y, 0);
 		this.modified = true;
 	}
 	
 	public void rotateY(double y) {
-		this.n_rotation = new Vector3f(0, (float) y, 0);
+		this.rotate = new Vector3f(0, (float) y, 0);
 		this.modified = true;
 	}
 	
 	public void rotateX(float x) {
-		this.n_rotation = new Vector3f(x, 0, 0);
+		this.rotate = new Vector3f(x, 0, 0);
 		this.modified = true;
 	}
 	
 	public void rotateX(double x) {
-		this.n_rotation = new Vector3f((float) x, 0, 0);
+		this.rotate = new Vector3f((float) x, 0, 0);
 		this.modified = true;
 	}
 	
 	public void translate(float x, float y, float z) {
-		this.translation = new Vector3f(x, y, z);
+		this.translate = new Vector3f(x, y, z);
 		this.modified = true;
 	}
 	
 	public void translateZ(float z) {
-		this.translation = new Vector3f(0, 0, z);
+		this.translate = new Vector3f(0, 0, z);
 		this.modified = true;
 	}
 	
 	public void translateZ(double z) {
-		this.translation = new Vector3f(0, 0, (float)z);
+		this.translate = new Vector3f(0, 0, (float)z);
 		this.modified = true;
 	}
 	
 	public void translateY(float y) {
-		this.translation = new Vector3f(0, y, 0);
+		this.translate = new Vector3f(0, y, 0);
 		this.modified = true;
 	}
 	
 	public void translateY(double y) {
-		this.translation = new Vector3f(0, (float) y, 0);
+		this.translate = new Vector3f(0, (float) y, 0);
 		this.modified = true;
 	}
 	
 	public void translateX(float x) {
-		this.translation = new Vector3f(x, 0, 0);
+		this.translate = new Vector3f(x, 0, 0);
 		this.modified = true;
 	}
 	
 	public void translateX(double x) {
-		this.translation = new Vector3f((float) x, 0, 0);
+		this.translate = new Vector3f((float) x, 0, 0);
 		this.modified = true;
 	}
 
