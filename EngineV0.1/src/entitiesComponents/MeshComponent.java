@@ -6,6 +6,7 @@ import engine.EngineManager;
 import imgui.ImGui;
 import imgui.flag.ImGuiColorEditFlags;
 import opengl.VertexArrayObject;
+import tools.MeshLoader;
 
 public class MeshComponent extends Component{
 
@@ -42,7 +43,8 @@ public class MeshComponent extends Component{
 	
 	@Override
 	public void prepare() {
-		mesh = EngineManager.loadToVAO(positions, indices, textureCoords);
+//		mesh = EngineManager.loadToVAO(positions, indices, textureCoords);
+		mesh = MeshLoader.loadRawObjModel("dragon");
 	}
 
 	@Override

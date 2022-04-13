@@ -423,7 +423,7 @@ public class LevelEditorLayer extends Layer
 
 				if (ImGui.menuItem("Empty Entity")) {
 					Entity new_Entity = new Entity();
-					new_Entity.addComponent(new Transform(new Vector3f(0, 0, -1)));
+					new_Entity.addComponent(new Transform());
 					boolean success = EntityManager.add(new_Entity, "Empty Entity");
 					if (!success) {
 						System.out.println("Failed to Add " + new_Entity.getName());
@@ -454,7 +454,7 @@ public class LevelEditorLayer extends Layer
 
 				if (ImGui.menuItem("Sprite")) {
 					Entity new_Entity = new Entity();
-					new_Entity.addComponent(new Transform(new Vector3f(0, 0, -1)));
+					new_Entity.addComponent(new Transform());
 					new_Entity.addComponent(new SpriteRenderer("spritesheet"));
 					boolean success = EntityManager.add(new_Entity, "Sprite");
 					if (!success) {
@@ -466,7 +466,7 @@ public class LevelEditorLayer extends Layer
 
 				if (ImGui.menuItem("Cube")) {
 					Entity new_Entity = new Entity();
-					new_Entity.addComponent(new Transform(new Vector3f(0, 0, -1)));
+					new_Entity.addComponent(new Transform());
 					MeshComponent m = new MeshComponent();
 					m.setTexture("white");
 					new_Entity.addComponent(m);

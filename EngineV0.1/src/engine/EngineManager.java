@@ -74,6 +74,16 @@ public class EngineManager {
 	
 //	===============================================================
 	
+	public static VertexArrayObject loadToVAO(float[] vertices, float[] normals,  float[] textureCords, int[] indices) {
+		VertexArrayObject create = new VertexArrayObject();
+		vaos.add(create.getId());
+		create.addVertexBufferObject("indices", indices);
+		create.setCount(indices.length);
+		create.addVertexBufferObject("positions", 0, 3, vertices);
+		create.addVertexBufferObject("textureCords", 1, 2, textureCords);
+		return create;
+	}
+	
 	public static VertexArrayObject loadToVAO(float[] vertices, int[] indices, float[] textureCords) {
 		VertexArrayObject create = new VertexArrayObject();
 		vaos.add(create.getId());
@@ -104,7 +114,9 @@ public class EngineManager {
 	public static Entity createCamera() {
 		Entity camera = new Entity();
 		camera.setName("Camera");
-		camera.addComponent(new Transform(new Vector3f(0, 0, 10)));
+		Transform transform = new Transform();
+		transform.setPosition(new Vector3f(0, 0, 10));
+		camera.addComponent(transform);
 		CameraComponent cp = new CameraComponent();
 		cp.setCameraProjection(ENGINE_CAMERA_PERSPECTIVE);
 		cp.setPerpsProperties(0.01f, 1000f, 70);

@@ -3,59 +3,32 @@ package entitiesComponents;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
+import imgui.ImGui;
+
 public class Transform extends Component{
 
-	private Vector3f position;
-	private Vector3f rotation;
-	private Vector3f scale;
+	private Vector3f position = new Vector3f();
+	private Vector3f rotation = new Vector3f();
+	private Vector3f scale = new Vector3f(1);
 	
-	private Vector3f translate;
-	private Vector3f rotate;
-	
+	private Vector3f translate = new Vector3f();
+	private Vector3f rotate = new Vector3f();
+
 	private Matrix4f transformationMatrix;
 	
-	private boolean modified;
-	
-	public Transform() {
-		this.position = new Vector3f();
-		this.rotation = new Vector3f();
-		this.scale = new Vector3f(1, 1, 1);
-		
-		this.translate = new Vector3f();
-		this.rotate = new Vector3f();
-		calcTransformationMatrix();
-	}
-	
-	public Transform(Vector3f position) {
-		this.position = position;
-		this.rotation = new Vector3f();
-		this.scale = new Vector3f(1, 1, 1);
-		
-		this.translate = new Vector3f();
-		this.rotate = new Vector3f();
-		calcTransformationMatrix();
-	}
-	
-	public Transform(Vector3f position, Vector3f rotation, Vector3f scale) {
-		this.position = position;
-		this.rotation = rotation;
-		this.scale = scale;
-		
-		this.translate = new Vector3f();
-		this.rotate = new Vector3f();
-		calcTransformationMatrix();
-	}
+	private Transform lastTransform;
 
 	@Override
 	public void prepare() {
+		calcTransformationMatrix();
 	}
 	
 	@Override
 	public void update(double dt) {
 		
-		if(this.modified) {
+		if(!this.equals(lastTransform)) {
 			calcTransformationMatrix();
-			this.modified = false;
+			copy(lastTransform);
 		}
 		
 		if(!this.translate.equals(0, 0, 0) | !this.rotate.equals(0, 0, 0)) {
@@ -96,72 +69,58 @@ public class Transform extends Component{
 	
 	public void rotate(float x, float y, float z) {
 		this.rotate = new Vector3f(x, y, z);
-		this.modified = true;
 	}
 	
 	public void rotateZ(float z) {
 		this.rotate = new Vector3f(0, 0, z);
-		this.modified = true;
 	}
 	
 	public void rotateZ(double z) {
 		this.rotate = new Vector3f(0, 0, (float)z);
-		this.modified = true;
 	}
 	
 	public void rotateY(float y) {
 		this.rotate = new Vector3f(0, y, 0);
-		this.modified = true;
 	}
 	
 	public void rotateY(double y) {
 		this.rotate = new Vector3f(0, (float) y, 0);
-		this.modified = true;
 	}
 	
 	public void rotateX(float x) {
 		this.rotate = new Vector3f(x, 0, 0);
-		this.modified = true;
 	}
 	
 	public void rotateX(double x) {
 		this.rotate = new Vector3f((float) x, 0, 0);
-		this.modified = true;
 	}
 	
 	public void translate(float x, float y, float z) {
 		this.translate = new Vector3f(x, y, z);
-		this.modified = true;
 	}
 	
 	public void translateZ(float z) {
 		this.translate = new Vector3f(0, 0, z);
-		this.modified = true;
 	}
 	
 	public void translateZ(double z) {
 		this.translate = new Vector3f(0, 0, (float)z);
-		this.modified = true;
 	}
 	
 	public void translateY(float y) {
 		this.translate = new Vector3f(0, y, 0);
-		this.modified = true;
 	}
 	
 	public void translateY(double y) {
 		this.translate = new Vector3f(0, (float) y, 0);
-		this.modified = true;
 	}
 	
 	public void translateX(float x) {
 		this.translate = new Vector3f(x, 0, 0);
-		this.modified = true;
 	}
 	
 	public void translateX(double x) {
 		this.translate = new Vector3f((float) x, 0, 0);
-		this.modified = true;
 	}
 
 	public Vector3f getPosition() {
@@ -170,7 +129,6 @@ public class Transform extends Component{
 
 	public void setPosition(Vector3f position) {
 		this.position = position;
-		this.modified = true;
 	}
 
 	public Vector3f getRotation() {
@@ -179,7 +137,6 @@ public class Transform extends Component{
 
 	public void setRotation(Vector3f rotation) {
 		this.rotation = rotation;
-		this.modified = true;
 	}
 
 	public Vector3f getScale() {
@@ -188,7 +145,69 @@ public class Transform extends Component{
 
 	public void setScale(Vector3f scale) {
 		this.scale = scale;
-		this.modified = true;
 	}
+	
+	public void copy(Transform to) {
+		if(to == null) to = new Transform();
+		to.setPosition(position);
+		to.setRotation(rotation);
+		to.setScale(scale);
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		
+		if(o == null) return false;
+		if(!(o instanceof Transform)) return false;
+		
+		Transform transform = (Transform) o;
+		
+		boolean equals = transform.getPosition().equals(position) && transform.getRotation().equals(rotation)
+				&& transform.getScale().equals(scale);
+
+		return equals;
+	}
+
+	@Override
+	public void UI() {
+		// TODO Auto-generated method stub
+		{
+			ImGui.pushID("Position:");
+			ImGui.text("Position:");
+			ImGui.sameLine();
+			Vector3f val = position;
+			float[] imFloat = {val.x, val.y, val.z};
+			if (ImGui.inputFloat3("", imFloat)) {
+				setPosition(new Vector3f(imFloat));;
+			}
+			ImGui.popID();
+		}
+		
+		{
+			ImGui.pushID("Rotation:");
+			ImGui.text("Rotation:");
+			ImGui.sameLine();
+			Vector3f val = rotation;
+			float[] imFloat = {val.x, val.y, val.z};
+			if (ImGui.inputFloat3("", imFloat)) {
+				setRotation(new Vector3f(imFloat));;
+			}
+			ImGui.popID();
+		}
+		
+		{
+			ImGui.pushID("Scale:");
+			ImGui.text("Scale:");
+			ImGui.sameLine();
+			Vector3f val = scale;
+			float[] imFloat = {val.x, val.y, val.z};
+			if (ImGui.inputFloat3("", imFloat)) {
+				setScale(new Vector3f(imFloat));;
+			}
+			ImGui.popID();
+		}
+	}
+	
+	
 
 }
