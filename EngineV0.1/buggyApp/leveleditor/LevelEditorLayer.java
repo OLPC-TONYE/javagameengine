@@ -4,12 +4,14 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 
+import assets.Asset;
 import engine.EngineManager;
 import engine.EntityManager;
 import entities.Drawable;
 import entities.Entity;
 import entitiesComponents.Component;
-import entitiesComponents.MeshComponent;
+import entitiesComponents.LightingComponent;
+import entitiesComponents.MeshRenderer;
 import entitiesComponents.ScriptComponent;
 import entitiesComponents.SpriteRenderer;
 import entitiesComponents.Transform;
@@ -18,9 +20,11 @@ import events.EventLevel;
 import events.ImGuiLayerRenderEvent;
 import gui.FileExplorer;
 import gui.Guizmos;
+import imgui.ImColor;
 import imgui.ImGui;
 import imgui.ImVec2;
 import imgui.flag.ImGuiButtonFlags;
+import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiCond;
 import imgui.flag.ImGuiDragDropFlags;
 import imgui.flag.ImGuiMouseCursor;
@@ -64,9 +68,11 @@ public class LevelEditorLayer extends Layer
 	float[] guizmo_pixelData = new float[3];
 	
 	Entity editorCamera;
+	Entity light;
+	
 	@Override
 	public void attach() {
-
+		EngineManager.loadDefaultAssets();
 		screen = new Framebuffer(1024, 600);
 		renderer = new Renderer3D();
 		renderer2 = new RendererDebug();
@@ -78,11 +84,23 @@ public class LevelEditorLayer extends Layer
 
 		editorCamera = EngineManager.createCamera();
 		editorCamera.start();
+		
+		light = new Entity();
+		light.setName("Sun");
+		Transform transform = new Transform();
+		transform.setPosition(new Vector3f(0, 0, 2));
+		light.addComponent(transform);
+		LightingComponent lighting = new LightingComponent();
+//		lighting.defaultLight();
+		lighting.spotLight();
+		light.addComponent(lighting);		
+		light.start();
 
 		System.out.println("Level Loaded");
 
 		levelScene.init();
 		levelScene.setCamera(editorCamera);
+		levelScene.setMainLight(light);
 
 		editorCamera.addComponent(new ScriptComponent());
 		ScriptComponent controller = editorCamera.getComponent(ScriptComponent.class);
@@ -285,6 +303,85 @@ public class LevelEditorLayer extends Layer
 
 	private void beginAssetExplorer() {
 		ImGui.begin("Assets");
+		
+		if (ImGui.beginPopupContextWindow(ImGuiPopupFlags.MouseButtonRight | ImGuiPopupFlags.NoOpenOverItems)) {
+			
+			if(ImGui.beginMenu("Create")) {
+				
+				if(ImGui.beginMenu("Mesh")) {
+					
+					if(ImGui.menuItem("Cube")) {
+						
+					}
+					ImGui.separator();
+					if(ImGui.menuItem("From OBJ")) {
+						
+					}
+					ImGui.endMenu();
+				}
+				
+
+				if(ImGui.menuItem("Sprite")) {
+					
+					
+					
+				}
+				
+				ImGui.endMenu();
+			}
+			ImGui.endPopup();
+		}
+		
+		ImGui.pushStyleColor(ImGuiCol.Button, ImColor.floatToColor(1, 1, 1, 0));
+		ImGui.pushStyleColor(ImGuiCol.ButtonHovered, ImColor.floatToColor(1, 1, 1, 0.2f));
+		ImGui.pushStyleColor(ImGuiCol.ButtonActive, ImColor.floatToColor(1, 1, 1, 0.2f));
+		
+		int i = 0;
+		for (Asset asset : EngineManager.assets.values()) {
+			float WindowPosX = ImGui.getWindowPosX();
+			float WindowSizeX = ImGui.getWindowSizeX();
+			float ItemSpacingX = ImGui.getStyle().getItemSpacingX();
+			float windowX2 = WindowPosX + WindowSizeX;
+
+						
+			String assetIcon;
+			switch (asset.getAssetType())
+			{
+				case Mesh:
+					assetIcon = "Mesh";
+					break;
+				default:
+					assetIcon = "FileIcon";
+					break;
+			}
+
+			ImGui.pushID(i);
+			ImGui.beginGroup();
+			ImGui.imageButton(EngineManager.getIconTexture(assetIcon).getTextureID(), 100, 80);
+			if (ImGui.beginDragDropSource()) {
+				ImGui.setDragDropPayload("buggy_asset", asset);
+				ImGui.text(asset.getAssetType()+" : " + asset.getAssetName());
+				ImGui.endDragDropSource();
+			}
+			ImVec2 text_size = new ImVec2();
+			ImGui.calcTextSize(text_size , asset.getAssetName());
+			
+			ImGui.setCursorPosX((ImGui.getCursorPosX() + 100/2) - text_size.x/2.1f);
+			ImGui.text(asset.getAssetName());
+			ImGui.endGroup();
+			ImGui.popID();
+
+			i++;
+			float lastPosX = ImGui.getItemRectMaxX();
+			float nextPosX = lastPosX + ItemSpacingX + 100;
+
+			if (nextPosX < windowX2) {
+				ImGui.sameLine();
+			}
+		}
+		
+		ImGui.popStyleColor(3);
+		
 		for (Texture texture : EngineManager.textureAssets.values()) {
 
 			float WindowPosX = ImGui.getWindowPosX();
@@ -464,13 +561,13 @@ public class LevelEditorLayer extends Layer
 					this.selectedEntity = new_Entity.getName();
 				}
 
-				if (ImGui.menuItem("Cube")) {
+				if (ImGui.menuItem("Mesh")) {
 					Entity new_Entity = new Entity();
 					new_Entity.addComponent(new Transform());
-					MeshComponent m = new MeshComponent();
-					m.setTexture("white");
+					MeshRenderer m = new MeshRenderer();
+					m.setTexture("first");
 					new_Entity.addComponent(m);
-					boolean success = EntityManager.add(new_Entity, "Cube");
+					boolean success = EntityManager.add(new_Entity, "Mesh");
 					if (!success) {
 						System.out.println("Failed to Add " + new_Entity.getName());
 					}

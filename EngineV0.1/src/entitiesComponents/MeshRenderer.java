@@ -2,49 +2,30 @@ package entitiesComponents;
 
 import org.joml.Vector3f;
 
+import assets.Asset;
+import assets.AssetType;
+import assets.mesh.Material;
+import assets.mesh.Mesh;
 import engine.EngineManager;
 import imgui.ImGui;
 import imgui.flag.ImGuiColorEditFlags;
+import imgui.flag.ImGuiComboFlags;
+import imgui.flag.ImGuiCond;
+import imgui.type.ImBoolean;
 import opengl.VertexArrayObject;
-import tools.MeshLoader;
 
-public class MeshComponent extends Component{
-
-	float[] positions = {			
-			/* */-0.5f,0.5f,-0.5f, /* */-0.5f,-0.5f,-0.5f, /* */0.5f,-0.5f,-0.5f, /* */0.5f,0.5f,-0.5f,	
-			/* */-0.5f,0.5f,0.5f, /* */-0.5f,-0.5f,0.5f, /* */0.5f,-0.5f,0.5f, /* */0.5f,0.5f,0.5f,	
-			/* */0.5f,0.5f,-0.5f, /* */0.5f,-0.5f,-0.5f, /* */0.5f,-0.5f,0.5f,	/* */0.5f,0.5f,0.5f,
-			/* */-0.5f,0.5f,-0.5f,	/* */-0.5f,-0.5f,-0.5f,	/* */-0.5f,-0.5f,0.5f,	/* */-0.5f,0.5f,0.5f,
-			/* */-0.5f,0.5f,0.5f, /* */-0.5f,0.5f,-0.5f, /* */0.5f,0.5f,-0.5f, /* */0.5f,0.5f,0.5f,
-			/* */-0.5f,-0.5f,0.5f, /* */-0.5f,-0.5f,-0.5f, /* */0.5f,-0.5f,-0.5f, /* */0.5f,-0.5f,0.5f
-	};
+public class MeshRenderer extends Component{
 	
-	int[] indices = {
-			/* */0,1,3,	/* */3,1,2,	/* */4,5,7, /* */7,5,6, /* */8,9,11, /* */11,9,10, /* */12,13,15, /* */15,13,14, /* */16,17,19,
-			/* */19,17,18, /* */20,21,23, /* */23,21,22
-
-	};
-	
-	float[] textureCoords = {
-			
-			/* */0,0, /* */0,1, /* */1,1, /* */1,0,			
-			/* */0,0, /* */0,1, /* */1,1, /* */1,0,			
-			/* */0,0, /* */0,1, /* */1,1, /* */1,0,
-			/* */0,0, /* */0,1, /* */1,1, /* */1,0,
-			/* */0,0, /* */0,1, /* */1,1, /* */1,0,
-			/* */0,0, /* */0,1, /* */1,1, /* */1,0
-			
-	};
-
-	VertexArrayObject mesh;
+	VertexArrayObject vao;
+	Mesh mesh;
 	Vector3f colour = new Vector3f(1, 1, 1);
 	
 	String textureName = "white";
+	private ImBoolean preview = new ImBoolean();
 	
 	@Override
 	public void prepare() {
-//		mesh = EngineManager.loadToVAO(positions, indices, textureCoords);
-		mesh = MeshLoader.loadRawObjModel("dragon");
+		
 	}
 
 	@Override
@@ -56,12 +37,16 @@ public class MeshComponent extends Component{
 		return this.colour;
 	}
 
-	public VertexArrayObject getMesh() {
-		return this.mesh;
+	public void setMesh(Mesh mesh) {
+		this.mesh = mesh;
 	}
 
+	public Mesh getMesh() {
+		return this.mesh;
+	}
+	
 	public String getTexture() {
-		return this.getTexture();
+		return this.textureName;
 	}
 	
 	public int getTextureID() {
@@ -71,7 +56,7 @@ public class MeshComponent extends Component{
 	public void setTexture(String textureName) {
 		this.textureName = textureName;
 	}
-	
+		
 	@Override
 	public void UI() {
 		
@@ -81,22 +66,77 @@ public class MeshComponent extends Component{
 			this.colour.set(imFloat);
 		}
 		
+		ImGui.pushID("Mesh:");
+		ImGui.text("Mesh: ");
+				
+		ImGui.sameLine();
+		
+		{	// Mesh
+			String previewValue = mesh != null ? mesh.getAssetName(): "" ;
+			if(ImGui.beginCombo("", previewValue, ImGuiComboFlags.NoArrowButton)) {
+							
+				ImGui.endCombo();
+			}
+		}
+		
+		if(mesh != null) {
+			ImGui.separator();
+			
+					
+			{	// Material
+				Material material = mesh.getMaterial() != null ? mesh.getMaterial() : null;
+				
+				ImGui.pushID("Material:");
+				ImGui.text("Material: ");
+				
+				ImGui.sameLine();
+				String previewValue = material != null ? material.getAssetName(): "" ;
+				if(ImGui.beginCombo("", previewValue, ImGuiComboFlags.NoArrowButton)) {
+								
+					ImGui.endCombo();
+				}
+				
+				
+				
+				ImGui.popID();
+			}
+		}
+
+		if (ImGui.beginDragDropTarget()) {
+            final Object payload = ImGui.acceptDragDropPayload("buggy_asset");
+            if (payload != null && payload instanceof Asset) {
+            	Asset asset = (Asset) payload;
+            	if(asset.getAssetType() == AssetType.Mesh) {
+            		mesh = (Mesh) asset;
+            		vao = mesh.getVertexArray();
+            	}
+            }
+            ImGui.endDragDropTarget();
+        }
+		ImGui.popID();
+		
 		ImGui.pushID("Texture Preview");
 		ImGui.text("Preview: ");
 		ImGui.sameLine();
-		if(ImGui.imageButton(getTextureID(), 
-				30, 30, textureCoords[0], textureCoords[1], textureCoords[4], textureCoords[5])) {
-//        	ImGui.openPopup("Tilemap");
+		if(ImGui.imageButton(getTextureID(), 30, 30, 0, 0, 1, 1)) {
+        	ImGui.openPopup(getTexture()+"Preview");
         }
 		if (ImGui.beginDragDropTarget()) {
             final Object payload = ImGui.acceptDragDropPayload("payload_type");
             if (payload != null) {
                 setTexture((String) payload);
-//                this.entity.modified();
             }
             ImGui.endDragDropTarget();
         }
+		
+		ImGui.setNextWindowSize(300, 300, ImGuiCond.Once);
+		if(ImGui.beginPopupModal(getTexture()+"Preview", preview)) {
+			ImGui.image(getTextureID(), ImGui.getContentRegionAvailX(), ImGui.getContentRegionAvailY());			
+			ImGui.endPopup();
+		}
 		ImGui.popID();
+		
+		
 	}
 
 }

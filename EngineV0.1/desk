@@ -9,8 +9,8 @@ Size=400,400
 Collapsed=0
 
 [Window][Assets]
-Pos=298,664
-Size=1095,316
+Pos=298,659
+Size=1095,321
 Collapsed=0
 DockId=0x00000004,0
 
@@ -22,7 +22,7 @@ DockId=0x00000002,0
 
 [Window][Game]
 Pos=298,34
-Size=1095,628
+Size=1095,623
 Collapsed=0
 DockId=0x00000001,0
 
@@ -39,7 +39,7 @@ Collapsed=0
 DockId=0x00000007,0
 
 [Window][Dear ImGui Demo]
-Pos=802,3
+Pos=801,3
 Size=520,900
 Collapsed=1
 
@@ -59,13 +59,13 @@ Size=843,446
 Collapsed=0
 
 [Window][Stacked 1]
-Pos=626,380
+Pos=627,380
 Size=430,228
 Collapsed=0
 
 [Window][Example: Constrained Resize]
 Pos=60,60
-Size=500,500
+Size=800,200
 Collapsed=0
 
 [Window][Example: Documents]
@@ -160,7 +160,7 @@ Size=273,160
 Collapsed=0
 
 [Window][Stacked 2]
-Pos=724,448
+Pos=726,448
 Size=231,92
 Collapsed=0
 
@@ -171,6 +171,16 @@ Collapsed=0
 
 [Window][DockSpace Demo]
 Size=1680,988
+Collapsed=0
+
+[Window][whitePreview]
+Pos=623,295
+Size=300,300
+Collapsed=0
+
+[Window][firstPreview]
+Pos=717,369
+Size=300,300
 Collapsed=0
 
 [Table][0xD0F0C6E3,2]
@@ -250,15 +260,37 @@ Column 0  Width=76
 Column 1  Width=76
 Column 2  Width=76
 
+[Table][0xC179E37C,3]
+RefScale=20
+Column 0  Width=133 Sort=0v
+Column 1  Width=69
+Column 2  Width=-1
+
+[Table][0x20DF7A63,4]
+RefScale=20
+Column 0  Width=39 Sort=0v
+Column 1  Width=58
+Column 2  Width=45
+Column 3  Weight=1.0000
+
+[Table][0xDA36A7E0,6]
+RefScale=20
+Column 0  Width=39 Sort=0v
+Column 1  Width=58
+Column 2  Width=85
+Column 3  Width=79
+Column 4  Weight=1.0000
+Column 5  Width=-1
+
 [Docking][Data]
 DockSpace         ID=0xA086D808 Pos=68,184 Size=685,850 CentralNode=1 Selected=0x8BB04FA5
 DockSpace         ID=0xD6BDBBC4 Window=0x6CE2B512 Pos=8,34 Size=1664,946 Split=X Selected=0x83199EB2
   DockNode        ID=0x00000007 Parent=0xD6BDBBC4 SizeRef=288,946 Selected=0x3468653E
   DockNode        ID=0x00000009 Parent=0xD6BDBBC4 SizeRef=1374,946 Split=X
     DockNode      ID=0x00000005 Parent=0x00000009 SizeRef=1095,946 Split=Y
-      DockNode    ID=0x00000003 Parent=0x00000005 SizeRef=1664,628 Split=X
+      DockNode    ID=0x00000003 Parent=0x00000005 SizeRef=1664,623 Split=X
         DockNode  ID=0x00000001 Parent=0x00000003 SizeRef=1311,946 CentralNode=1 Selected=0x83199EB2
         DockNode  ID=0x00000002 Parent=0x00000003 SizeRef=351,946 Selected=0x07CD2889
-      DockNode    ID=0x00000004 Parent=0x00000005 SizeRef=1664,316 Selected=0x7E7D78B8
+      DockNode    ID=0x00000004 Parent=0x00000005 SizeRef=1664,321 Selected=0x7E7D78B8
     DockNode      ID=0x00000006 Parent=0x00000009 SizeRef=277,946 Selected=0xF4DD1496
 

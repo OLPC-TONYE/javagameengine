@@ -51,7 +51,7 @@ public class SpriteRenderer extends Component {
 				this.textureCords = EngineManager.ENGINE_SPRITE_SQUARE_TEXTURECOORDS;
 			}
 			
-			mesh = EngineManager.loadToVAO(EngineManager.ENGINE_SPRITE_SQUARE, EngineManager.ENGINE_SPRITE_SQUARE_INDICES, textureCords);
+			mesh = EngineManager.loadToVAO(EngineManager.ENGINE_SPRITE_SQUARE, textureCords, EngineManager.ENGINE_SPRITE_SQUARE_NORMALS, EngineManager.ENGINE_SPRITE_SQUARE_INDICES);
 			
 		}
 		firstTimeStart = false;

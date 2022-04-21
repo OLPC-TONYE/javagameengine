@@ -12,11 +12,14 @@ import java.util.Map;
 
 import org.joml.Vector3f;
 
+import assets.Asset;
+import assets.mesh.Mesh;
 import entities.Entity;
 import entitiesComponents.CameraComponent;
 import entitiesComponents.Transform;
 import opengl.Texture;
 import opengl.VertexArrayObject;
+import tools.MeshLoader;
 
 public class EngineManager {
 
@@ -24,8 +27,44 @@ public class EngineManager {
 	public final static int ENGINE_CAMERA_ORTHOGRAPHIC = 1;
 	
 	public final static float[] ENGINE_SPRITE_SQUARE = { -0.5f, 0.5f, 0.0f,  -0.5f, -0.5f, 0.0f,  0.5f, -0.5f, 0.0f, 0.5f, 0.5f, 0.0f,};
+	public final static float[] ENGINE_SPRITE_SQUARE_NORMALS = { 0.0f, 0.0f, 1.0f,  0.0f, 0.0f, 1.0f,  0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,};
 	public final static int[] ENGINE_SPRITE_SQUARE_INDICES ={ 0, 1, 3, 3, 1, 2,};
 	public final static float[] ENGINE_SPRITE_SQUARE_TEXTURECOORDS = { 0,0, 0,1,  1,1, 1,0};
+	
+	static float[] positions = {			
+			/* */-0.5f,0.5f,-0.5f, /* */-0.5f,-0.5f,-0.5f, /* */0.5f,-0.5f,-0.5f, /* */0.5f,0.5f,-0.5f,	
+			/* */-0.5f,0.5f,0.5f, /* */-0.5f,-0.5f,0.5f, /* */0.5f,-0.5f,0.5f, /* */0.5f,0.5f,0.5f,	
+			/* */0.5f,0.5f,-0.5f, /* */0.5f,-0.5f,-0.5f, /* */0.5f,-0.5f,0.5f,	/* */0.5f,0.5f,0.5f,
+			/* */-0.5f,0.5f,-0.5f,	/* */-0.5f,-0.5f,-0.5f,	/* */-0.5f,-0.5f,0.5f,	/* */-0.5f,0.5f,0.5f,
+			/* */-0.5f,0.5f,0.5f, /* */-0.5f,0.5f,-0.5f, /* */0.5f,0.5f,-0.5f, /* */0.5f,0.5f,0.5f,
+			/* */-0.5f,-0.5f,0.5f, /* */-0.5f,-0.5f,-0.5f, /* */0.5f,-0.5f,-0.5f, /* */0.5f,-0.5f,0.5f
+	};
+	
+	static int[] indices = {
+			/* */0,1,3,	/* */3,1,2,	/* */4,5,7, /* */7,5,6, /* */8,9,11, /* */11,9,10, /* */12,13,15, /* */15,13,14, /* */16,17,19,
+			/* */19,17,18, /* */20,21,23, /* */23,21,22
+
+	};
+	
+	static float[] textureCoords = {
+			
+			/* */0,0, /* */0,1, /* */1,1, /* */1,0,			
+			/* */0,0, /* */0,1, /* */1,1, /* */1,0,			
+			/* */0,0, /* */0,1, /* */1,1, /* */1,0,
+			/* */0,0, /* */0,1, /* */1,1, /* */1,0,
+			/* */0,0, /* */0,1, /* */1,1, /* */1,0,
+			/* */0,0, /* */0,1, /* */1,1, /* */1,0
+			
+	};
+	
+	static float[] normals = {
+			/* */0.0f,0.0f,-1.0f, /* */0.0f,0.0f,-1.0f, /* */0.0f,0.0f,-1.0f, /* */0.0f,0.0f,-1.0f, 
+			/* */0.0f,0.0f,1.0f, /* */0.0f,0.0f,1.0f, /* */0.0f,0.0f,1.0f, /* */0.0f,0.0f,1.0f, 
+			/* */1.0f,0.0f,0.0f, /* */1.0f,0.0f,0.0f, /* */1.0f,0.0f,0.0f, /* */1.0f,0.0f,0.0f, 
+			/* */-1.0f,0.0f,0.0f, /* */-1.0f,0.0f,0.0f, /* */-1.0f,0.0f,0.0f, /* */-1.0f,0.0f,0.0f, 
+			/* */0.0f,1.0f,0.0f, /* */0.0f,1.0f,0.0f, /* */0.0f,1.0f,0.0f, /* */0.0f,1.0f,0.0f, 
+			/* */0.0f,-1.0f,0.0f, /* */0.0f,-1.0f,0.0f, /* */0.0f,-1.0f,0.0f, /* */0.0f,-1.0f,0.0f,
+	};
 	
 	protected static List<Integer> vaos = new ArrayList<Integer>();
 	protected static List<Integer> vbos = new ArrayList<Integer>();
@@ -34,6 +73,56 @@ public class EngineManager {
 		
 	public static Map<String, Texture> textureAssets = new HashMap<>();
 	public static Map<String, Texture> iconTextureAssets = new HashMap<>();
+	
+	public static Map<String, Mesh> meshAssets =  new HashMap<>();
+	
+	public static Map<String, Asset> assets =  new HashMap<>();
+	
+	static Mesh cube = new Mesh("cube", positions, textureCoords, normals, indices);
+	static Mesh dragon = MeshLoader.loadFromObj("dragon");
+	
+	public static String getAvailName(String name) {
+		String newName = name;
+		int count = 0;
+		while(meshAssets.containsKey(newName)) {
+			count++;
+			newName = name+" "+count;
+		}
+		return newName;
+	}
+	
+	public static boolean hasAsset(String assetName) {
+		if(assets.containsKey(assetName)) {
+			return true;
+		}
+		return false;
+	}
+	
+	public static Asset getAsset(String assetName) {
+		if(assets.containsKey(assetName)) {
+			return assets.get(assetName);
+		}else {
+			return Asset.NullAsset;
+		}
+	}
+	
+	public static void loadDefaultAssets() {
+		meshAssets.put(cube.getAssetName(), cube);
+		meshAssets.put(dragon.getAssetName(), dragon);
+		assets.put(cube.getAssetName(), cube);
+		assets.put(dragon.getAssetName(), dragon);
+	}
+	
+	public static void addMesh(Mesh mesh) {
+		meshAssets.put(mesh.getAssetName(), mesh);
+	}
+	
+	public static Mesh getMesh(String name) {
+		if(meshAssets.containsKey(name)) {
+			return meshAssets.get(name);
+		}
+		return null;
+	}
 	
 	public static Texture getTexture(String textureName) {
 		String path = "assets/textures/"+textureName+".png";
@@ -74,17 +163,30 @@ public class EngineManager {
 	
 //	===============================================================
 	
-	public static VertexArrayObject loadToVAO(float[] vertices, float[] normals,  float[] textureCords, int[] indices) {
+	public static VertexArrayObject loadToVAO(Mesh mesh) {
+		VertexArrayObject create = new VertexArrayObject();
+		vaos.add(create.getId());
+		create.addVertexBufferObject("indices", mesh.getIndices());
+		create.setCount(mesh.getIndices().length);
+		create.addVertexBufferObject("positions", 0, 3, mesh.getVertices());
+		create.addVertexBufferObject("textureCords", 1, 2, mesh.getTextureUVs());
+		create.addVertexBufferObject("normals", 2, 3, mesh.getNormals());
+		mesh.setVertexArray(create);
+		return create;
+	}
+	
+	public static VertexArrayObject loadToVAO(float[] vertices, float[] textureCords,  float[] normals, int[] indices) {
 		VertexArrayObject create = new VertexArrayObject();
 		vaos.add(create.getId());
 		create.addVertexBufferObject("indices", indices);
 		create.setCount(indices.length);
 		create.addVertexBufferObject("positions", 0, 3, vertices);
 		create.addVertexBufferObject("textureCords", 1, 2, textureCords);
+		create.addVertexBufferObject("normals", 2, 3, normals);
 		return create;
 	}
 	
-	public static VertexArrayObject loadToVAO(float[] vertices, int[] indices, float[] textureCords) {
+	public static VertexArrayObject loadToVAO(float[] vertices, float[] textureCords, int[] indices) {
 		VertexArrayObject create = new VertexArrayObject();
 		vaos.add(create.getId());
 		create.addVertexBufferObject("indices", indices);

@@ -117,6 +117,11 @@ public class Maths {
 		transformationMatrix.scale(scale);
 		return transformationMatrix;
 	}
+	 
+	public static Matrix4f getInvertedMatrix(Matrix4f matrix) {
+		Matrix4f inverted = new Matrix4f(matrix).invert();	
+		return inverted;
+	}
 	
 	public static boolean intersectSurfacePlane(Vector3f plane, Vector3f position, Vector3f scale) {
 		float distance = plane.distance(position);

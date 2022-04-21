@@ -16,15 +16,23 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
 import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 
+import org.joml.Vector3f;
+
+import assets.light.Attenuation;
+import assets.light.PointLight;
+import assets.light.SpotLight;
+import assets.mesh.Material;
 import engine.EntityManager;
 import entities.Entity;
 import entitiesComponents.CameraComponent;
-import entitiesComponents.MeshComponent;
+import entitiesComponents.LightingComponent;
+import entitiesComponents.MeshRenderer;
 import entitiesComponents.SpriteRenderer;
 import entitiesComponents.Transform;
 import opengl.Shader;
 import opengl.VertexArrayObject;
 import scenes.Scene;
+import tools.Maths;
 
 public class Renderer3D extends Renderer{
 
@@ -33,6 +41,7 @@ public class Renderer3D extends Renderer{
 		this.shader = new Shader("default");
 		shader.bindAttribute(0, "position");
 		shader.bindAttribute(1, "textureCords");
+		shader.bindAttribute(2, "normals");
 		shader.link();
 	}
 	
@@ -50,14 +59,50 @@ public class Renderer3D extends Renderer{
 		// TODO Auto-generated method stub
 		
 	}
+	
+	protected void loadPointLight(String uniformName, PointLight light, Vector3f position) {
+		shader.loadVector3(uniformName+".colour", light.getColour());
+		shader.loadVector3(uniformName+".position", position);
+		shader.loadFloat(uniformName+".intensity", light.getIntensity());
+		loadAttenuation(uniformName+".att", light.getAttenuation());
+	}
+	
+	protected void loadSpotLight(String uniformName, SpotLight light, Vector3f position) {
+		shader.loadVector3(uniformName+".colour", light.getColour());
+		shader.loadVector3(uniformName+".position", position);
+		shader.loadVector3(uniformName+".direction", light.getDirection());
+		shader.loadFloat(uniformName+".intensity", light.getIntensity());
+		shader.loadFloat(uniformName+".cutOffAngle", light.getCutOffAngle());
+		loadAttenuation(uniformName+".att", light.getAttenuation());
+	}
+	
+	protected void loadAttenuation(String uniformName, Attenuation att) {
+		shader.loadFloat(uniformName+".constant", att.getConstant());
+		shader.loadFloat(uniformName+".linear", att.getExponent());
+		shader.loadFloat(uniformName+".exponent", att.getLinear());
+	}
+	
+	protected void loadMaterial(String uniformName, Material material) {
+		shader.loadVector4(uniformName+".ambient", material.getAmbient());
+		shader.loadVector4(uniformName+".diffuse", material.getDiffuse());
+		shader.loadVector4(uniformName+".specular", material.getSpecular());
+		
+		shader.loadFloat(uniformName+".reflectivity", material.getReflectivity());
+		shader.loadFloat(uniformName+".specularPower", material.getSpecularPower());
+	}
 
 	@Override
 	public void render(Scene scene) {
 		beginScene();
+		
 		CameraComponent inGameCamera = scene.main_camera.getComponent(CameraComponent.class);
+		LightingComponent inGameLight = scene.main_light.getComponent(LightingComponent.class);
 		
 		shader.loadMatrix("projectionMatrix", inGameCamera.getProjectionMatrix());
-		shader.loadMatrix("viewMatrix", inGameCamera.getViewMatrix());
+		shader.loadMatrix("inverseViewMatrix", Maths.getInvertedMatrix(inGameCamera.getViewMatrix()));
+		shader.loadMatrix("viewMatrix", inGameCamera.getViewMatrix());		
+//		loadPointLight("pointLight", (PointLight) inGameLight.getLight(), scene.main_light.getComponent(Transform.class).getPosition());
+		loadSpotLight("spotLight", (SpotLight) inGameLight.getLight(), scene.main_light.getComponent(Transform.class).getPosition());
 		
 		shader.start();
 		for(Entity entity: scene.renderList) {
@@ -73,12 +118,17 @@ public class Renderer3D extends Renderer{
 			
 			VertexArrayObject vao = null;
 			
-			if(entity.getComponent(MeshComponent.class)!= null) {
-				MeshComponent mesh = entity.getComponent(MeshComponent.class);
+			if(entity.getComponent(MeshRenderer.class)!= null) {
+				MeshRenderer mesh = entity.getComponent(MeshRenderer.class);
 				shader.loadVector3("colour", mesh.getColour());
 				
 				glBindTexture(GL_TEXTURE_2D, mesh.getTextureID());
-				vao = mesh.getMesh();
+				if(mesh.getMesh() != null) {
+					if(mesh.getMesh().getVertexArray() != null ) {
+						vao = mesh.getMesh().getVertexArray();
+					}
+					loadMaterial("material", mesh.getMesh().getMaterial());
+				}
 			}else if(entity.getComponent(SpriteRenderer.class)!= null) {
 				SpriteRenderer sprite = entity.getComponent(SpriteRenderer.class);
 				shader.loadVector3("colour", sprite.getColour());
@@ -86,19 +136,24 @@ public class Renderer3D extends Renderer{
 				glBindTexture(GL_TEXTURE_2D, sprite.getTextureID());
 				vao = sprite.getMesh();
 			}
-					
-			vao.bind();
-			glEnableVertexAttribArray(0);
-			glEnableVertexAttribArray(1);
-			glActiveTexture(GL_TEXTURE0);
+				
+			if(vao != null) {
+				vao.bind();
+				glEnableVertexAttribArray(0);
+				glEnableVertexAttribArray(1);
+				glEnableVertexAttribArray(2);
+				glActiveTexture(GL_TEXTURE0);
+				
+				glDrawElements(GL_TRIANGLES, vao.getCount(), GL_UNSIGNED_INT, 0);
+				
+				glDisableVertexAttribArray(0);
+				glDisableVertexAttribArray(1);
+				glDisableVertexAttribArray(2);
+				glActiveTexture(GL_TEXTURE0);
+				glBindTexture(GL_TEXTURE_2D, 0);
+				vao.unbind();
+			}
 			
-			glDrawElements(GL_TRIANGLES, vao.getCount(), GL_UNSIGNED_INT, 0);
-			
-			glDisableVertexAttribArray(0);
-			glDisableVertexAttribArray(1);
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, 0);
-			vao.unbind();
 		}
 		shader.stop();
 		endScene();
