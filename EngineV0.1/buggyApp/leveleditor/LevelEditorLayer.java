@@ -88,11 +88,9 @@ public class LevelEditorLayer extends Layer
 		light = new Entity();
 		light.setName("Sun");
 		Transform transform = new Transform();
-		transform.setPosition(new Vector3f(0, 0, 2));
+		transform.setPosition(new Vector3f(0, 10, 0));
 		light.addComponent(transform);
 		LightingComponent lighting = new LightingComponent();
-//		lighting.defaultLight();
-		lighting.spotLight();
 		light.addComponent(lighting);		
 		light.start();
 

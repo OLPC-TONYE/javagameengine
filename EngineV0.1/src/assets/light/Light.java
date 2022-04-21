@@ -7,24 +7,22 @@ import assets.AssetType;
 
 public abstract class Light extends Asset {
 
-	float intensity;
+	float intensity = 0.6f;
 	Vector3f colour = new Vector3f(1);
+	LightFlags flag;
 	
 	/**
 	 * @param colour
 	 * @param intensity
 	 * @param attenuation
 	 */
-	public Light(Vector3f colour, float intensity) {
+	public Light() {
 		super("Light", AssetType.Light);
-		this.colour = colour;
-		this.intensity = intensity;
+
 	}
 	
-	public Light(String tag, Vector3f colour, float intensity) {
+	public Light(String tag) {
 		super(tag, AssetType.Light);
-		this.colour = colour;
-		this.intensity = intensity;
 	}
 
 	public float getIntensity() {
@@ -43,4 +41,12 @@ public abstract class Light extends Asset {
 		this.colour = colour;
 	}
 
+	public LightFlags getFlag() {
+		return flag;
+	}
+
+	public void setFlag(LightFlags flag) {
+		this.flag = flag;
+	}
+	
 }

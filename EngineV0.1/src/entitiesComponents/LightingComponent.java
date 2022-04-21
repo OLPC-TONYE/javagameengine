@@ -1,15 +1,22 @@
 package entitiesComponents;
 
-import org.joml.Vector3f;
-
-import assets.light.Attenuation;
+import assets.light.DirectionalLight;
 import assets.light.Light;
-import assets.light.PointLight;
-import assets.light.SpotLight;
 
+
+/**
+ * 
+ * LightingComponent
+ * 
+ * <p>
+ * Component for light entities
+ * 
+ * @author Charles-Okhide Tonye
+ *
+ */
 public class LightingComponent extends Component {
 	
-	private Light light;
+	private Light light = new DirectionalLight();
 
 	@Override
 	public void prepare() {
@@ -23,22 +30,9 @@ public class LightingComponent extends Component {
 		
 	}
 
-	public Vector3f getColour() {
-		return light.getColour();
-	}
-
-	public void setColour(Vector3f colour) {
-		this.light.setColour(colour);
-	}
-
-	public void defaultLight() {
-		light = new PointLight(new Vector3f(1), new Vector3f(), 1, new Attenuation(1, 0.01f, 0.002f));
-	}
-	
-	public void spotLight() {
-		light = new SpotLight(new Vector3f(0, 1, 0),  new Vector3f(0, 0, -1), 1f, 30.0f, new Attenuation(1, 0.05f, 0.2f));
-	}
-
+	/**
+	 * @return {@code Light} current light values
+	 */	
 	public Light getLight() {
 		return light;
 	}

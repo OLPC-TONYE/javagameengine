@@ -1,38 +1,45 @@
 package assets.light;
 
-import org.joml.Vector3f;
-
 public class PointLight extends Light {
 	
-	Attenuation attenuation;
+	Attenuation attenuation = new Attenuation(1, 0.0f, 0.0f);
 
 	/**
-	 * @param colour
-	 * @param direction
-	 * @param intensity
-	 * @param attenuation
+	 * <b>PointLight</b>
+	 * 
+	 * <p>
+	 * Light in a single point with attenuation
 	 */
-	public PointLight(Vector3f colour, Vector3f direction, float intensity, Attenuation attenuation) {
-		super(colour, intensity);
-		this.attenuation = attenuation;
+	public PointLight() {
+		super();
+		flag = LightFlags.Point;
 	}
 
 	/**
-	 * @param tag
-	 * @param colour
-	 * @param direction
-	 * @param intensity
-	 * @param attenuation
+	 * PointLight
+	 * 
+	 * <p>
+	 * Light in a single point with attenuation
+	 * 
+	 * @param tag name of Light
 	 */
-	public PointLight(String tag, Vector3f colour, Vector3f direction, float intensity, Attenuation attenuation) {
-		super(tag, colour, intensity);
-		this.attenuation = attenuation;
+	public PointLight(String tag) {
+		super(tag);
+		flag = LightFlags.Point;
 	}
 
+	/**
+	 * Returns the attenuation of the light
+	 * @return attenuation
+	 */
 	public Attenuation getAttenuation() {
 		return attenuation;
 	}
 
+	/**
+	 * Sets the attenuation of the light
+	 * @param attenuation
+	 */
 	public void setAttenuation(Attenuation attenuation) {
 		this.attenuation = attenuation;
 	}

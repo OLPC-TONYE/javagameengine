@@ -13,6 +13,8 @@ public abstract class Scene {
 	public Entity main_camera;
 	public Entity main_light;
 	
+	public boolean useAmbient = true;
+	
 	public List<Entity> renderList = new ArrayList<>();
 		
 	public abstract void init();

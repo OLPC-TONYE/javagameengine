@@ -19,6 +19,8 @@ import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 import org.joml.Vector3f;
 
 import assets.light.Attenuation;
+import assets.light.DirectionalLight;
+import assets.light.LightFlags;
 import assets.light.PointLight;
 import assets.light.SpotLight;
 import assets.mesh.Material;
@@ -58,6 +60,13 @@ public class Renderer3D extends Renderer{
 	protected void endScene() {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	protected void loadDirectionalLight(String uniformName, DirectionalLight light, Vector3f position) {
+		shader.loadVector3(uniformName+".colour", light.getColour());
+		shader.loadVector3(uniformName+".position", position);
+		shader.loadVector3(uniformName+".direction", light.getDirection());
+		shader.loadFloat(uniformName+".intensity", light.getIntensity());
 	}
 	
 	protected void loadPointLight(String uniformName, PointLight light, Vector3f position) {
@@ -100,9 +109,19 @@ public class Renderer3D extends Renderer{
 		
 		shader.loadMatrix("projectionMatrix", inGameCamera.getProjectionMatrix());
 		shader.loadMatrix("inverseViewMatrix", Maths.getInvertedMatrix(inGameCamera.getViewMatrix()));
-		shader.loadMatrix("viewMatrix", inGameCamera.getViewMatrix());		
-//		loadPointLight("pointLight", (PointLight) inGameLight.getLight(), scene.main_light.getComponent(Transform.class).getPosition());
-		loadSpotLight("spotLight", (SpotLight) inGameLight.getLight(), scene.main_light.getComponent(Transform.class).getPosition());
+		shader.loadMatrix("viewMatrix", inGameCamera.getViewMatrix());
+		
+		if(scene.useAmbient == true) {
+			shader.loadFloat("ambientLightFactor", 0.7f);
+		}
+		
+		if(inGameLight.getLight().getFlag() == LightFlags.Point) {
+			loadPointLight("pointLight", (PointLight) inGameLight.getLight(), scene.main_light.getComponent(Transform.class).getPosition());	
+		}else if(inGameLight.getLight().getFlag() == LightFlags.Directional){
+			loadDirectionalLight("directionalLight", (DirectionalLight) inGameLight.getLight(), scene.main_light.getComponent(Transform.class).getPosition());
+		}else {
+			loadSpotLight("spotLight", (SpotLight) inGameLight.getLight(), scene.main_light.getComponent(Transform.class).getPosition());
+		}
 		
 		shader.start();
 		for(Entity entity: scene.renderList) {
