@@ -1,57 +1,41 @@
 package entitiesComponents;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.joml.Vector3f;
-
+import assets.Asset;
+import assets.AssetType;
+import assets.mesh.Mesh;
+import assets.sprite.Sprite;
 import engine.EngineManager;
 import imgui.ImGui;
-import imgui.flag.ImGuiColorEditFlags;
+import imgui.flag.ImGuiComboFlags;
 import imgui.type.ImInt;
-import opengl.VertexArrayObject;
 
 public class SpriteRenderer extends Component {
-
-	private Vector3f colour;
-	private VertexArrayObject mesh;
 	
-	private String textureName;
+	Mesh mesh;
+	Sprite sprite;
+	
 	private float[] textureCords;
 	
 //	TileMap
-	private boolean isTilemap;
-	private List<float[]> tilemap;
-	private int number_of_tiles;
-	private int current_tile;
-	private int tile_width;
-	private int tile_height;
-	private int spacing;
+	private int current_tile = 1;
 		
-	public SpriteRenderer(Vector3f colour) {
-		this.colour = colour;
-	}
-	
-	public SpriteRenderer(String texture) {
-		this.textureName = texture;
-		this.colour = new Vector3f(1,1,1);
+	public SpriteRenderer() {
+		
 	}
 	
 	@Override
 	public void prepare() {
 		if(firstTimeStart) {
-			if(colour == null) {
-				colour = new Vector3f(1,1,1);
+
+			if(sprite != null) {
+				if(sprite.isTilemap()) {
+					sprite.calculateTileMap();
+					this.textureCords = getFromTilemap(current_tile);
+				}else {
+					this.textureCords = EngineManager.ENGINE_SPRITE_SQUARE_TEXTURECOORDS;
+				}
 			}
 			
-			if(isTilemap) {
-				calculateTileMap(tile_width, tile_height, number_of_tiles, spacing);
-				this.textureCords = getFromTilemap(current_tile);
-			}else {
-				this.textureCords = EngineManager.ENGINE_SPRITE_SQUARE_TEXTURECOORDS;
-			}
-			
-			mesh = EngineManager.loadToVAO(EngineManager.ENGINE_SPRITE_SQUARE, textureCords, EngineManager.ENGINE_SPRITE_SQUARE_NORMALS, EngineManager.ENGINE_SPRITE_SQUARE_INDICES);
 			
 		}
 		firstTimeStart = false;
@@ -61,204 +45,194 @@ public class SpriteRenderer extends Component {
 	public void update(double dt) {
 
 		if(entity.ifModified()) {
-			if(isTilemap) {
-				calculateTileMap(tile_width, tile_height, number_of_tiles, spacing);
-				this.textureCords = getFromTilemap(current_tile);
-			}else {
-				this.textureCords = EngineManager.ENGINE_SPRITE_SQUARE_TEXTURECOORDS;
+			if(sprite != null) {
+				if(sprite.isTilemap()) {
+					sprite.calculateTileMap();
+					this.textureCords = getFromTilemap(current_tile);
+				}else {
+					this.textureCords = EngineManager.ENGINE_SPRITE_SQUARE_TEXTURECOORDS;
+				}
 			}
-			mesh.modifyVertexBufferObject("textureCords", textureCords);
+			if(mesh != null)
+			mesh.getVertexArray().modifyVertexBufferObject("textureCords", textureCords);
 		}
 		
 	}
 	
 	public int getTextureID() {
-		return EngineManager.getTexture(textureName).getTextureID();
+		return EngineManager.getTexture(sprite.getTextureName()).getTextureID();
 	}
 	
 	public float[] getFromTilemap(int index) {
-		if(index > tilemap.size()-1) {
+		if(index > sprite.getTilemap().size()-1) {
 			index = 0;
 			this.current_tile = 0;
 		}
-		return this.tilemap.get(index);
-	}
-	
-	public Vector3f getColour() {
-		return this.colour;
-	}
-	
-	public void toggleSpritesheet() {
-		this.isTilemap = !isTilemap;
+		return sprite.getTilemap().get(index);
 	}
 
-	public VertexArrayObject getMesh() {
+	public Sprite getSprite() {
+		return sprite;
+	}
+
+	public void setSprite(Sprite sprite) {
+		this.sprite = sprite;
+	}
+
+	public Mesh getMesh() {
 		return this.mesh;
 	}
 	
-	public void calculateTileMap(int tileWidth, int tileHeight, int num, int spacing) {
-		
-		this.tilemap = new ArrayList<>();
-		this.number_of_tiles = num;
-		this.isTilemap = true;
-		
-		this.tile_width = tileWidth;
-		this.tile_height = tileHeight;
-		this.spacing = spacing;
-		
-		if(num <= 0) {
-			this.number_of_tiles = 1;
-		}
-		
-		if(tileWidth <= 0) {
-			this.tile_width = 1;
-		}
-		if(tileHeight <= 0) {
-			this.tile_height = 1;
-		}
-				
-		int imageWidth = EngineManager.getTexture(textureName).getWidth();
-		int imageHeight= EngineManager.getTexture(textureName).getHeight();
-		
-		//=================================
-		// Get All Sprites From SpriteSheet
-		//=================================
-		
-		//Start From First Row
-		int currentX = 0;
-		int currentY = 0;
-		
-		for(int i=0; i < number_of_tiles; i++) {
-			float topY = (currentY + tile_width) / (float)imageHeight;
-			float rightX = (currentX + tile_height) / (float)imageWidth;
-			float leftX = currentX / (float)imageWidth;
-			float bottomY = currentY / (float)imageHeight;
-			
-			// Get Texture Cords
-			float[] textureCoords = { 	leftX,	bottomY, 
-										leftX,	topY,
-										rightX,	topY, 	
-										rightX,	bottomY};
-			// Add To Array
-			this.tilemap.add(textureCoords);
-			
-			currentX += tile_width + spacing;
-			if(currentX >= imageWidth) {
-				currentX = 0;
-				currentY -= tile_height + spacing;
-			}
-		}
+	public String getTexture() {
+		return sprite.getTextureName();
 	}
 	
 	@Override
 	public void UI() {
 		// UI Settings
-		Vector3f val = colour;
-		float[] imFloat = {val.x, val.y, val.z};
-		if(ImGui.colorEdit3("Colour", imFloat, ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.NoDragDrop)) {
-			this.colour.set(imFloat);
+		ImGui.pushID("Sprite:");
+		ImGui.text("Sprite: ");
+				
+		ImGui.sameLine();
+		
+		{	// Mesh
+			String previewValue = sprite != null ? sprite.getAssetName(): "" ;
+			if(ImGui.beginCombo("", previewValue, ImGuiComboFlags.NoArrowButton)) {
+				ImGui.endCombo();
+			}
+			
 		}
 		
-		// Variables
-		ImInt sprTotal = new ImInt(this.number_of_tiles);
-		ImInt sprHeight = new ImInt(this.tile_height);
-		ImInt sprWidth = new ImInt(this.tile_width);
+		if (ImGui.beginDragDropTarget()) {
+            final Object payload = ImGui.acceptDragDropPayload("buggy_asset");
+            if (payload != null && payload instanceof Asset) {
+            	Asset asset = (Asset) payload;
+            	if(asset.getAssetType() == AssetType.Sprite) {
+            		sprite = (Sprite) asset;
+            	}
+            }
+            ImGui.endDragDropTarget();
+        }
+		ImGui.popID();
 		
-		if(ImGui.checkbox("TileMap", isTilemap)) {
-			toggleSpritesheet();
-			this.entity.modified();
-		}
-		
-		if (isTilemap) {
-			// 
-			ImGui.pushID("Number of Tiles");
-			ImGui.text("Number of Tiles:");
+		if(sprite != null) {
+			
+			ImGui.pushID("Mesh:");
+			ImGui.text("Mesh: ");
+					
 			ImGui.sameLine();
-			if (ImGui.inputInt("", sprTotal)) {
-				this.number_of_tiles = sprTotal.get();
+			
+			{	// Mesh
+				String previewValue = mesh != null ? mesh.getAssetName(): "" ;
+				if(ImGui.beginCombo("", previewValue, ImGuiComboFlags.NoArrowButton)) {
+					ImGui.endCombo();
+				}
+				
+			}
+			
+			if (ImGui.beginDragDropTarget()) {
+	            final Object payload = ImGui.acceptDragDropPayload("buggy_asset");
+	            if (payload != null && payload instanceof Asset) {
+	            	Asset asset = (Asset) payload;
+	            	if(asset.getAssetType() == AssetType.Mesh) {
+	            		mesh = (Mesh) asset;
+	            	}
+	            }
+	            ImGui.endDragDropTarget();
+	        }
+			ImGui.popID();
+			
+			// Variables
+			ImInt sprTotal = new ImInt(sprite.getNumberOfTiles());
+			ImInt sprHeight = new ImInt(sprite.getTileHeight());
+			ImInt sprWidth = new ImInt(sprite.getTileWidth());
+			
+			if(ImGui.checkbox("TileMap", sprite.isTilemap())) {
+				sprite.toggleTileMap();
 				this.entity.modified();
 			}
-			ImGui.popID();
 			
-			ImGui.pushID("Tile Height");
-			ImGui.text("Tile Height:");
-			ImGui.sameLine();
-			if (ImGui.inputInt("", sprHeight)) {
-				this.tile_height = sprHeight.get();
-				this.entity.modified();
-			}
-			ImGui.popID();
-			
-			ImGui.pushID("Tile Width");
-			ImGui.text("Tile Width:");
-			ImGui.sameLine();
-			if (ImGui.inputInt("", sprWidth)) {
-				this.tile_width = sprWidth.get();
-				this.entity.modified();
-			} 
-			ImGui.popID();
-			
-			if(number_of_tiles > 0) {
-				ImGui.pushID("Tile Preview");
-				ImGui.text("Preview: ");
+			if (sprite.isTilemap()) {
+				// 
+				ImGui.pushID("Number of Tiles");
+				ImGui.text("Number of Tiles:");
 				ImGui.sameLine();
-				float[] tile_cords = tilemap.get(current_tile);
-				if(ImGui.imageButton(getTextureID(), 
-						30, 30, tile_cords[0], tile_cords[1], tile_cords[4], tile_cords[5])) {
-	            	ImGui.openPopup("Tilemap");
-	            }
-	    		ImGui.setNextWindowSize(500, 240);
-	            if(ImGui.beginPopup("Tilemap")) {
-	            	
-	            	//--------------------------------------
-	            	if(ImGui.button("X")) {
-	            		ImGui.closeCurrentPopup();
-	            	}
-	            	// 
-	            	float WindowPosX = ImGui.getWindowPosX();
-	            	float WindowSizeX = ImGui.getWindowSizeX();
-	            	float ItemSpacingX = ImGui.getStyle().getItemSpacingX();
-	            	float windowX2 = WindowPosX + WindowSizeX;
-	            	
-	            	for(int i=0; i < number_of_tiles; i++) {
-	            		
-	            		float[] tile_cords1 = tilemap.get(i);
-	            		
-	            		// Change ID For each icon
-	            		ImGui.pushID(i);
-	            		if(ImGui.imageButton(getTextureID(), 
-	            				100, 100, tile_cords1[0], tile_cords1[1], tile_cords1[4], tile_cords1[5])) {
-	            			this.current_tile = i;
-	            			this.entity.modified();
-	            		}
-	            		ImGui.popID();
-	            		// Change ID For each icon -------------
-	            		
-	            		float lastPosX = ImGui.getItemRectMaxX();
-	            		float nextPosX = lastPosX + ItemSpacingX + 100;
-	            		
-	            		if(i + 1 < number_of_tiles && nextPosX < windowX2) {
-	            			ImGui.sameLine();
-	            		}
-	            	}
-	            	ImGui.endPopup();
-	            	
-	            }
+				if (ImGui.inputInt("", sprTotal)) {
+					sprite.setNumberOfTiles(sprTotal.get());
+					this.entity.modified();
+				}
 				ImGui.popID();
+				
+				ImGui.pushID("Tile Height");
+				ImGui.text("Tile Height:");
+				ImGui.sameLine();
+				if (ImGui.inputInt("", sprHeight)) {
+					sprite.setTileHeight(sprHeight.get());
+					this.entity.modified();
+				}
+				ImGui.popID();
+				
+				ImGui.pushID("Tile Width");
+				ImGui.text("Tile Width:");
+				ImGui.sameLine();
+				if (ImGui.inputInt("", sprWidth)) {
+					sprite.setTileWidth(sprWidth.get());
+					this.entity.modified();
+				} 
+				ImGui.popID();
+				
+				if(sprite.getNumberOfTiles() > 0) {
+					ImGui.pushID("Tile Preview");
+					ImGui.text("Preview: ");
+					ImGui.sameLine();
+					float[] tile_cords = sprite.getTilemap().get(current_tile);
+					if(ImGui.imageButton(getTextureID(), 
+							30, 30, tile_cords[0], tile_cords[1], tile_cords[4], tile_cords[5])) {
+		            	ImGui.openPopup("Tilemap");
+		            }
+		    		ImGui.setNextWindowSize(500, 240);
+		            if(ImGui.beginPopup("Tilemap")) {
+		            	
+		            	//--------------------------------------
+		            	if(ImGui.button("X")) {
+		            		ImGui.closeCurrentPopup();
+		            	}
+		            	// 
+		            	float WindowPosX = ImGui.getWindowPosX();
+		            	float WindowSizeX = ImGui.getWindowSizeX();
+		            	float ItemSpacingX = ImGui.getStyle().getItemSpacingX();
+		            	float windowX2 = WindowPosX + WindowSizeX;
+		            	
+		            	for(int i=0; i < sprite.getNumberOfTiles(); i++) {
+		            		
+		            		float[] tile_cords1 = sprite.getTilemap().get(i);
+		            		
+		            		// Change ID For each icon
+		            		ImGui.pushID(i);
+		            		if(ImGui.imageButton(getTextureID(), 
+		            				100, 100, tile_cords1[0], tile_cords1[1], tile_cords1[4], tile_cords1[5])) {
+		            			this.current_tile = i;
+		            			this.entity.modified();
+		            		}
+		            		ImGui.popID();
+		            		// Change ID For each icon -------------
+		            		
+		            		float lastPosX = ImGui.getItemRectMaxX();
+		            		float nextPosX = lastPosX + ItemSpacingX + 100;
+		            		
+		            		if(i + 1 < sprite.getNumberOfTiles() && nextPosX < windowX2) {
+		            			ImGui.sameLine();
+		            		}
+		            	}
+		            	ImGui.endPopup();
+		            	
+		            }
+					ImGui.popID();
+				}
+				
 			}
-			
 		}
-
-//        	
-//        } else {
-//			
-//			ImGui.imageButton(Texture.getTextureID(), 100, 100, 0, 0, 1, 1);                	
-//			
-//		}
-		
+//		sprite
 	}
-
-	public String getTexture() {
-		return this.textureName;
-	}
+	
 }

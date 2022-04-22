@@ -5,6 +5,7 @@ import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 
 import assets.Asset;
+import assets.sprite.Sprite;
 import engine.EngineManager;
 import engine.EntityManager;
 import entities.Drawable;
@@ -39,7 +40,6 @@ import main.Application;
 import main.Layer;
 import main.Window;
 import opengl.Framebuffer;
-import opengl.Texture;
 import opengl.VertexArrayObject;
 import renderer.Renderer3D;
 import renderer.RendererDebug;
@@ -342,20 +342,24 @@ public class LevelEditorLayer extends Layer
 			float windowX2 = WindowPosX + WindowSizeX;
 
 						
-			String assetIcon;
+			int assetIcon;
 			switch (asset.getAssetType())
 			{
 				case Mesh:
-					assetIcon = "Mesh";
+					assetIcon = EngineManager.getIconTexture("Mesh").getTextureID();
+					break;
+				case Sprite:
+					Sprite sprite = (Sprite) asset;
+					assetIcon = EngineManager.getTexture(sprite.getTextureName()).getTextureID();
 					break;
 				default:
-					assetIcon = "FileIcon";
+					assetIcon = EngineManager.getIconTexture("FileIcon").getTextureID();
 					break;
 			}
 
 			ImGui.pushID(i);
 			ImGui.beginGroup();
-			ImGui.imageButton(EngineManager.getIconTexture(assetIcon).getTextureID(), 100, 80);
+			ImGui.imageButton(assetIcon, 100, 80);
 			if (ImGui.beginDragDropSource()) {
 				ImGui.setDragDropPayload("buggy_asset", asset);
 				ImGui.text(asset.getAssetType()+" : " + asset.getAssetName());
@@ -380,28 +384,28 @@ public class LevelEditorLayer extends Layer
 		
 		ImGui.popStyleColor(3);
 		
-		for (Texture texture : EngineManager.textureAssets.values()) {
-
-			float WindowPosX = ImGui.getWindowPosX();
-			float WindowSizeX = ImGui.getWindowSizeX();
-			float ItemSpacingX = ImGui.getStyle().getItemSpacingX();
-			float windowX2 = WindowPosX + WindowSizeX;
-
-			ImGui.imageButton(texture.getTextureID(), 100, 100);
-			if (ImGui.beginDragDropSource()) {
-				ImGui.setDragDropPayload("payload_type", texture.getName());
-				ImGui.text("Drag started : " + texture.getName());
-				ImGui.endDragDropSource();
-			}
-
-			float lastPosX = ImGui.getItemRectMaxX();
-			float nextPosX = lastPosX + ItemSpacingX + 100;
-
-			if (nextPosX < windowX2) {
-				ImGui.sameLine();
-			}
-
-		}
+//		for (Texture texture : EngineManager.textureAssets.values()) {
+//
+//			float WindowPosX = ImGui.getWindowPosX();
+//			float WindowSizeX = ImGui.getWindowSizeX();
+//			float ItemSpacingX = ImGui.getStyle().getItemSpacingX();
+//			float windowX2 = WindowPosX + WindowSizeX;
+//
+//			ImGui.imageButton(texture.getTextureID(), 100, 100);
+//			if (ImGui.beginDragDropSource()) {
+//				ImGui.setDragDropPayload("payload_type", texture.getName());
+//				ImGui.text("Drag started : " + texture.getName());
+//				ImGui.endDragDropSource();
+//			}
+//
+//			float lastPosX = ImGui.getItemRectMaxX();
+//			float nextPosX = lastPosX + ItemSpacingX + 100;
+//
+//			if (nextPosX < windowX2) {
+//				ImGui.sameLine();
+//			}
+//
+//		}
 
 		ImGui.end();
 	}
@@ -550,7 +554,7 @@ public class LevelEditorLayer extends Layer
 				if (ImGui.menuItem("Sprite")) {
 					Entity new_Entity = new Entity();
 					new_Entity.addComponent(new Transform());
-					new_Entity.addComponent(new SpriteRenderer("spritesheet"));
+					new_Entity.addComponent(new SpriteRenderer());
 					boolean success = EntityManager.add(new_Entity, "Sprite");
 					if (!success) {
 						System.out.println("Failed to Add " + new_Entity.getName());
@@ -563,7 +567,7 @@ public class LevelEditorLayer extends Layer
 					Entity new_Entity = new Entity();
 					new_Entity.addComponent(new Transform());
 					MeshRenderer m = new MeshRenderer();
-					m.setTexture("first");
+					m.setTexture("white");
 					new_Entity.addComponent(m);
 					boolean success = EntityManager.add(new_Entity, "Mesh");
 					if (!success) {

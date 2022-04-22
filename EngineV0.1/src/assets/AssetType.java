@@ -1,8 +1,9 @@
 package assets;
 
 public enum AssetType {
+	Light,
 	Mesh,
 	Material,
-	Light,
 	Null,
+	Sprite,
 }

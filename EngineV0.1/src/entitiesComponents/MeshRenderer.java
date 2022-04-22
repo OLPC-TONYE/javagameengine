@@ -1,6 +1,6 @@
 package entitiesComponents;
 
-import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 import assets.Asset;
 import assets.AssetType;
@@ -12,13 +12,10 @@ import imgui.flag.ImGuiColorEditFlags;
 import imgui.flag.ImGuiComboFlags;
 import imgui.flag.ImGuiCond;
 import imgui.type.ImBoolean;
-import opengl.VertexArrayObject;
 
 public class MeshRenderer extends Component{
 	
-	VertexArrayObject vao;
 	Mesh mesh;
-	Vector3f colour = new Vector3f(1, 1, 1);
 	
 	String textureName = "white";
 	private ImBoolean preview = new ImBoolean();
@@ -33,10 +30,6 @@ public class MeshRenderer extends Component{
 		
 	}
 	
-	public Vector3f getColour() {
-		return this.colour;
-	}
-
 	public void setMesh(Mesh mesh) {
 		this.mesh = mesh;
 	}
@@ -60,12 +53,6 @@ public class MeshRenderer extends Component{
 	@Override
 	public void UI() {
 		
-		Vector3f val = colour;
-		float[] imFloat = {val.x, val.y, val.z};
-		if(ImGui.colorEdit3("Colour", imFloat, ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.NoDragDrop)) {
-			this.colour.set(imFloat);
-		}
-		
 		ImGui.pushID("Mesh:");
 		ImGui.text("Mesh: ");
 				
@@ -77,7 +64,20 @@ public class MeshRenderer extends Component{
 							
 				ImGui.endCombo();
 			}
+			
 		}
+		
+		if (ImGui.beginDragDropTarget()) {
+            final Object payload = ImGui.acceptDragDropPayload("buggy_asset");
+            if (payload != null && payload instanceof Asset) {
+            	Asset asset = (Asset) payload;
+            	if(asset.getAssetType() == AssetType.Mesh) {
+            		mesh = (Mesh) asset;
+            	}
+            }
+            ImGui.endDragDropTarget();
+        }
+		ImGui.popID();
 		
 		if(mesh != null) {
 			ImGui.separator();
@@ -96,30 +96,81 @@ public class MeshRenderer extends Component{
 					ImGui.endCombo();
 				}
 				
+				if(material != null) {
+					
+					
+					{
+						ImGui.pushID("Ambient");
+						ImGui.text("Ambient: ");
+						ImGui.sameLine();
+						Vector4f val = material.getAmbient();
+						float[] vals = {val.x, val.y, val.z, val.w};
+						if(ImGui.colorEdit4("", vals, ImGuiColorEditFlags.NoInputs)) {
+							val.set(vals);
+						}
+						ImGui.popID();
+					}
+					
+					{
+						ImGui.pushID("Diffuse");
+						ImGui.text("Diffuse: ");
+						ImGui.sameLine();
+						Vector4f val = material.getDiffuse();
+						float[] vals = {val.x, val.y, val.z, val.w};
+						if(ImGui.colorEdit4("", vals, ImGuiColorEditFlags.NoInputs)) {
+							val.set(vals);
+						}
+						ImGui.popID();
+					}
+					
+					{
+						ImGui.pushID("Specular");
+						ImGui.text("Specular: ");
+						ImGui.sameLine();
+						Vector4f val = material.getSpecular();
+						float[] vals = {val.x, val.y, val.z, val.w};
+						if(ImGui.colorEdit4("", vals, ImGuiColorEditFlags.NoInputs)) {
+							val.set(vals);
+						}
+						ImGui.popID();
+					}
+					
+					{
+						ImGui.pushID("Reflectivity");
+						ImGui.text("Reflectivity: ");
+						ImGui.sameLine();
+						float val = material.getReflectivity();
+						float[] vals = {val};
+						if(ImGui.dragFloat("", vals, 0.01f, 0, 1)) {
+							material.setReflectivity(vals[0]);
+						}
+						ImGui.popID();
+					}
+					
+					{
+						ImGui.pushID("Shininess");
+						ImGui.text("Shininess: ");
+						ImGui.sameLine();
+						float val = material.getSpecularPower();
+						float[] vals = {val};
+						if(ImGui.dragFloat("", vals, 0.1f, 0, 20)) {
+							material.setSpecularPower(vals[0]);
+						}
+						ImGui.popID();
+					}
+				}
 				
 				
 				ImGui.popID();
 			}
 		}
-
-		if (ImGui.beginDragDropTarget()) {
-            final Object payload = ImGui.acceptDragDropPayload("buggy_asset");
-            if (payload != null && payload instanceof Asset) {
-            	Asset asset = (Asset) payload;
-            	if(asset.getAssetType() == AssetType.Mesh) {
-            		mesh = (Mesh) asset;
-            		vao = mesh.getVertexArray();
-            	}
-            }
-            ImGui.endDragDropTarget();
-        }
-		ImGui.popID();
-		
+	
 		ImGui.pushID("Texture Preview");
 		ImGui.text("Preview: ");
 		ImGui.sameLine();
 		if(ImGui.imageButton(getTextureID(), 30, 30, 0, 0, 1, 1)) {
         	ImGui.openPopup(getTexture()+"Preview");
+        	preview.set(true);
         }
 		if (ImGui.beginDragDropTarget()) {
             final Object payload = ImGui.acceptDragDropPayload("payload_type");

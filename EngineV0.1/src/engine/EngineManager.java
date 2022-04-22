@@ -14,6 +14,7 @@ import org.joml.Vector3f;
 
 import assets.Asset;
 import assets.mesh.Mesh;
+import assets.sprite.Sprite;
 import entities.Entity;
 import entitiesComponents.CameraComponent;
 import entitiesComponents.Transform;
@@ -81,6 +82,12 @@ public class EngineManager {
 	static Mesh cube = new Mesh("cube", positions, textureCoords, normals, indices);
 	static Mesh dragon = MeshLoader.loadFromObj("dragon");
 	
+	static Mesh square = new Mesh("square", ENGINE_SPRITE_SQUARE, ENGINE_SPRITE_SQUARE_TEXTURECOORDS, ENGINE_SPRITE_SQUARE_NORMALS, ENGINE_SPRITE_SQUARE_INDICES);
+	
+	
+	static Sprite texture = new Sprite("first");
+	static Sprite whitesprite = new Sprite();
+	
 	public static String getAvailName(String name) {
 		String newName = name;
 		int count = 0;
@@ -107,10 +114,18 @@ public class EngineManager {
 	}
 	
 	public static void loadDefaultAssets() {
+		
+		texture.setTextureName("spritesheet");
+		whitesprite.setTextureName("white");
+		
 		meshAssets.put(cube.getAssetName(), cube);
 		meshAssets.put(dragon.getAssetName(), dragon);
+		meshAssets.put(square.getAssetName(), square);
 		assets.put(cube.getAssetName(), cube);
 		assets.put(dragon.getAssetName(), dragon);
+		assets.put(square.getAssetName(), square);
+		assets.put(texture.getAssetName(), texture);
+		assets.put(whitesprite.getAssetName(), whitesprite);
 	}
 	
 	public static void addMesh(Mesh mesh) {

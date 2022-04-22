@@ -139,21 +139,24 @@ public class Renderer3D extends Renderer{
 			
 			if(entity.getComponent(MeshRenderer.class)!= null) {
 				MeshRenderer mesh = entity.getComponent(MeshRenderer.class);
-				shader.loadVector3("colour", mesh.getColour());
-				
-				glBindTexture(GL_TEXTURE_2D, mesh.getTextureID());
-				if(mesh.getMesh() != null) {
+				if(mesh.getMesh() != null) {								
+					glBindTexture(GL_TEXTURE_2D, mesh.getTextureID());
 					if(mesh.getMesh().getVertexArray() != null ) {
 						vao = mesh.getMesh().getVertexArray();
 					}
 					loadMaterial("material", mesh.getMesh().getMaterial());
 				}
 			}else if(entity.getComponent(SpriteRenderer.class)!= null) {
+				// Add Mesh To SpriteRenderer 
 				SpriteRenderer sprite = entity.getComponent(SpriteRenderer.class);
-				shader.loadVector3("colour", sprite.getColour());
-							
-				glBindTexture(GL_TEXTURE_2D, sprite.getTextureID());
-				vao = sprite.getMesh();
+				
+				if(sprite.getSprite() != null && sprite.getMesh() != null) {
+					glBindTexture(GL_TEXTURE_2D, sprite.getTextureID());
+					if(sprite.getMesh().getVertexArray() != null ) {
+						vao = sprite.getMesh().getVertexArray();
+					}
+					loadMaterial("material", sprite.getMesh().getMaterial());
+				}
 			}
 				
 			if(vao != null) {
