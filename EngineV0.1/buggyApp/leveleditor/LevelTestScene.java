@@ -36,8 +36,8 @@ public class LevelTestScene extends Scene{
 
 	@Override
 	public void render(Renderer renderer) {
-		if(main_camera!= null) {
-			float[] colour = main_camera.getComponent(CameraComponent.class).getClearColour();
+		if(primaryCamera!= null) {
+			float[] colour = primaryCamera.getComponent(CameraComponent.class).getClearColour();
 			renderer.clear();
 			renderer.clearColour(colour[0], colour[1], colour[2], colour[3]);
 			for(Entity entityRenderable: game_objects) {		
@@ -60,7 +60,7 @@ public class LevelTestScene extends Scene{
 			}
 		}
 		if(!cameras.isEmpty()) {
-			main_camera = EntityManager.world_entities.get(cameras.get(0));
+			primaryCamera = EntityManager.world_entities.get(cameras.get(0));
 		}
 	}
 

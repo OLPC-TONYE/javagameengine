@@ -175,7 +175,7 @@ public class RendererDebug extends Renderer{
 	@Override
 	public void render(Scene scene) {
 		beginScene();
-		CameraComponent inGameCamera = scene.main_camera.getComponent(CameraComponent.class);
+		CameraComponent inGameCamera = scene.primaryCamera.getComponent(CameraComponent.class);
 		
 		shader.start();
 		shader.loadMatrix("projectionMatrix", inGameCamera.getProjectionMatrix());

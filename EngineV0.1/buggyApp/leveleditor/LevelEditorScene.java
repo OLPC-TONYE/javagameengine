@@ -23,7 +23,7 @@ public class LevelEditorScene extends Scene{
 	@Override
 	public void render(Renderer renderer) {
 
-		if(main_camera!= null) {
+		if(primaryCamera!= null) {
 			for(Entity entityRenderable: EntityManager.world_entities.values()) {		
 				addToRenderList(entityRenderable);
 			}

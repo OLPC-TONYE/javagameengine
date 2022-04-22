@@ -38,6 +38,9 @@ import tools.Maths;
 
 public class Renderer3D extends Renderer{
 
+	private static final int MAX_POINTLIGHTS = 5;
+	private static final int MAX_SPOTLIGHTS = 5;
+
 	@Override
 	protected void prepare() {
 		this.shader = new Shader("default");
@@ -76,6 +79,10 @@ public class Renderer3D extends Renderer{
 		loadAttenuation(uniformName+".att", light.getAttenuation());
 	}
 	
+	protected void loadEmptyLight(String uniformName) {
+		shader.loadFloat(uniformName+".intensity", 0);
+	}
+	
 	protected void loadSpotLight(String uniformName, SpotLight light, Vector3f position) {
 		shader.loadVector3(uniformName+".colour", light.getColour());
 		shader.loadVector3(uniformName+".position", position);
@@ -104,8 +111,8 @@ public class Renderer3D extends Renderer{
 	public void render(Scene scene) {
 		beginScene();
 		
-		CameraComponent inGameCamera = scene.main_camera.getComponent(CameraComponent.class);
-		LightingComponent inGameLight = scene.main_light.getComponent(LightingComponent.class);
+		CameraComponent inGameCamera = scene.primaryCamera.getComponent(CameraComponent.class);
+		
 		
 		shader.loadMatrix("projectionMatrix", inGameCamera.getProjectionMatrix());
 		shader.loadMatrix("inverseViewMatrix", Maths.getInvertedMatrix(inGameCamera.getViewMatrix()));
@@ -115,13 +122,42 @@ public class Renderer3D extends Renderer{
 			shader.loadFloat("ambientLightFactor", 0.7f);
 		}
 		
-		if(inGameLight.getLight().getFlag() == LightFlags.Point) {
-			loadPointLight("pointLight", (PointLight) inGameLight.getLight(), scene.main_light.getComponent(Transform.class).getPosition());	
-		}else if(inGameLight.getLight().getFlag() == LightFlags.Directional){
-			loadDirectionalLight("directionalLight", (DirectionalLight) inGameLight.getLight(), scene.main_light.getComponent(Transform.class).getPosition());
-		}else {
-			loadSpotLight("spotLight", (SpotLight) inGameLight.getLight(), scene.main_light.getComponent(Transform.class).getPosition());
+		int pointLightsCounter = 0;
+		int spotLightsCounter = 0;
+		
+		for(Entity light: scene.lights) {
+			LightingComponent inGameLight = light.getComponent(LightingComponent.class);
+			
+			if(inGameLight.getLight().getFlag() == LightFlags.Point) {
+				if(pointLightsCounter >= MAX_POINTLIGHTS) {
+					continue;
+				}	
+				loadPointLight("pointLight["+pointLightsCounter+"]", (PointLight) inGameLight.getLight(), light.getComponent(Transform.class).getPosition());
+				pointLightsCounter++;
+			}else if(inGameLight.getLight().getFlag() == LightFlags.Spot){
+				if(spotLightsCounter >= MAX_SPOTLIGHTS) {
+					continue;
+				}
+				loadSpotLight("spotLight["+spotLightsCounter+"]", (SpotLight) inGameLight.getLight(), light.getComponent(Transform.class).getPosition());
+				spotLightsCounter++;
+			}else {
+				loadDirectionalLight("directionalLight", (DirectionalLight) inGameLight.getLight(), light.getComponent(Transform.class).getPosition());				
+			}
+			
 		}
+		
+		// If less than MAX amount, fill remaining array index with empty light (i.e has no intensity)
+		for(int i=pointLightsCounter; pointLightsCounter < MAX_POINTLIGHTS; i++) {
+			loadEmptyLight("pointLight["+i+"]");
+			pointLightsCounter++;
+		}
+		
+		// If less than MAX amount, fill remaining array index with empty light (i.e has no intensity)
+		for(int i=spotLightsCounter; spotLightsCounter < MAX_SPOTLIGHTS; i++) {
+			loadEmptyLight("spotLight["+i+"]");
+			spotLightsCounter++;
+		}
+		
 		
 		shader.start();
 		for(Entity entity: scene.renderList) {

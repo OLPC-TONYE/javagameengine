@@ -44,6 +44,9 @@ struct SpotLight
 	Attenuation att;
 };
 
+const int MAX_POINT_LIGHTS = 5;
+const int MAX_SPOT_LIGHTS = 5;
+
 uniform sampler2D textureSampler;
 
 uniform float ambientLightFactor;
@@ -51,8 +54,8 @@ uniform float ambientLightFactor;
 uniform Material material;
 
 uniform DirectionalLight directionalLight;
-uniform PointLight pointLight;
-uniform SpotLight spotLight;
+uniform PointLight pointLight[MAX_POINT_LIGHTS];
+uniform SpotLight spotLight[MAX_SPOT_LIGHTS];
 
 varying vec2 passTextureCords;
 varying vec3 surfaceNormal;
@@ -142,10 +145,22 @@ vec4 calcLight(SpotLight light) {
 
 void main() 
 {	
-	
+	// First calculate directional light
 	vec4 lightColour = calcLight(directionalLight);
-	lightColour += calcLight(pointLight);
-	lightColour += calcLight(spotLight);
+	
+	//Calculate all the point lights
+	for(int i=0; i < MAX_POINT_LIGHTS; i++){
+		if(pointLight[i].intensity > 0){
+			lightColour += calcLight(pointLight[i]);
+		}
+	}
+	
+	// Calculate all the spot lights
+	for(int i=0; i < MAX_SPOT_LIGHTS; i++){
+		if(spotLight[i].intensity > 0){
+			lightColour += calcLight(spotLight[i]);
+		}
+	}
 	
 	vec4 ambient = material.ambient * texture(textureSampler, passTextureCords);
 	vec4 ambientLight = ambient * vec4(ambientLightFactor, ambientLightFactor, ambientLightFactor, 1);

@@ -36,4 +36,8 @@ public class LightingComponent extends Component {
 	public Light getLight() {
 		return light;
 	}
+	
+	public void setLight(Light light) {
+		this.light = light;
+	}
 }

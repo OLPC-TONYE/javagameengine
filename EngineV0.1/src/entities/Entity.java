@@ -6,6 +6,7 @@ import java.util.List;
 
 import entitiesComponents.CameraComponent;
 import entitiesComponents.Component;
+import entitiesComponents.LightingComponent;
 import entitiesComponents.MeshRenderer;
 import entitiesComponents.SpriteRenderer;
 
@@ -102,6 +103,13 @@ public class Entity {
 	
 	public boolean isCamera() {
 		if(this.getComponent(CameraComponent.class) != null) {
+			return true;
+		}
+		return false;
+	}
+
+	public boolean isLight() {
+		if(this.getComponent(LightingComponent.class) != null) {
 			return true;
 		}
 		return false;

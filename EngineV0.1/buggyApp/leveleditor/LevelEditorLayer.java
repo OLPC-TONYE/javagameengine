@@ -5,6 +5,8 @@ import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 
 import assets.Asset;
+import assets.light.PointLight;
+import assets.light.SpotLight;
 import assets.sprite.Sprite;
 import engine.EngineManager;
 import engine.EntityManager;
@@ -69,6 +71,8 @@ public class LevelEditorLayer extends Layer
 	
 	Entity editorCamera;
 	Entity light;
+	private Entity light2;
+	private SpotLight spotlight;
 	
 	@Override
 	public void attach() {
@@ -93,12 +97,25 @@ public class LevelEditorLayer extends Layer
 		LightingComponent lighting = new LightingComponent();
 		light.addComponent(lighting);		
 		light.start();
+		
+		light2 = new Entity();
+		light2.setName("Sun");
+		Transform transform1 = new Transform();
+		transform1.setPosition(new Vector3f(0, 0, 2));
+		light2.addComponent(transform1);
+		LightingComponent lighting1 = new LightingComponent();
+		spotlight = new SpotLight();
+		spotlight.setCutOffAngle((float) Math.toRadians(15.0f));
+		lighting1.setLight(spotlight);
+		light2.addComponent(lighting1);		
+		light2.start();
 
 		System.out.println("Level Loaded");
 
 		levelScene.init();
 		levelScene.setCamera(editorCamera);
-		levelScene.setMainLight(light);
+		levelScene.addLight(light);
+		levelScene.addLight(light2);
 
 		editorCamera.addComponent(new ScriptComponent());
 		ScriptComponent controller = editorCamera.getComponent(ScriptComponent.class);
@@ -120,10 +137,10 @@ public class LevelEditorLayer extends Layer
 		screen.bind();
 		renderer.clear();
 		renderer.clearColour(0.06f, 0.06f, 0.06f, 0.0f);
-		renderer2.drawLines(levelScene.main_camera, lines, new Vector3f(1, 1, 1), new Vector3f(), new Vector3f(), new Vector3f(1));
+		renderer2.drawLines(levelScene.primaryCamera, lines, new Vector3f(1, 1, 1), new Vector3f(), new Vector3f(), new Vector3f(1));
 		levelScene.render(renderer);
 		levelScene.render(renderer2);
-		guizmo.render(levelScene.main_camera);
+		guizmo.render(levelScene.primaryCamera);
 		pixelData = screen.readPixelData(1, (int) viewportMouseHoverX, (int) viewportMouseHoverY);
 		guizmo_pixelData = screen.readPixelData(2, (int) viewportMouseHoverX, (int) viewportMouseHoverY);
 		screen.unbind();
@@ -549,6 +566,10 @@ public class LevelEditorLayer extends Layer
 					}
 					new_Entity.start();
 					this.selectedEntity = new_Entity.getName();
+				}
+				
+				if(ImGui.menuItem("Light")) {
+					
 				}
 
 				if (ImGui.menuItem("Sprite")) {

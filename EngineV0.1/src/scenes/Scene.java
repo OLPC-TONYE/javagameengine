@@ -10,10 +10,12 @@ public abstract class Scene {
 	
 	public String title;
 	
-	public Entity main_camera;
-	public Entity main_light;
+	public Entity primaryCamera;
 	
 	public boolean useAmbient = true;
+	
+	public List<Entity> lights = new ArrayList<>();
+	public List<Entity> cameras = new ArrayList<>();
 	
 	public List<Entity> renderList = new ArrayList<>();
 		
@@ -24,16 +26,14 @@ public abstract class Scene {
 	
 	public void setCamera(Entity camera) {
 		if(camera != null) {
-			main_camera = camera;
+			primaryCamera = camera;
 		}
 	}
 	
-	public void setMainLight(Entity light) {
-		this.main_light = light;
-	}
-	
 	public void addLight(Entity light) {
-		
+		if(light.isLight()) {
+			lights.add(light);
+		}
 	}
 	
 	protected void addToRenderList(Entity entity) {
