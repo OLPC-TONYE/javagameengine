@@ -159,14 +159,11 @@ public class RendererDebug extends Renderer{
 		shader.link();
 	}
 	
-
-	@Override
 	protected void beginScene() {
 		// TODO Auto-generated method stub
 		glEnable(GL_LINE_SMOOTH);
 	}
 
-	@Override
 	protected void endScene() {
 		// TODO Auto-generated method stub
 		glDisable(GL_LINE_SMOOTH);

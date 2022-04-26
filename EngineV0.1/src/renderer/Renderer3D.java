@@ -16,14 +16,10 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
 import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 
-import org.joml.Vector3f;
-
-import assets.light.Attenuation;
 import assets.light.DirectionalLight;
 import assets.light.LightFlags;
 import assets.light.PointLight;
 import assets.light.SpotLight;
-import assets.mesh.Material;
 import engine.EntityManager;
 import entities.Entity;
 import entitiesComponents.CameraComponent;
@@ -42,7 +38,7 @@ public class Renderer3D extends Renderer{
 	private static final int MAX_SPOTLIGHTS = 5;
 
 	@Override
-	protected void prepare() {
+	protected void prepare() {		
 		this.shader = new Shader("default");
 		shader.bindAttribute(0, "position");
 		shader.bindAttribute(1, "textureCords");
@@ -51,65 +47,12 @@ public class Renderer3D extends Renderer{
 	}
 	
 	@Override
-	protected void beginScene() {
-		// TODO Auto-generated method stub
+	public void render(Scene scene) {
+		
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 		
 		glEnable(GL_DEPTH_TEST);
-	}
-
-	@Override
-	protected void endScene() {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	protected void loadDirectionalLight(String uniformName, DirectionalLight light, Vector3f position) {
-		shader.loadVector3(uniformName+".colour", light.getColour());
-		shader.loadVector3(uniformName+".position", position);
-		shader.loadVector3(uniformName+".direction", light.getDirection());
-		shader.loadFloat(uniformName+".intensity", light.getIntensity());
-	}
-	
-	protected void loadPointLight(String uniformName, PointLight light, Vector3f position) {
-		shader.loadVector3(uniformName+".colour", light.getColour());
-		shader.loadVector3(uniformName+".position", position);
-		shader.loadFloat(uniformName+".intensity", light.getIntensity());
-		loadAttenuation(uniformName+".att", light.getAttenuation());
-	}
-	
-	protected void loadEmptyLight(String uniformName) {
-		shader.loadFloat(uniformName+".intensity", 0);
-	}
-	
-	protected void loadSpotLight(String uniformName, SpotLight light, Vector3f position) {
-		shader.loadVector3(uniformName+".colour", light.getColour());
-		shader.loadVector3(uniformName+".position", position);
-		shader.loadVector3(uniformName+".direction", light.getDirection());
-		shader.loadFloat(uniformName+".intensity", light.getIntensity());
-		shader.loadFloat(uniformName+".cutOffAngle", light.getCutOffAngle());
-		loadAttenuation(uniformName+".att", light.getAttenuation());
-	}
-	
-	protected void loadAttenuation(String uniformName, Attenuation att) {
-		shader.loadFloat(uniformName+".constant", att.getConstant());
-		shader.loadFloat(uniformName+".linear", att.getExponent());
-		shader.loadFloat(uniformName+".exponent", att.getLinear());
-	}
-	
-	protected void loadMaterial(String uniformName, Material material) {
-		shader.loadVector4(uniformName+".ambient", material.getAmbient());
-		shader.loadVector4(uniformName+".diffuse", material.getDiffuse());
-		shader.loadVector4(uniformName+".specular", material.getSpecular());
-		
-		shader.loadFloat(uniformName+".reflectivity", material.getReflectivity());
-		shader.loadFloat(uniformName+".specularPower", material.getSpecularPower());
-	}
-
-	@Override
-	public void render(Scene scene) {
-		beginScene();
 		
 		CameraComponent inGameCamera = scene.primaryCamera.getComponent(CameraComponent.class);
 		
@@ -119,7 +62,9 @@ public class Renderer3D extends Renderer{
 		shader.loadMatrix("viewMatrix", inGameCamera.getViewMatrix());
 		
 		if(scene.useAmbient == true) {
-			shader.loadFloat("ambientLightFactor", 0.7f);
+			shader.loadFloat("ambientLightFactor", 1f);
+		}else {
+			shader.loadFloat("ambientLightFactor", 0.1f);
 		}
 		
 		int pointLightsCounter = 0;
@@ -214,7 +159,6 @@ public class Renderer3D extends Renderer{
 			
 		}
 		shader.stop();
-		endScene();
 	}
 	
 	private void prepareInstance(Entity entity) {

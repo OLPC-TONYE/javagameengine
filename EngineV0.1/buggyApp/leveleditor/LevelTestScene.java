@@ -40,13 +40,17 @@ public class LevelTestScene extends Scene{
 			float[] colour = primaryCamera.getComponent(CameraComponent.class).getClearColour();
 			renderer.clear();
 			renderer.clearColour(colour[0], colour[1], colour[2], colour[3]);
-			for(Entity entityRenderable: game_objects) {		
-				if(!entityRenderable.isCamera()) {
-					addToRenderList(entityRenderable);
+			for(Entity entity: game_objects) {		
+				if(!entity.isCamera() && !entity.isLight()) {
+					addToRenderList(entity);
+				}
+				if(entity.isLight()) {
+					addLight(entity);
 				}
 			}
 			renderer.render(this);
 			renderList.clear();
+			lights.clear();
 		}
 	}
 	

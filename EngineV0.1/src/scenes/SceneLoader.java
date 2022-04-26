@@ -19,7 +19,8 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
-
+import assets.Asset;
+import assets.light.Light;
 import engine.EntityManager;
 import entities.Entity;
 import entitiesComponents.Component;
@@ -70,6 +71,32 @@ class ComponentDeserializer implements JsonSerializer<Component>, JsonDeserializ
 	
 }
 
+class AssetDeserializer implements JsonSerializer<Asset>, JsonDeserializer<Asset>{
+
+	@Override
+	public Asset deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+			throws JsonParseException {
+		JsonObject jsonObject = json.getAsJsonObject();
+		String type = jsonObject.get("type").getAsString();
+		JsonElement element = jsonObject.get("properties");
+		
+		try{
+			return context.deserialize(element, Class.forName(type));
+		} catch (ClassNotFoundException e) {
+			throw new JsonParseException("Unknown element type: " + type, e);
+		}
+	}
+
+	@Override
+	public JsonElement serialize(Asset src, Type typeOfSrc, JsonSerializationContext context) {
+		JsonObject result = new JsonObject();
+		result.add("type", new JsonPrimitive(src.getClass().getCanonicalName()));
+		result.add("properties", context.serialize(src, src.getClass()));
+		return result;
+	}
+	
+}
+
 public class SceneLoader {
 	
 	public static Gson serializer = null;
@@ -78,15 +105,17 @@ public class SceneLoader {
 		if(SceneLoader.serializer == null) {
 			SceneLoader.serializer = new GsonBuilder()
 					.setPrettyPrinting()
+					.registerTypeAdapter(Light.class, new AssetDeserializer())
+					.registerTypeAdapter(Asset.class, new AssetDeserializer())
 					.registerTypeAdapter(Component.class, new ComponentDeserializer())
-					.registerTypeAdapter(Entity.class, new EntityDeserializer())
+					.registerTypeAdapter(Entity.class, new EntityDeserializer())					
 					.create();
 		}	
 	}
 	
 	public static void save() {
 		try {
-			FileWriter typist = new FileWriter(new File("level.txt"));
+			FileWriter typist = new FileWriter(new File("savefile.bug"));
 			
 			// First Stop All Entity & Their Components
 			for(Entity entity: EntityManager.world_entities.values()) {
@@ -105,7 +134,7 @@ public class SceneLoader {
 		String fileData = "";
 		
 		try {
-			fileData = new String(Files.readAllBytes(Paths.get("level.txt")));
+			fileData = new String(Files.readAllBytes(Paths.get("savefile.bug")));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -125,7 +154,7 @@ public class SceneLoader {
 	
 	public static ArrayList<Entity> loadToScene() {
 		String fileData = SceneLoader.serializer.toJson(EntityManager.world_entities.values());
-
+		System.out.println(fileData);
 		if(!fileData.equals("")) {
 			Entity[] entities = serializer.fromJson(fileData, Entity[].class);
 			ArrayList<Entity> gameObjects = new ArrayList<Entity>();

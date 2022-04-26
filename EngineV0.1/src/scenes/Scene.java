@@ -12,7 +12,7 @@ public abstract class Scene {
 	
 	public Entity primaryCamera;
 	
-	public boolean useAmbient = true;
+	public boolean useAmbient = false;
 	
 	public List<Entity> lights = new ArrayList<>();
 	public List<Entity> cameras = new ArrayList<>();

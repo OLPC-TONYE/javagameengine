@@ -72,7 +72,7 @@ vec4 calcLight(DirectionalLight light) {
 	
 	float dot1 = dot(unitNormal, unitLightVector);
 	float brightness = max(dot1, 0.0);
-	vec4 diffuse = brightness * material.diffuse * vec4(light.colour, 1.0) * light.intensity;
+	vec4 diffuse = brightness * material.diffuse * texture(textureSampler, passTextureCords) * vec4(light.colour, 1.0) * light.intensity;
 	
 	vec3 unitToCameraVector = normalize(toCameraVector);
 	vec3 lightDirection = -unitLightVector;
@@ -80,7 +80,7 @@ vec4 calcLight(DirectionalLight light) {
 	
 	float specularFactor = max(dot(reflectedLightDirection, unitToCameraVector), 0.0);
 	specularFactor = pow(specularFactor, material.specularPower);
-	vec4 specular = specularFactor * material.specular * material.reflectivity * vec4(light.colour, 1.0) * light.intensity;
+	vec4 specular = specularFactor * material.specular * texture(textureSampler, passTextureCords) * material.reflectivity * vec4(light.colour, 1.0) * light.intensity;
 		
 	return (diffuse + specular);
 }
@@ -93,7 +93,7 @@ vec4 calcLight(PointLight light) {
 	
 	float dot1 = dot(unitNormal, unitLightVector);
 	float brightness = max(dot1, 0.0);
-	vec4 diffuse = brightness * material.diffuse * vec4(light.colour, 1.0) * light.intensity;
+	vec4 diffuse = brightness * material.diffuse * texture(textureSampler, passTextureCords) * vec4(light.colour, 1.0) * light.intensity;
 	
 	vec3 unitToCameraVector = normalize(toCameraVector);
 	vec3 lightDirection = -unitLightVector;
@@ -101,7 +101,7 @@ vec4 calcLight(PointLight light) {
 	
 	float specularFactor = max(dot(reflectedLightDirection, unitToCameraVector), 0.0);
 	specularFactor = pow(specularFactor, material.specularPower);
-	vec4 specular = specularFactor * material.specular * material.reflectivity * vec4(light.colour, 1.0) * light.intensity;
+	vec4 specular = specularFactor * material.specular * texture(textureSampler, passTextureCords) * material.reflectivity * vec4(light.colour, 1.0) * light.intensity;
 	
 	float distance = length(toLight);
 	float attenuationFactor = 1 / (light.att.constant + light.att.linear * distance + light.att.exponent * distance * distance);
@@ -117,7 +117,7 @@ vec4 calcLight(SpotLight light) {
 	
 	float dot1 = dot(unitNormal, unitLightVector);
 	float brightness = max(dot1, 0.0);
-	vec4 diffuse = brightness * material.diffuse * vec4(light.colour, 1.0) * light.intensity;
+	vec4 diffuse = brightness * material.diffuse * texture(textureSampler, passTextureCords)  * vec4(light.colour, 1.0) * light.intensity;
 	
 	vec3 unitToCameraVector = normalize(toCameraVector);
 	vec3 lightDirection = -unitLightVector;
@@ -125,7 +125,7 @@ vec4 calcLight(SpotLight light) {
 	
 	float specularFactor = max(dot(reflectedLightDirection, unitToCameraVector), 0.0);
 	specularFactor = pow(specularFactor, material.specularPower);
-	vec4 specular = specularFactor * material.specular * material.reflectivity * vec4(light.colour, 1.0) * light.intensity;
+	vec4 specular = specularFactor * material.specular * texture(textureSampler, passTextureCords) * material.reflectivity * vec4(light.colour, 1.0) * light.intensity;
 	
 	float distance = length(toLight);
 	float attenuationFactor = 1 / (light.att.constant + light.att.linear * distance + light.att.exponent * distance * distance);

@@ -9,7 +9,7 @@ public class LevelEditorScene extends Scene{
 			
 	@Override
 	public void init() {
-		
+		useAmbient = true;
 	}
 
 	@Override

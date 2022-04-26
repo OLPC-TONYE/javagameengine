@@ -6,7 +6,6 @@ import org.lwjgl.glfw.GLFW;
 
 import assets.Asset;
 import assets.light.PointLight;
-import assets.light.SpotLight;
 import assets.sprite.Sprite;
 import engine.EngineManager;
 import engine.EntityManager;
@@ -71,9 +70,7 @@ public class LevelEditorLayer extends Layer
 	
 	Entity editorCamera;
 	Entity light;
-	private Entity light2;
-	private SpotLight spotlight;
-	
+
 	@Override
 	public void attach() {
 		EngineManager.loadDefaultAssets();
@@ -88,34 +85,11 @@ public class LevelEditorLayer extends Layer
 
 		editorCamera = EngineManager.createCamera();
 		editorCamera.start();
-		
-		light = new Entity();
-		light.setName("Sun");
-		Transform transform = new Transform();
-		transform.setPosition(new Vector3f(0, 10, 0));
-		light.addComponent(transform);
-		LightingComponent lighting = new LightingComponent();
-		light.addComponent(lighting);		
-		light.start();
-		
-		light2 = new Entity();
-		light2.setName("Sun");
-		Transform transform1 = new Transform();
-		transform1.setPosition(new Vector3f(0, 0, 2));
-		light2.addComponent(transform1);
-		LightingComponent lighting1 = new LightingComponent();
-		spotlight = new SpotLight();
-		spotlight.setCutOffAngle((float) Math.toRadians(15.0f));
-		lighting1.setLight(spotlight);
-		light2.addComponent(lighting1);		
-		light2.start();
 
 		System.out.println("Level Loaded");
 
 		levelScene.init();
 		levelScene.setCamera(editorCamera);
-		levelScene.addLight(light);
-		levelScene.addLight(light2);
 
 		editorCamera.addComponent(new ScriptComponent());
 		ScriptComponent controller = editorCamera.getComponent(ScriptComponent.class);
@@ -203,11 +177,11 @@ public class LevelEditorLayer extends Layer
 				}
 				
 				if(ImGui.menuItem("Open")) {
-					
+					SceneLoader.load();
 				}
 				
 				if(ImGui.menuItem("Save")) {
-					
+					SceneLoader.save();
 				}
 				
 				ImGui.endMenu();
@@ -569,7 +543,22 @@ public class LevelEditorLayer extends Layer
 				}
 				
 				if(ImGui.menuItem("Light")) {
-					
+					Entity new_Entity = new Entity();
+					Transform transform1 = new Transform();
+					transform1.setPosition(new Vector3f(0, 0, 2));	
+					new_Entity.addComponent(transform1);
+
+					LightingComponent lighting1 = new LightingComponent();
+					PointLight pointlight = new PointLight();
+					pointlight.setIntensity(0.5f);
+					lighting1.setLight(pointlight);
+					new_Entity.addComponent(lighting1);		
+					boolean success = EntityManager.add(new_Entity, "Light");
+					if (!success) {
+						System.out.println("Failed to Add " + new_Entity.getName());
+					}
+					new_Entity.start();
+					this.selectedEntity = new_Entity.getName();
 				}
 
 				if (ImGui.menuItem("Sprite")) {
@@ -588,7 +577,7 @@ public class LevelEditorLayer extends Layer
 					Entity new_Entity = new Entity();
 					new_Entity.addComponent(new Transform());
 					MeshRenderer m = new MeshRenderer();
-					m.setTexture("white");
+					m.setTexture("first");
 					new_Entity.addComponent(m);
 					boolean success = EntityManager.add(new_Entity, "Mesh");
 					if (!success) {
@@ -691,6 +680,7 @@ class CameraController extends EntityScript
 	@Override
 	public void update(double dt) {
 		
+		// A minor bug (refer to 2022-04-22)
 		cameraTransform = getComponent(Transform.class);
 		float speed = (float) (1 * dt);
 		

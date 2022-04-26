@@ -50,7 +50,11 @@
 			<attribute name="javadoc_location" value="file:/C:/Users/Hosting/JavaProjects/EngineV0.1/lib/ImGui/docs/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/Hosting/JavaProjects/EngineV0.1/lib/gson/gson-2.6.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Hosting/JavaProjects/EngineV0.1/lib/gson/gson-2.6.2.jar" sourcepath="lib/gson/gson-2.6.2-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="file:/C:/Users/Hosting/Eclipse/buggy/EngineV0.1/lib/gson/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="lib" path="C:/Users/Hosting/JavaProjects/EngineV0.1/lib/LWJGL/natives/lwjgl-glfw-natives-windows-x86.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Hosting/JavaProjects/EngineV0.1/lib/LWJGL/natives/lwjgl-natives-windows-x86.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Hosting/JavaProjects/EngineV0.1/lib/LWJGL/natives/lwjgl-openal-natives-windows-x86.jar"/>
