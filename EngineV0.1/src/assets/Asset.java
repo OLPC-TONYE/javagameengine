@@ -20,6 +20,16 @@ public abstract class Asset {
 		return type;
 	}
 	
+	public void setAssetName(String name) {
+		this.name = name;
+	}
+
+	public void setAssetType(AssetType type) {
+		this.type = type;
+	}
+
+	public abstract void copy(Asset from);
+	
 }
 
 
@@ -27,6 +37,11 @@ class NullAsset extends Asset {
 
 	public NullAsset() {
 		super("", AssetType.Null);
+	}
+
+	@Override
+	public void copy(Asset from) {
+		// Nothing to Do
 	}
 	
 }

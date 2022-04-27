@@ -14,7 +14,7 @@ public class Transform extends Component{
 	private Vector3f translate = new Vector3f();
 	private Vector3f rotate = new Vector3f();
 
-	private Matrix4f transformationMatrix;
+	private transient Matrix4f transformationMatrix;
 	
 	private Transform lastTransform;
 

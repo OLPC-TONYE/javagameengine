@@ -73,17 +73,14 @@ public class EngineManager {
 	protected static List<Integer> framebuffers = new ArrayList<Integer>();
 		
 	public static Map<String, Texture> textureAssets = new HashMap<>();
-	public static Map<String, Texture> iconTextureAssets = new HashMap<>();
-	
-	public static Map<String, Mesh> meshAssets =  new HashMap<>();
-	
+	public static Map<String, Texture> iconTextureAssets = new HashMap<>();	
 	public static Map<String, Asset> assets =  new HashMap<>();
 	
-	static Mesh cube = new Mesh("cube", positions, textureCoords, normals, indices);
+	static Mesh defaultCube = new Mesh("cube", positions, textureCoords, normals, indices);
 	static Mesh dragon = MeshLoader.loadFromObj("dragon");
 	
-	static Mesh square = new Mesh("square", ENGINE_SPRITE_SQUARE, ENGINE_SPRITE_SQUARE_TEXTURECOORDS, ENGINE_SPRITE_SQUARE_NORMALS, ENGINE_SPRITE_SQUARE_INDICES);
-	
+	static Mesh defaultSquare = new Mesh("square", ENGINE_SPRITE_SQUARE, ENGINE_SPRITE_SQUARE_TEXTURECOORDS, ENGINE_SPRITE_SQUARE_NORMALS, ENGINE_SPRITE_SQUARE_INDICES);
+	static Asset[] defaults = { defaultCube, defaultSquare};
 	
 	static Sprite texture = new Sprite("first");
 	static Sprite whitesprite = new Sprite();
@@ -91,7 +88,7 @@ public class EngineManager {
 	public static String getAvailName(String name) {
 		String newName = name;
 		int count = 0;
-		while(meshAssets.containsKey(newName)) {
+		while(assets.containsKey(newName)) {
 			count++;
 			newName = name+" "+count;
 		}
@@ -118,27 +115,13 @@ public class EngineManager {
 		texture.setTextureName("spritesheet");
 		whitesprite.setTextureName("white");
 		
-		meshAssets.put(cube.getAssetName(), cube);
-		meshAssets.put(dragon.getAssetName(), dragon);
-		meshAssets.put(square.getAssetName(), square);
-		assets.put(cube.getAssetName(), cube);
-		assets.put(dragon.getAssetName(), dragon);
-		assets.put(square.getAssetName(), square);
+		assets.put(defaultCube.getAssetName(), defaultCube);
+//		assets.put(dragon.getAssetName(), dragon);
+		assets.put(defaultSquare.getAssetName(), defaultSquare);
 		assets.put(texture.getAssetName(), texture);
 		assets.put(whitesprite.getAssetName(), whitesprite);
 	}
-	
-	public static void addMesh(Mesh mesh) {
-		meshAssets.put(mesh.getAssetName(), mesh);
-	}
-	
-	public static Mesh getMesh(String name) {
-		if(meshAssets.containsKey(name)) {
-			return meshAssets.get(name);
-		}
-		return null;
-	}
-	
+
 	public static Texture getTexture(String textureName) {
 		String path = "assets/textures/"+textureName+".png";
 		File file = new File(path);

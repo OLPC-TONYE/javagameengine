@@ -9,11 +9,12 @@ import engine.EngineManager;
 
 public class Sprite extends Asset {
 		
-	String textureName;
+	String textureName = "white";
 	
 //	TileMap
-	boolean isTilemap;
-	List<float[]> tilemap;
+	boolean isTileMap;
+	List<float[]> tilemap = new ArrayList<>();
+	int current_tile = 1;
 	int number_of_tiles;
 	int tile_width = 16;
 	int tile_height = 16;
@@ -52,11 +53,17 @@ public class Sprite extends Asset {
 	}
 
 	public boolean isTilemap() {
-		return isTilemap;
+		return isTileMap;
 	}
 
 	public void toggleTileMap() {
-		this.isTilemap = !isTilemap;
+		this.isTileMap = !isTileMap;
+		calculateTileMap();
+	}
+	
+	public void toggleTileMap(boolean isTileMap) {
+		this.isTileMap = isTileMap;
+		calculateTileMap();
 	}
 
 	public List<float[]> getTilemap() {
@@ -65,6 +72,14 @@ public class Sprite extends Asset {
 
 	public void setTilemap(List<float[]> tilemap) {
 		this.tilemap = tilemap;
+	}
+
+	public int getCurrentTile() {
+		return current_tile;
+	}
+
+	public void setCurrentTile(int current_tile) {
+		this.current_tile = current_tile;
 	}
 
 	public int getNumberOfTiles() {
@@ -102,7 +117,8 @@ public class Sprite extends Asset {
 	public void calculateTileMap() {
 		
 		this.tilemap = new ArrayList<>();
-		this.isTilemap = true;
+		
+		if(this.isTileMap != true) return;
 		
 		if(number_of_tiles <= 0) {
 			this.number_of_tiles = 1;
@@ -146,5 +162,20 @@ public class Sprite extends Asset {
 				currentY -= tile_height + spacing;
 			}
 		}
+	}
+
+	@Override
+	public void copy(Asset from) {
+		if(from == null) return;
+		if(!(from instanceof Sprite)) return;
+		
+		Sprite sprite = (Sprite) from;
+		
+		this.isTileMap = sprite.isTilemap();
+		this.number_of_tiles = sprite.getNumberOfTiles();
+		this.spacing = sprite.getTileSpacing();
+		this.textureName = sprite.getTextureName();
+		this.tile_height = sprite.getTileHeight();
+		this.tile_width = sprite.getTileWidth();
 	}	
 }

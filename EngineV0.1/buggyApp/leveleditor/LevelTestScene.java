@@ -15,7 +15,6 @@ public class LevelTestScene extends Scene{
 
 	@Override
 	public void init() {
-		// TODO Auto-generated method stub
 		game_objects = new ArrayList<>();
 		SceneLoader.ready();
 		game_objects = SceneLoader.loadToScene();
@@ -23,7 +22,6 @@ public class LevelTestScene extends Scene{
 	
 	@Override
 	public void close() {
-		// TODO Auto-generated method stub
 		game_objects.clear();
 	}
 
@@ -36,6 +34,8 @@ public class LevelTestScene extends Scene{
 
 	@Override
 	public void render(Renderer renderer) {
+		renderer.clear();
+		renderer.clearColour(0, 0, 0, 0.4f);
 		if(primaryCamera!= null) {
 			float[] colour = primaryCamera.getComponent(CameraComponent.class).getClearColour();
 			renderer.clear();

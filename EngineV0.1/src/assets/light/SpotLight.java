@@ -2,11 +2,12 @@ package assets.light;
 
 import org.joml.Vector3f;
 
-public class SpotLight extends Light {
+import assets.Asset;
+
+public class SpotLight extends Light implements Attenuation {
 	
 	float cutOffAngle = (float) Math.toRadians(60.0f);
 	Vector3f direction = new Vector3f(0, 0, -1);
-	Attenuation attenuation = new Attenuation(1, 0.01f, 0.02f);
 
 	/**
 	 * Spot Light
@@ -17,6 +18,7 @@ public class SpotLight extends Light {
 	public SpotLight() {
 		super();
 		flag = LightFlags.Spot;
+		attenuation.set(1f, 0.1f, 0.02f);
 	}
 	
 	/**
@@ -29,6 +31,7 @@ public class SpotLight extends Light {
 	public SpotLight(String tag) {
 		super(tag);
 		flag = LightFlags.Spot;
+		attenuation.set(1f, 0.1f, 0.02f);
 	}
 
 	/**
@@ -63,12 +66,10 @@ public class SpotLight extends Light {
 		this.direction = direction;
 	}
 
-	public Attenuation getAttenuation() {
-		return attenuation;
-	}
-
-	public void setAttenuation(Attenuation attenuation) {
-		this.attenuation = attenuation;
+	@Override
+	public void copy(Asset from) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

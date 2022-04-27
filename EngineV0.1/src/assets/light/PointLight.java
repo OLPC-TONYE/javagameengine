@@ -1,8 +1,8 @@
 package assets.light;
 
-public class PointLight extends Light {
-	
-	Attenuation attenuation = new Attenuation(1, 0.0f, 0.0f);
+import assets.Asset;
+
+public class PointLight extends Light implements Attenuation {
 
 	/**
 	 * <b>PointLight</b>
@@ -28,19 +28,9 @@ public class PointLight extends Light {
 		flag = LightFlags.Point;
 	}
 
-	/**
-	 * Returns the attenuation of the light
-	 * @return attenuation
-	 */
-	public Attenuation getAttenuation() {
-		return attenuation;
-	}
-
-	/**
-	 * Sets the attenuation of the light
-	 * @param attenuation
-	 */
-	public void setAttenuation(Attenuation attenuation) {
-		this.attenuation = attenuation;
+	@Override
+	public void copy(Asset from) {
+		// TODO Auto-generated method stub
+		
 	}
 }

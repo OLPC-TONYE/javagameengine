@@ -14,29 +14,14 @@ public class SpriteRenderer extends Component {
 	Mesh mesh;
 	Sprite sprite;
 	
-	private float[] textureCords;
-	
-//	TileMap
-	private int current_tile = 1;
-		
-	public SpriteRenderer() {
-		
-	}
-	
 	@Override
 	public void prepare() {
 		if(firstTimeStart) {
 
 			if(sprite != null) {
-				if(sprite.isTilemap()) {
-					sprite.calculateTileMap();
-					this.textureCords = getFromTilemap(current_tile);
-				}else {
-					this.textureCords = EngineManager.ENGINE_SPRITE_SQUARE_TEXTURECOORDS;
-				}
-			}
-			
-			
+				sprite.calculateTileMap();
+				mesh.setTextureUVs(sprite.isTilemap() ? getCurrentTile(): EngineManager.ENGINE_SPRITE_SQUARE_TEXTURECOORDS);
+			}	
 		}
 		firstTimeStart = false;
 	}
@@ -45,16 +30,14 @@ public class SpriteRenderer extends Component {
 	public void update(double dt) {
 
 		if(entity.ifModified()) {
+			
 			if(sprite != null) {
-				if(sprite.isTilemap()) {
-					sprite.calculateTileMap();
-					this.textureCords = getFromTilemap(current_tile);
-				}else {
-					this.textureCords = EngineManager.ENGINE_SPRITE_SQUARE_TEXTURECOORDS;
-				}
+				sprite.calculateTileMap();
+				mesh.setTextureUVs(sprite.isTilemap() ? getCurrentTile(): EngineManager.ENGINE_SPRITE_SQUARE_TEXTURECOORDS);
 			}
+			
 			if(mesh != null)
-			mesh.getVertexArray().modifyVertexBufferObject("textureCords", textureCords);
+				mesh.getVertexArray().modifyVertexBufferObject("textureCords", mesh.getTextureUVs());
 		}
 		
 	}
@@ -66,9 +49,13 @@ public class SpriteRenderer extends Component {
 	public float[] getFromTilemap(int index) {
 		if(index > sprite.getTilemap().size()-1) {
 			index = 0;
-			this.current_tile = 0;
+			sprite.setCurrentTile(0);
 		}
 		return sprite.getTilemap().get(index);
+	}
+	
+	public float[] getCurrentTile() {
+		return getFromTilemap(sprite.getCurrentTile());
 	}
 
 	public Sprite getSprite() {
@@ -90,6 +77,7 @@ public class SpriteRenderer extends Component {
 	@Override
 	public void UI() {
 		// UI Settings
+		//TODO: Move UI to 'leveleditor' package
 		ImGui.pushID("Sprite:");
 		ImGui.text("Sprite: ");
 				
@@ -108,7 +96,8 @@ public class SpriteRenderer extends Component {
             if (payload != null && payload instanceof Asset) {
             	Asset asset = (Asset) payload;
             	if(asset.getAssetType() == AssetType.Sprite) {
-            		sprite = (Sprite) asset;
+            		if(sprite ==null) sprite = new Sprite();
+            		sprite.copy((Sprite) asset);
             	}
             }
             ImGui.endDragDropTarget();
@@ -135,7 +124,8 @@ public class SpriteRenderer extends Component {
 	            if (payload != null && payload instanceof Asset) {
 	            	Asset asset = (Asset) payload;
 	            	if(asset.getAssetType() == AssetType.Mesh) {
-	            		mesh = (Mesh) asset;
+	            		if(mesh == null) mesh = new Mesh(null, null, null, null);
+	            		mesh.copy(asset);
 	            	}
 	            }
 	            ImGui.endDragDropTarget();
@@ -185,7 +175,7 @@ public class SpriteRenderer extends Component {
 					ImGui.pushID("Tile Preview");
 					ImGui.text("Preview: ");
 					ImGui.sameLine();
-					float[] tile_cords = sprite.getTilemap().get(current_tile);
+					float[] tile_cords = getCurrentTile();
 					if(ImGui.imageButton(getTextureID(), 
 							30, 30, tile_cords[0], tile_cords[1], tile_cords[4], tile_cords[5])) {
 		            	ImGui.openPopup("Tilemap");
@@ -211,7 +201,7 @@ public class SpriteRenderer extends Component {
 		            		ImGui.pushID(i);
 		            		if(ImGui.imageButton(getTextureID(), 
 		            				100, 100, tile_cords1[0], tile_cords1[1], tile_cords1[4], tile_cords1[5])) {
-		            			this.current_tile = i;
+		            			sprite.setCurrentTile(i);
 		            			this.entity.modified();
 		            		}
 		            		ImGui.popID();

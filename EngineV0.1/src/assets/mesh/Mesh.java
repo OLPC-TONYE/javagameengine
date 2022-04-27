@@ -12,9 +12,12 @@ public class Mesh extends Asset{
 	float[] normals;
 	int[] indices;
 	
-	Material material = new Material("material");
+	Material material = new Material("material");	
+	transient VertexArrayObject vertexArray;
 	
-	VertexArrayObject vertexArray;
+	public Mesh() {
+		super("Mesh", AssetType.Mesh);
+	}
 	
 	/**
 	 * @param vertices
@@ -51,6 +54,22 @@ public class Mesh extends Asset{
 		this.indices = indices;
 	}
 
+	public void setVertices(float[] vertices) {
+		this.vertices = vertices;
+	}
+
+	public void setTextureUVs(float[] textureUVs) {
+		this.textureUVs = textureUVs;
+	}
+
+	public void setNormals(float[] normals) {
+		this.normals = normals;
+	}
+
+	public void setIndices(int[] indices) {
+		this.indices = indices;
+	}
+
 	public float[] getVertices() {
 		return vertices;
 	}
@@ -84,6 +103,21 @@ public class Mesh extends Asset{
 
 	public void setVertexArray(VertexArrayObject vertexArray) {
 		this.vertexArray = vertexArray;
+	}
+
+	@Override
+	public void copy(Asset from) {
+		if(from == null) return;
+		if(!(from instanceof Mesh)) return;
+		
+		Mesh mesh = (Mesh) from;
+		
+		this.indices = mesh.getIndices();
+		this.vertices = mesh.getVertices();
+		this.textureUVs = mesh.getTextureUVs();
+		this.normals = mesh.getNormals();
+		this.material = new Material("");
+		this.material.copy(mesh.getMaterial());
 	}
 
 }

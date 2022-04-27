@@ -7,16 +7,20 @@ import assets.AssetType;
 
 public class Material extends Asset {
 	
-	public Material(String name) {
-		super(name, AssetType.Material);
-	}
-
 	Vector4f ambient = new Vector4f(1);
 	Vector4f diffuse = new Vector4f(1);
 	Vector4f specular = new Vector4f(1);
 	
 	float reflectivity = 1;
 	float specularPower = 10;
+	
+	public Material() {
+		super("Material", AssetType.Material);
+	}
+	
+	public Material(String name) {
+		super(name, AssetType.Material);
+	}
 	
 	public Vector4f getAmbient() {
 		return ambient;
@@ -56,6 +60,20 @@ public class Material extends Asset {
 
 	public void setSpecularPower(float specularPower) {
 		this.specularPower = specularPower;
+	}
+
+	@Override
+	public void copy(Asset from) {
+		if(from == null) return;
+		if(!(from instanceof Material)) return;
+		
+		Material material = (Material) from;
+		
+		this.ambient = material.getAmbient();
+		this.diffuse = material.getDiffuse();
+		this.specular = material.getSpecular();
+		this.reflectivity = material.getReflectivity();
+		this.specularPower = material.getSpecularPower();
 	}
 	
 }
