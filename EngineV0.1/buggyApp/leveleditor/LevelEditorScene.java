@@ -1,7 +1,7 @@
 package leveleditor;
 
-import engine.EntityManager;
 import entities.Entity;
+import managers.EntityManager;
 import renderer.Renderer;
 import scenes.Scene;
 

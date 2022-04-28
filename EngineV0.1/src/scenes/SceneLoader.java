@@ -39,10 +39,10 @@ import assets.light.SpotLight;
 import assets.mesh.Material;
 import assets.mesh.Mesh;
 import assets.sprite.Sprite;
-import engine.EngineManager;
-import engine.EntityManager;
 import entities.Entity;
 import entitiesComponents.Component;
+import managers.AssetManager;
+import managers.EntityManager;
 import tools.ListofFloats;
 
 class EntityDeserializer implements JsonDeserializer<Entity> {
@@ -146,6 +146,46 @@ class AssetDeserializer extends TypeAdapter<Asset> implements JsonSerializer<Ass
 			out.endObject();
 		out.endObject();
 	}
+	
+	public void writeMesh(JsonWriter out, Mesh mesh) throws IOException {
+		out.name("vertices").beginArray();
+		for(float values:mesh.getVertices()) {
+			out.value(values);
+		}			
+		out.endArray();
+		
+		// encode the uvs
+		out.name("textureUVs").beginArray();
+		for(float values:mesh.getTextureUVs()) {
+			out.value(values);
+		}			
+		out.endArray();
+		
+		// encode the normals
+		out.name("normals").beginArray();
+		for(float values:mesh.getNormals()) {
+			out.value(values);
+		}			
+		out.endArray();
+		
+		// encode the normals
+		out.name("indices").beginArray();
+		for(int values:mesh.getIndices()) {
+			out.value(values);
+		}			
+		out.endArray();
+	}
+	
+	private void writeMaterial(JsonWriter out, Material material) throws IOException {
+		out.name("ambient");
+		writeVector4f(out, material.getAmbient());
+		out.name("diffuse");
+		writeVector4f(out, material.getDiffuse());
+		out.name("specular");
+		writeVector4f(out, material.getSpecular());
+		out.name("reflectivity").value(material.getReflectivity());
+		out.name("specularity").value(material.getSpecularPower());
+	}
 
 	private void writeLight(JsonWriter out, Light iflight) throws IOException {
 		LightFlags type = iflight.getFlag();
@@ -187,6 +227,23 @@ class AssetDeserializer extends TypeAdapter<Asset> implements JsonSerializer<Ass
 			}
 		out.endArray();
 	}
+	
+	public void writeVector3f(JsonWriter out, Vector3f value) throws IOException {
+		out.beginObject();
+		out.name("x").value(value.x);
+		out.name("y").value(value.y);
+		out.name("z").value(value.z);
+		out.endObject();
+	}
+	
+	public void writeVector4f(JsonWriter out, Vector4f value) throws IOException {
+		out.beginObject();		
+		out.name("x").value(value.x);
+		out.name("y").value(value.y);
+		out.name("z").value(value.z);
+		out.name("w").value(value.w);
+		out.endObject();
+	}
 
 	private void writeFloatArray(JsonWriter out, float[] floatsarray) throws IOException {
 		out.beginArray();
@@ -220,7 +277,6 @@ class AssetDeserializer extends TypeAdapter<Asset> implements JsonSerializer<Ass
 					ifmesh.setAssetName(assetName);
 					readMeshData(in, ifmesh);
 					
-					//Add comments TODO
 					in.endObject();
 					return ifmesh;
 				}else if(assetType == AssetType.Material) {
@@ -375,16 +431,6 @@ class AssetDeserializer extends TypeAdapter<Asset> implements JsonSerializer<Ass
 		in.endObject();
 	}
 
-	private List<float[]> readListFloatArray(JsonReader in) throws IOException {
-		List<float[]> floatarrays = new ArrayList<>();
-		in.beginArray();
-		while(in.hasNext()) {
-			floatarrays.add(readFloatArray(in));
-		}
-		in.endArray();
-		return floatarrays;
-	}
-
 	private void readMaterialData(JsonReader in, Material ifmaterial) throws IOException {
 		in.beginObject();
 		while(in.hasNext()) {
@@ -493,6 +539,16 @@ class AssetDeserializer extends TypeAdapter<Asset> implements JsonSerializer<Ass
 		in.endObject();
 		return vector;
 	}
+	
+	private List<float[]> readListFloatArray(JsonReader in) throws IOException {
+		List<float[]> floatarrays = new ArrayList<>();
+		in.beginArray();
+		while(in.hasNext()) {
+			floatarrays.add(readFloatArray(in));
+		}
+		in.endArray();
+		return floatarrays;
+	}
 
 	private int[] readIntArray(JsonReader in) throws IOException {
 		ArrayList<Integer> ints = new ArrayList<>();
@@ -518,63 +574,7 @@ class AssetDeserializer extends TypeAdapter<Asset> implements JsonSerializer<Ass
 		in.endArray();
 		return floats.toArray();
 	}
-
-	public void writeVector3f(JsonWriter out, Vector3f value) throws IOException {
-		out.beginObject();
-		out.name("x").value(value.x);
-		out.name("y").value(value.y);
-		out.name("z").value(value.z);
-		out.endObject();
-	}
 	
-	public void writeVector4f(JsonWriter out, Vector4f value) throws IOException {
-		out.beginObject();		
-		out.name("x").value(value.x);
-		out.name("y").value(value.y);
-		out.name("z").value(value.z);
-		out.name("w").value(value.w);
-		out.endObject();
-	}
-	
-	public void writeMesh(JsonWriter out, Mesh mesh) throws IOException {
-		out.name("vertices").beginArray();
-		for(float values:mesh.getVertices()) {
-			out.value(values);
-		}			
-		out.endArray();
-		
-		// encode the uvs
-		out.name("textureUVs").beginArray();
-		for(float values:mesh.getTextureUVs()) {
-			out.value(values);
-		}			
-		out.endArray();
-		
-		// encode the normals
-		out.name("normals").beginArray();
-		for(float values:mesh.getNormals()) {
-			out.value(values);
-		}			
-		out.endArray();
-		
-		// encode the normals
-		out.name("indices").beginArray();
-		for(int values:mesh.getIndices()) {
-			out.value(values);
-		}			
-		out.endArray();
-	}
-	
-	private void writeMaterial(JsonWriter out, Material material) throws IOException {
-		out.name("ambient");
-		writeVector4f(out, material.getAmbient());
-		out.name("diffuse");
-		writeVector4f(out, material.getDiffuse());
-		out.name("specular");
-		writeVector4f(out, material.getSpecular());
-		out.name("reflectivity").value(material.getReflectivity());
-		out.name("specularity").value(material.getSpecularPower());
-	}
 }
 
 public class SceneLoader {
@@ -611,7 +611,7 @@ public class SceneLoader {
 			scene.add("entities", SceneLoader.serializer.toJsonTree(EntityManager.world_entities.values()));
 			
 			// Add Assets
-			scene.add("assets", SceneLoader.serializer.toJsonTree(EngineManager.assets.values()));
+			scene.add("assets", SceneLoader.serializer.toJsonTree(AssetManager.assets.values()));
 			
 			// Write Entities Into File
 			if(scene.toString().length() > 0) {

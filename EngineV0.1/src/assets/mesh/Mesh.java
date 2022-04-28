@@ -2,7 +2,7 @@ package assets.mesh;
 
 import assets.Asset;
 import assets.AssetType;
-import engine.EngineManager;
+import managers.EngineManager;
 import opengl.VertexArrayObject;
 
 public class Mesh extends Asset{

@@ -3,7 +3,6 @@ package gui;
 import java.io.File;
 import java.util.ArrayList;
 
-import engine.EngineManager;
 import imgui.ImColor;
 import imgui.ImDrawList;
 import imgui.ImGui;
@@ -15,6 +14,7 @@ import imgui.flag.ImGuiStyleVar;
 import imgui.flag.ImGuiTreeNodeFlags;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImBoolean;
+import managers.AssetManager;
 
 public class FileExplorer
 {
@@ -79,7 +79,7 @@ public class FileExplorer
 				ImGui.pushStyleColor(ImGuiCol.Button, ImColor.floatToColor(1, 1, 1, 0));
 				ImGui.pushStyleColor(ImGuiCol.ButtonHovered, ImColor.floatToColor(1, 1, 1, 0.2f));
 				ImGui.pushStyleColor(ImGuiCol.ButtonActive, ImColor.floatToColor(1, 1, 1, 0.2f));
-				if(ImGui.imageButton(EngineManager.getIconTexture(prev_icon).getTextureID(), 20, 20)) {
+				if(ImGui.imageButton(AssetManager.getIconTexture(prev_icon).getTextureID(), 20, 20)) {
 					goBack();
 				}
 				ImGui.popStyleColor(3);
@@ -87,7 +87,7 @@ public class FileExplorer
 				ImGui.pushStyleColor(ImGuiCol.Button, ImColor.floatToColor(1, 1, 1, 0));
 				ImGui.pushStyleColor(ImGuiCol.ButtonHovered, ImColor.floatToColor(1, 1, 1, 0));
 				ImGui.pushStyleColor(ImGuiCol.ButtonActive, ImColor.floatToColor(1, 1, 1, 0));
-				if(ImGui.imageButton(EngineManager.getIconTexture(prev_icon).getTextureID(), 20, 20)) {
+				if(ImGui.imageButton(AssetManager.getIconTexture(prev_icon).getTextureID(), 20, 20)) {
 				}
 				ImGui.popStyleColor(3);
 			}
@@ -96,7 +96,7 @@ public class FileExplorer
 				ImGui.pushStyleColor(ImGuiCol.Button, ImColor.floatToColor(1, 1, 1, 0));
 				ImGui.pushStyleColor(ImGuiCol.ButtonHovered, ImColor.floatToColor(1, 1, 1, 0.2f));
 				ImGui.pushStyleColor(ImGuiCol.ButtonActive, ImColor.floatToColor(1, 1, 1, 0.2f));
-				if(ImGui.imageButton(EngineManager.getIconTexture(next_icon).getTextureID(), 20, 20)) {
+				if(ImGui.imageButton(AssetManager.getIconTexture(next_icon).getTextureID(), 20, 20)) {
 					goFront();
 				}
 				ImGui.popStyleColor(3);
@@ -104,7 +104,7 @@ public class FileExplorer
 				ImGui.pushStyleColor(ImGuiCol.Button, ImColor.floatToColor(1, 1, 1, 0));
 				ImGui.pushStyleColor(ImGuiCol.ButtonHovered, ImColor.floatToColor(1, 1, 1, 0));
 				ImGui.pushStyleColor(ImGuiCol.ButtonActive, ImColor.floatToColor(1, 1, 1, 0));
-				if(ImGui.imageButton(EngineManager.getIconTexture(next_icon).getTextureID(), 20, 20)) {
+				if(ImGui.imageButton(AssetManager.getIconTexture(next_icon).getTextureID(), 20, 20)) {
 				}
 				ImGui.popStyleColor(3);
 			}
@@ -179,7 +179,7 @@ public class FileExplorer
 			if(file.isDirectory()) {
 				ImGui.beginGroup();
 				
-				if(ImGui.imageButton(EngineManager.getIconTexture(folder_icon).getTextureID(), icon_width, icon_height)) {
+				if(ImGui.imageButton(AssetManager.getIconTexture(folder_icon).getTextureID(), icon_width, icon_height)) {
 					if(selected[i] == true) {
 						openPath(file.getName());
 					}else {
@@ -222,7 +222,7 @@ public class FileExplorer
 						break;
 				}
 				
-				if(ImGui.imageButton(EngineManager.getIconTexture(fileicon_name).getTextureID(), icon_height, icon_width)) {
+				if(ImGui.imageButton(AssetManager.getIconTexture(fileicon_name).getTextureID(), icon_height, icon_width)) {
 					selectedFile = file;
 					if(selected[i] == true) {
 						openPath(file.getName());
@@ -272,7 +272,7 @@ public class FileExplorer
 				openDirectory(root);
 			}
 			ImGui.sameLine(ImGui.getFont().getFontSize());
-			ImGui.image(EngineManager.getIconTexture(folder_icon).getTextureID(), 24, 18);
+			ImGui.image(AssetManager.getIconTexture(folder_icon).getTextureID(), 24, 18);
 			if(open) {
 				showChildren(root);
 				ImGui.treePop();
@@ -285,7 +285,7 @@ public class FileExplorer
 				openDirectory(my_computer);
 			}
 			ImGui.sameLine(ImGui.getFont().getFontSize());
-			ImGui.image(EngineManager.getIconTexture(folder_icon).getTextureID(), 24, 18);
+			ImGui.image(AssetManager.getIconTexture(folder_icon).getTextureID(), 24, 18);
 			if(open) {
 				showChildren(my_computer);
 				ImGui.treePop();
@@ -314,7 +314,7 @@ public class FileExplorer
 					openDirectory(children_list[i]);
 				}
 				ImGui.sameLine(width+ImGui.getFont().getFontSize());
-				ImGui.image(EngineManager.getIconTexture(folder_icon).getTextureID(), 24, 18);
+				ImGui.image(AssetManager.getIconTexture(folder_icon).getTextureID(), 24, 18);
 				if(open) {
 					showChildren(children_list[i]);
 					ImGui.treePop();

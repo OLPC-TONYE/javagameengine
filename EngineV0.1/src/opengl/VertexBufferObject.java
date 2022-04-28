@@ -15,7 +15,7 @@ import java.nio.IntBuffer;
 
 import org.lwjgl.BufferUtils;
 
-import engine.EngineManager;
+import managers.EngineManager;
 
 enum VertexBufferType {
 	INDICES_BUFFER,

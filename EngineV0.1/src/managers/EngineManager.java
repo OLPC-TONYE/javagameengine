@@ -1,26 +1,19 @@
-package engine;
+package managers;
 
 import static org.lwjgl.opengl.GL11.glDeleteTextures;
 import static org.lwjgl.opengl.GL15.glDeleteBuffers;
 import static org.lwjgl.opengl.GL30.glDeleteVertexArrays;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.joml.Vector3f;
 
-import assets.Asset;
 import assets.mesh.Mesh;
-import assets.sprite.Sprite;
 import entities.Entity;
 import entitiesComponents.CameraComponent;
 import entitiesComponents.Transform;
-import opengl.Texture;
 import opengl.VertexArrayObject;
-import tools.MeshLoader;
 
 public class EngineManager {
 
@@ -71,96 +64,7 @@ public class EngineManager {
 	protected static List<Integer> vbos = new ArrayList<Integer>();
 	protected static List<Integer> textures = new ArrayList<Integer>();
 	protected static List<Integer> framebuffers = new ArrayList<Integer>();
-		
-	public static Map<String, Texture> textureAssets = new HashMap<>();
-	public static Map<String, Texture> iconTextureAssets = new HashMap<>();	
-	public static Map<String, Asset> assets =  new HashMap<>();
-	
-	static Mesh defaultCube = new Mesh("cube", positions, textureCoords, normals, indices);
-	static Mesh dragon = MeshLoader.loadFromObj("dragon");
-	
-	static Mesh defaultSquare = new Mesh("square", ENGINE_SPRITE_SQUARE, ENGINE_SPRITE_SQUARE_TEXTURECOORDS, ENGINE_SPRITE_SQUARE_NORMALS, ENGINE_SPRITE_SQUARE_INDICES);
-	static Asset[] defaults = { defaultCube, defaultSquare};
-	
-	static Sprite texture = new Sprite("first");
-	static Sprite whitesprite = new Sprite();
-	
-	public static String getAvailName(String name) {
-		String newName = name;
-		int count = 0;
-		while(assets.containsKey(newName)) {
-			count++;
-			newName = name+" "+count;
-		}
-		return newName;
-	}
-	
-	public static boolean hasAsset(String assetName) {
-		if(assets.containsKey(assetName)) {
-			return true;
-		}
-		return false;
-	}
-	
-	public static Asset getAsset(String assetName) {
-		if(assets.containsKey(assetName)) {
-			return assets.get(assetName);
-		}else {
-			return Asset.NullAsset;
-		}
-	}
-	
-	public static void loadDefaultAssets() {
-		
-		texture.setTextureName("spritesheet");
-		whitesprite.setTextureName("white");
-		
-		assets.put(defaultCube.getAssetName(), defaultCube);
-//		assets.put(dragon.getAssetName(), dragon);
-		assets.put(defaultSquare.getAssetName(), defaultSquare);
-		assets.put(texture.getAssetName(), texture);
-		assets.put(whitesprite.getAssetName(), whitesprite);
-	}
-
-	public static Texture getTexture(String textureName) {
-		String path = "assets/textures/"+textureName+".png";
-		File file = new File(path);
-		if (EngineManager.textureAssets.containsKey(file.getAbsolutePath())) {
-			return EngineManager.textureAssets.get(file.getAbsolutePath());
-		}else {
-			System.out.println("Texture Not Found, Creating");
-			Texture texture = new Texture(path, textureName);
-			EngineManager.textureAssets.put(file.getAbsolutePath(), texture);
-			return texture;
-		}
-	}
-	
-	public static Texture getTextureWithPath(String texture_path) {
-		File file = new File(texture_path);
-		if (EngineManager.textureAssets.containsKey(file.getAbsolutePath())) {
-			return EngineManager.textureAssets.get(file.getAbsolutePath());
-		}else {
-			System.out.println("Texture Not Found, Creating "+file.getName().split("\\.")[0]);
-			Texture texture = new Texture(texture_path, file.getName().split("\\.")[0]);
-			EngineManager.textureAssets.put(file.getAbsolutePath(), texture);
-			return texture;
-		}
-	}
-	
-	public static Texture getIconTexture(String textureName) {
-		String path = "res/icons/"+textureName+".png";
-		File file = new File(path);
-		if (EngineManager.iconTextureAssets.containsKey(file.getAbsolutePath())) {
-			return EngineManager.iconTextureAssets.get(file.getAbsolutePath());
-		}else {
-			Texture texture = new Texture(path, textureName);
-			EngineManager.iconTextureAssets.put(file.getAbsolutePath(), texture);
-			return texture;
-		}
-	}
-	
-//	===============================================================
-	
+			
 	public static VertexArrayObject loadToVAO(Mesh mesh) {
 		VertexArrayObject create = new VertexArrayObject();
 		vaos.add(create.getId());

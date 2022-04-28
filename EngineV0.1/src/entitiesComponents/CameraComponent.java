@@ -3,12 +3,12 @@ package entitiesComponents;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
-import engine.EngineManager;
 import imgui.ImGui;
 import imgui.ImVec2;
 import imgui.flag.ImGuiColorEditFlags;
 import imgui.type.ImFloat;
 import imgui.type.ImInt;
+import managers.EngineManager;
 
 public class CameraComponent extends Component {
 	

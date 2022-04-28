@@ -11,7 +11,7 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 import assets.mesh.Mesh;
-import engine.EngineManager;
+import managers.EngineManager;
 import opengl.VertexArrayObject;
 
 public class MeshLoader {

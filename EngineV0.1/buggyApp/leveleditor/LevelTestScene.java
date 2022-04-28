@@ -2,9 +2,9 @@ package leveleditor;
 
 import java.util.ArrayList;
 
-import engine.EntityManager;
 import entities.Entity;
 import entitiesComponents.CameraComponent;
+import managers.EntityManager;
 import renderer.Renderer;
 import scenes.Scene;
 import scenes.SceneLoader;

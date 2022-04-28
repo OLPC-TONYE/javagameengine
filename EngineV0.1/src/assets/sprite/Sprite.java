@@ -5,7 +5,7 @@ import java.util.List;
 
 import assets.Asset;
 import assets.AssetType;
-import engine.EngineManager;
+import managers.AssetManager;
 
 public class Sprite extends Asset {
 		
@@ -131,8 +131,8 @@ public class Sprite extends Asset {
 			this.tile_height = 1;
 		}
 				
-		int imageWidth = EngineManager.getTexture(textureName).getWidth();
-		int imageHeight= EngineManager.getTexture(textureName).getHeight();
+		int imageWidth = AssetManager.getTexture(textureName).getWidth();
+		int imageHeight= AssetManager.getTexture(textureName).getHeight();
 		
 		//=================================
 		// Get All Sprites From SpriteSheet

@@ -6,12 +6,12 @@ import assets.Asset;
 import assets.AssetType;
 import assets.mesh.Material;
 import assets.mesh.Mesh;
-import engine.EngineManager;
 import imgui.ImGui;
 import imgui.flag.ImGuiColorEditFlags;
 import imgui.flag.ImGuiComboFlags;
 import imgui.flag.ImGuiCond;
 import imgui.type.ImBoolean;
+import managers.AssetManager;
 
 public class MeshRenderer extends Component{
 	
@@ -43,7 +43,7 @@ public class MeshRenderer extends Component{
 	}
 	
 	public int getTextureID() {
-		return EngineManager.getTexture(textureName).getTextureID();
+		return AssetManager.getTexture(textureName).getTextureID();
 	}
 	
 	public void setTexture(String textureName) {

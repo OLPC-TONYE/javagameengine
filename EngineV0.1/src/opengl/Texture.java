@@ -21,7 +21,7 @@ import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import org.lwjgl.BufferUtils;
 
-import engine.EngineManager;
+import managers.EngineManager;
 
 public class Texture {
 	

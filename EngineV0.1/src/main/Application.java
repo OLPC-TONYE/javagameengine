@@ -2,8 +2,8 @@ package main;
 
 import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
 
-import engine.EngineManager;
 import gui.ImGuiLayer;
+import managers.EngineManager;
 
 public class Application{
 

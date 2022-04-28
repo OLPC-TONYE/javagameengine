@@ -7,8 +7,6 @@ import org.lwjgl.glfw.GLFW;
 import assets.Asset;
 import assets.light.PointLight;
 import assets.sprite.Sprite;
-import engine.EngineManager;
-import engine.EntityManager;
 import entities.Drawable;
 import entities.Entity;
 import entitiesComponents.Component;
@@ -40,6 +38,9 @@ import listeners.MouseListener;
 import main.Application;
 import main.Layer;
 import main.Window;
+import managers.AssetManager;
+import managers.EngineManager;
+import managers.EntityManager;
 import opengl.Framebuffer;
 import opengl.VertexArrayObject;
 import renderer.Renderer3D;
@@ -73,7 +74,7 @@ public class LevelEditorLayer extends Layer
 
 	@Override
 	public void attach() {
-		EngineManager.loadDefaultAssets();
+		AssetManager.loadDefaultAssets();
 		screen = new Framebuffer(1024, 600);
 		renderer = new Renderer3D();
 		renderer2 = new RendererDebug();
@@ -326,7 +327,7 @@ public class LevelEditorLayer extends Layer
 		ImGui.pushStyleColor(ImGuiCol.ButtonActive, ImColor.floatToColor(1, 1, 1, 0.2f));
 		
 		int i = 0;
-		for (Asset asset : EngineManager.assets.values()) {
+		for (Asset asset : AssetManager.assets.values()) {
 			float WindowPosX = ImGui.getWindowPosX();
 			float WindowSizeX = ImGui.getWindowSizeX();
 			float ItemSpacingX = ImGui.getStyle().getItemSpacingX();
@@ -337,14 +338,14 @@ public class LevelEditorLayer extends Layer
 			switch (asset.getAssetType())
 			{
 				case Mesh:
-					assetIcon = EngineManager.getIconTexture("Mesh").getTextureID();
+					assetIcon = AssetManager.getIconTexture("Mesh").getTextureID();
 					break;
 				case Sprite:
 					Sprite sprite = (Sprite) asset;
-					assetIcon = EngineManager.getTexture(sprite.getTextureName()).getTextureID();
+					assetIcon = AssetManager.getTexture(sprite.getTextureName()).getTextureID();
 					break;
 				default:
-					assetIcon = EngineManager.getIconTexture("FileIcon").getTextureID();
+					assetIcon = AssetManager.getIconTexture("FileIcon").getTextureID();
 					break;
 			}
 
@@ -647,7 +648,7 @@ class FetchFileEvent extends ImGuiLayerRenderEvent
 	@Override
 	public void onEvent() {
 		if (FileExplorer.onClose == 1) {
-			EngineManager.getTextureWithPath(FileExplorer.getFetchedFile().getAbsolutePath());
+			AssetManager.getTextureWithPath(FileExplorer.getFetchedFile().getAbsolutePath());
 		}
 	}
 

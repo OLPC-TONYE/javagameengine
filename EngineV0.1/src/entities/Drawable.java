@@ -1,6 +1,6 @@
 package entities;
 
-import engine.EngineManager;
+import managers.EngineManager;
 import opengl.VertexArrayObject;
 import tools.ListofFloats;
 	

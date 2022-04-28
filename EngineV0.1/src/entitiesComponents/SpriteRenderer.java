@@ -4,10 +4,11 @@ import assets.Asset;
 import assets.AssetType;
 import assets.mesh.Mesh;
 import assets.sprite.Sprite;
-import engine.EngineManager;
 import imgui.ImGui;
 import imgui.flag.ImGuiComboFlags;
 import imgui.type.ImInt;
+import managers.AssetManager;
+import managers.EngineManager;
 
 public class SpriteRenderer extends Component {
 	
@@ -43,7 +44,7 @@ public class SpriteRenderer extends Component {
 	}
 	
 	public int getTextureID() {
-		return EngineManager.getTexture(sprite.getTextureName()).getTextureID();
+		return AssetManager.getTexture(sprite.getTextureName()).getTextureID();
 	}
 	
 	public float[] getFromTilemap(int index) {
