@@ -9,9 +9,13 @@ import imgui.ImFontAtlas;
 import imgui.ImFontConfig;
 import imgui.ImGui;
 import imgui.ImGuiIO;
+import imgui.flag.ImGuiCond;
 import imgui.flag.ImGuiConfigFlags;
+import imgui.flag.ImGuiStyleVar;
+import imgui.flag.ImGuiWindowFlags;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
+import imgui.type.ImBoolean;
 import main.Window;
 
 public class ImGuiLayer {
@@ -22,6 +26,8 @@ public class ImGuiLayer {
     public static ImGuiImplGlfw imGuiGlfw = new ImGuiImplGlfw();
     public static ImGuiImplGl3 imGuiGl3 = new ImGuiImplGl3();
 
+	public static boolean resumed;
+		    
     public static void begin() {
     	
     	ImGui.createContext();
@@ -34,7 +40,7 @@ public class ImGuiLayer {
         }
     	
         // ------------------------------------------------------------
-        // Initialize ImGuiIO config
+        // Initialise ImGuiIO configuration
         final ImGuiIO io = ImGui.getIO();
         
         io.setIniFilename("desk"); 
@@ -46,7 +52,7 @@ public class ImGuiLayer {
         final ImFontConfig fontConfig = new ImFontConfig();
 
         fontConfig.setGlyphRanges(fontAtlas.getGlyphRangesDefault());
-        fontAtlas.addFontFromFileTTF("assets/fonts/LatoItalic.ttf", 20, fontConfig);
+        fontAtlas.addFontFromFileTTF("res/fonts/LatoItalic.ttf", 20, fontConfig);
         fontConfig.destroy();
         fontAtlas.build();
         
@@ -54,7 +60,7 @@ public class ImGuiLayer {
         imGuiGl3.init(glslVersion);
     }
     
-    public static void end() {
+    public static void dispose() {
     	imGuiGl3.dispose();
         imGuiGlfw.dispose();
         ImGui.destroyContext();
@@ -62,11 +68,48 @@ public class ImGuiLayer {
 
     public static void beginFrame() {
     	imGuiGlfw.newFrame();
-        ImGui.newFrame();
+        ImGui.newFrame();    
     }
     
     public static void endFrame() {
-    	ImGui.render();
-    	imGuiGl3.renderDrawData(ImGui.getDrawData());
+    	if(!resumed) {
+    		ImGui.render();
+        	imGuiGl3.renderDrawData(ImGui.getDrawData());
+    	}else {
+    		
+    		ImGui.end();
+    		ImGui.endFrame();	
+    		resumed = false;
+    	}
     }
+    
+    public static void resumeFrame() {
+    	resumed = true;
+    	
+    	ImGuiLayer.begin();
+    	ImGuiLayer.beginFrame();
+       	
+    	addMainDockSpace();
+    	
+//    	Fixed (Temporary): IMGUi docking after IMGUiWindowLayer, Add Dockspace;
+    }
+
+    public static void addMainDockSpace() {
+    	int windowFlags = ImGuiWindowFlags.MenuBar | ImGuiWindowFlags.NoDocking;
+
+		ImGui.setNextWindowPos(0.0f, 0.0f, ImGuiCond.FirstUseEver);
+		ImGui.setNextWindowSize(Window.get().width(), Window.get().height());
+		ImGui.pushStyleVar(ImGuiStyleVar.WindowRounding, 0f);
+		ImGui.pushStyleVar(ImGuiStyleVar.WindowBorderSize, 0.0f);
+		
+		windowFlags |= ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoResize
+				| ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoBringToFrontOnFocus | ImGuiWindowFlags.NoNavFocus;
+
+		ImGui.begin("DockspaceBackground", new ImBoolean(true), windowFlags);
+		ImGui.popStyleVar(2);
+
+		int dockspace_id = ImGui.getID("ActualDockspace");
+		ImGui.dockSpace(dockspace_id);
+    }
+    
 }

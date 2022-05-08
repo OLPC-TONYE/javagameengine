@@ -2,9 +2,9 @@
 
 struct Material
 {
-	vec4 ambient;
-	vec4 diffuse;
-	vec4 specular;
+	vec3 ambient;
+	vec3 diffuse;
+	vec3 specular;
 	
 	float reflectivity;
 	float specularPower;
@@ -50,6 +50,7 @@ const int MAX_SPOT_LIGHTS = 5;
 uniform sampler2D textureSampler;
 
 uniform float ambientLightFactor;
+uniform vec3 ambientColour;
 
 uniform Material material;
 
@@ -72,7 +73,7 @@ vec4 calcLight(DirectionalLight light) {
 	
 	float dot1 = dot(unitNormal, unitLightVector);
 	float brightness = max(dot1, 0.0);
-	vec4 diffuse = brightness * material.diffuse * texture(textureSampler, passTextureCords) * vec4(light.colour, 1.0) * light.intensity;
+	vec4 diffuse = brightness * vec4(material.diffuse, 1) * texture(textureSampler, passTextureCords) * vec4(light.colour, 1.0) * light.intensity;
 	
 	vec3 unitToCameraVector = normalize(toCameraVector);
 	vec3 lightDirection = -unitLightVector;
@@ -80,7 +81,7 @@ vec4 calcLight(DirectionalLight light) {
 	
 	float specularFactor = max(dot(reflectedLightDirection, unitToCameraVector), 0.0);
 	specularFactor = pow(specularFactor, material.specularPower);
-	vec4 specular = specularFactor * material.specular * texture(textureSampler, passTextureCords) * material.reflectivity * vec4(light.colour, 1.0) * light.intensity;
+	vec4 specular = specularFactor * vec4(material.specular, 1) * texture(textureSampler, passTextureCords) * material.reflectivity * vec4(light.colour, 1.0) * light.intensity;
 		
 	return (diffuse + specular);
 }
@@ -93,7 +94,7 @@ vec4 calcLight(PointLight light) {
 	
 	float dot1 = dot(unitNormal, unitLightVector);
 	float brightness = max(dot1, 0.0);
-	vec4 diffuse = brightness * material.diffuse * texture(textureSampler, passTextureCords) * vec4(light.colour, 1.0) * light.intensity;
+	vec4 diffuse = brightness * vec4(material.diffuse, 1) * texture(textureSampler, passTextureCords) * vec4(light.colour, 1.0) * light.intensity;
 	
 	vec3 unitToCameraVector = normalize(toCameraVector);
 	vec3 lightDirection = -unitLightVector;
@@ -101,7 +102,7 @@ vec4 calcLight(PointLight light) {
 	
 	float specularFactor = max(dot(reflectedLightDirection, unitToCameraVector), 0.0);
 	specularFactor = pow(specularFactor, material.specularPower);
-	vec4 specular = specularFactor * material.specular * texture(textureSampler, passTextureCords) * material.reflectivity * vec4(light.colour, 1.0) * light.intensity;
+	vec4 specular = specularFactor * vec4(material.specular, 1) * texture(textureSampler, passTextureCords) * material.reflectivity * vec4(light.colour, 1.0) * light.intensity;
 	
 	float distance = length(toLight);
 	float attenuationFactor = 1 / (light.att.constant + light.att.linear * distance + light.att.exponent * distance * distance);
@@ -117,7 +118,7 @@ vec4 calcLight(SpotLight light) {
 	
 	float dot1 = dot(unitNormal, unitLightVector);
 	float brightness = max(dot1, 0.0);
-	vec4 diffuse = brightness * material.diffuse * texture(textureSampler, passTextureCords)  * vec4(light.colour, 1.0) * light.intensity;
+	vec4 diffuse = brightness * vec4(material.diffuse, 1) * texture(textureSampler, passTextureCords)  * vec4(light.colour, 1.0) * light.intensity;
 	
 	vec3 unitToCameraVector = normalize(toCameraVector);
 	vec3 lightDirection = -unitLightVector;
@@ -125,7 +126,7 @@ vec4 calcLight(SpotLight light) {
 	
 	float specularFactor = max(dot(reflectedLightDirection, unitToCameraVector), 0.0);
 	specularFactor = pow(specularFactor, material.specularPower);
-	vec4 specular = specularFactor * material.specular * texture(textureSampler, passTextureCords) * material.reflectivity * vec4(light.colour, 1.0) * light.intensity;
+	vec4 specular = specularFactor * vec4(material.specular, 1) * texture(textureSampler, passTextureCords) * material.reflectivity * vec4(light.colour, 1.0) * light.intensity;
 	
 	float distance = length(toLight);
 	float attenuationFactor = 1 / (light.att.constant + light.att.linear * distance + light.att.exponent * distance * distance);
@@ -162,10 +163,10 @@ void main()
 		}
 	}
 	
-	vec4 ambient = material.ambient * texture(textureSampler, passTextureCords);
+	vec4 ambient = vec4(material.ambient, 1) * texture(textureSampler, passTextureCords);
 	vec4 ambientLight = ambient * vec4(ambientLightFactor, ambientLightFactor, ambientLightFactor, 1);
 	
-	gl_FragData[0] = ambientLight + lightColour ;
+	gl_FragData[0] = (vec4(ambientColour, 1) * ambientLight) + lightColour ;
 
 	if(ambient.a < 0.5) 
 	{

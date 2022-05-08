@@ -2,6 +2,8 @@ package leveleditor;
 
 import java.util.ArrayList;
 
+import org.joml.Vector4f;
+
 import entities.Entity;
 import entitiesComponents.CameraComponent;
 import managers.EntityManager;
@@ -37,9 +39,9 @@ public class LevelTestScene extends Scene{
 		renderer.clear();
 		renderer.clearColour(0, 0, 0, 0.4f);
 		if(primaryCamera!= null) {
-			float[] colour = primaryCamera.getComponent(CameraComponent.class).getClearColour();
+			Vector4f colour = primaryCamera.getComponent(CameraComponent.class).getClearColour();
 			renderer.clear();
-			renderer.clearColour(colour[0], colour[1], colour[2], colour[3]);
+			renderer.clearColour(colour);
 			for(Entity entity: game_objects) {		
 				if(!entity.isCamera() && !entity.isLight()) {
 					addToRenderList(entity);
@@ -64,7 +66,7 @@ public class LevelTestScene extends Scene{
 			}
 		}
 		if(!cameras.isEmpty()) {
-			primaryCamera = EntityManager.world_entities.get(cameras.get(0));
+			primaryCamera = EntityManager.world.getSecondMap().get(cameras.get(0));
 		}
 	}
 

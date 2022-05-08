@@ -14,7 +14,7 @@ public class LevelEditorScene extends Scene{
 
 	@Override
 	public void update(double dt) {		
-		for(Entity entities: EntityManager.world_entities.values()) {
+		for(Entity entities: EntityManager.getWorldEntities()) {
 			entities.update(dt);
 		}
 		
@@ -24,11 +24,17 @@ public class LevelEditorScene extends Scene{
 	public void render(Renderer renderer) {
 
 		if(primaryCamera!= null) {
-			for(Entity entityRenderable: EntityManager.world_entities.values()) {		
-				addToRenderList(entityRenderable);
+			for(Entity entity: EntityManager.getWorldEntities()) {		
+				if(!entity.isCamera() && !entity.isLight()) {
+					addToRenderList(entity);
+				}
+				if(entity.isLight()) {
+					if(!useAmbient) addLight(entity);
+				}
 			}
 			renderer.render(this);
 			renderList.clear();
+			lights.clear();
 		}
 				
 	}

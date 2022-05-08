@@ -16,16 +16,13 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
 import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 
-import assets.light.DirectionalLight;
-import assets.light.LightFlags;
-import assets.light.PointLight;
-import assets.light.SpotLight;
 import entities.Entity;
 import entitiesComponents.CameraComponent;
 import entitiesComponents.LightingComponent;
 import entitiesComponents.MeshRenderer;
 import entitiesComponents.SpriteRenderer;
 import entitiesComponents.Transform;
+import entitiesComponents.enums.LightType;
 import managers.EntityManager;
 import opengl.Shader;
 import opengl.VertexArrayObject;
@@ -54,8 +51,7 @@ public class Renderer3D extends Renderer{
 		
 		glEnable(GL_DEPTH_TEST);
 		
-		CameraComponent inGameCamera = scene.primaryCamera.getComponent(CameraComponent.class);
-		
+		CameraComponent inGameCamera = scene.primaryCamera.getComponent(CameraComponent.class);	
 		
 		shader.loadMatrix("projectionMatrix", inGameCamera.getProjectionMatrix());
 		shader.loadMatrix("inverseViewMatrix", Maths.getInvertedMatrix(inGameCamera.getViewMatrix()));
@@ -71,22 +67,24 @@ public class Renderer3D extends Renderer{
 		int spotLightsCounter = 0;
 		
 		for(Entity light: scene.lights) {
-			LightingComponent inGameLight = light.getComponent(LightingComponent.class);
 			
-			if(inGameLight.getLight().getFlag() == LightFlags.Point) {
+			LightingComponent inGameLight = light.getComponent(LightingComponent.class);
+			Transform lightTransform = light.getComponent(Transform.class);
+			
+			if(inGameLight.getFlag() == LightType.Point) {
 				if(pointLightsCounter >= MAX_POINTLIGHTS) {
 					continue;
 				}	
-				loadPointLight("pointLight["+pointLightsCounter+"]", (PointLight) inGameLight.getLight(), light.getComponent(Transform.class).getPosition());
+				loadPointLight("pointLight["+pointLightsCounter+"]", inGameLight, lightTransform);
 				pointLightsCounter++;
-			}else if(inGameLight.getLight().getFlag() == LightFlags.Spot){
+			}else if(inGameLight.getFlag() == LightType.Spot){
 				if(spotLightsCounter >= MAX_SPOTLIGHTS) {
 					continue;
 				}
-				loadSpotLight("spotLight["+spotLightsCounter+"]", (SpotLight) inGameLight.getLight(), light.getComponent(Transform.class).getPosition());
+				loadSpotLight("spotLight["+spotLightsCounter+"]", inGameLight, lightTransform);
 				spotLightsCounter++;
 			}else {
-				loadDirectionalLight("directionalLight", (DirectionalLight) inGameLight.getLight(), light.getComponent(Transform.class).getPosition());				
+				loadDirectionalLight("directionalLight", inGameLight, lightTransform);				
 			}
 			
 		}
@@ -125,7 +123,8 @@ public class Renderer3D extends Renderer{
 					if(mesh.getMesh().getVertexArray() != null ) {
 						vao = mesh.getMesh().getVertexArray();
 					}
-					loadMaterial("material", mesh.getMesh().getMaterial());
+					loadMaterial("material", mesh.getMaterial());
+					shader.loadVector3("ambientColour", mesh.getColour());
 				}
 			}else if(entity.getComponent(SpriteRenderer.class)!= null) {
 				// Add Mesh To SpriteRenderer 
@@ -136,7 +135,8 @@ public class Renderer3D extends Renderer{
 					if(sprite.getMesh().getVertexArray() != null ) {
 						vao = sprite.getMesh().getVertexArray();
 					}
-					loadMaterial("material", sprite.getMesh().getMaterial());
+					loadMaterial("material", sprite.getMaterial());
+					shader.loadVector3("ambientColour", sprite.getSpriteColour());
 				}
 			}
 				

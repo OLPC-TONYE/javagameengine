@@ -7,13 +7,12 @@ import opengl.VertexArrayObject;
 
 public class Mesh extends Asset{
 	
-	float[] vertices;
-	float[] textureUVs;
-	float[] normals;
-	int[] indices;
+	private float[] vertices;
+	private float[] textureUVs;
+	private float[] normals;
+	private int[] indices;
 	
-	Material material = new Material("material");	
-	transient VertexArrayObject vertexArray;
+	private transient VertexArrayObject vertexArray;
 	
 	public Mesh() {
 		super("Mesh", AssetType.Mesh);
@@ -86,14 +85,6 @@ public class Mesh extends Asset{
 		return indices;
 	}
 
-	public Material getMaterial() {
-		return material;
-	}
-
-	public void setMaterial(Material material) {
-		this.material = material;
-	}
-
 	public VertexArrayObject getVertexArray() {
 		if(vertexArray == null) {
 			EngineManager.loadToVAO(this);
@@ -106,9 +97,9 @@ public class Mesh extends Asset{
 	}
 
 	@Override
-	public void copy(Asset from) {
-		if(from == null) return;
-		if(!(from instanceof Mesh)) return;
+	public Mesh copy(Asset from) {
+		if(from == null) return null;
+		if(!(from instanceof Mesh)) return null;
 		
 		Mesh mesh = (Mesh) from;
 		
@@ -116,8 +107,7 @@ public class Mesh extends Asset{
 		this.vertices = mesh.getVertices();
 		this.textureUVs = mesh.getTextureUVs();
 		this.normals = mesh.getNormals();
-		this.material = new Material("");
-		this.material.copy(mesh.getMaterial());
+		return this;
 	}
 
 }

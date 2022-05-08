@@ -2,103 +2,183 @@ package entitiesComponents;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import org.joml.Vector4f;
 
-import imgui.ImGui;
-import imgui.ImVec2;
-import imgui.flag.ImGuiColorEditFlags;
-import imgui.type.ImFloat;
-import imgui.type.ImInt;
-import managers.EngineManager;
+import annotations.BeginGroup;
+import annotations.ColourField;
+import annotations.ComboEnumField;
+import annotations.EndGroup;
+import annotations.ShowIfValueEnum;
+import annotations.SkipField;
+import entitiesComponents.enums.CameraType;
 
 public class CameraComponent extends Component {
 	
-	protected float near_plane;
-	protected float far_plane;
-	protected float field_of_view;
+	@ColourField
+	protected Vector4f clearColour = new Vector4f(0.06f);
 	
-	protected float width;
-	protected float height;
+	@ComboEnumField
+	protected CameraType cameraProjection = CameraType.Perspective;
 	
-	protected float orthographic_size;
+	@ShowIfValueEnum(fieldname="cameraProjection", value=0)
+	protected float orthographicSize = 15;
+	
+	@ShowIfValueEnum(fieldname="cameraProjection", value=1)
+	protected float fieldOfView = 70;
+	
+	
+	@BeginGroup(name="Culling Planes")
+	protected float nearPlane = 0.03f;
+	@EndGroup
+	protected float farPlane = 1000.0f;
+		
+	@BeginGroup(name="Camera Size")
+	protected float width = 510;	
+	@EndGroup
+	protected float height = 320;
+	
+	@SkipField
 	protected float aspectRatio;
-	
-	protected float[] clear_colour = new float[4];
-	
-	protected int cameraProjection;
 	
 	@Override
 	public void prepare() {
-		
+		aspectRatio =  width / height;
 	} 
 
 	@Override
 	public void update(double dt) {
-		
-	}
-	
-	public float[] getClearColour() {
-		return clear_colour;
-	}
-	
-	public float[] getPerpsProperties() {
-		return new float[] {near_plane, far_plane, field_of_view};
-	}
-	
-	public float[] getCameraSize() {
-		return new float[] {width, height};
+		aspectRatio =  width / height;
 	}
 	
 	/**
-	 * 
-	 * Get Orthographic Camera Properties
-	 * 
-	 * 
+	 * @return the clearColour
 	 */
-	public float getOrthoProperties() {
-		return orthographic_size;
+	public Vector4f getClearColour() {
+		return clearColour;
 	}
 
+	/**
+	 * @return the cameraProjection
+	 */
+	public CameraType getCameraProjection() {
+		return cameraProjection;
+	}
+
+	/**
+	 * @return the orthographicSize
+	 */
+	public float getOrthographicSize() {
+		return orthographicSize;
+	}
+
+	/**
+	 * @return the fieldOfView
+	 */
+	public float getFieldOfView() {
+		return fieldOfView;
+	}
+
+	/**
+	 * @return the nearPlane
+	 */
+	public float getNearPlane() {
+		return nearPlane;
+	}
+
+	/**
+	 * @return the farPlane
+	 */
+	public float getFarPlane() {
+		return farPlane;
+	}
+
+	/**
+	 * @return the width
+	 */
+	public float getWidth() {
+		return width;
+	}
+
+	/**
+	 * @return the height
+	 */
+	public float getHeight() {
+		return height;
+	}
+
+	/**
+	 * @return the aspectRatio
+	 */
 	public float getAspectRatio() {
 		return aspectRatio;
 	}
 
-	public int getCameraProjection() {
-		return cameraProjection;
-	}
-	
-	public void setClearColour(float red, float green, float blue, float alpha) {
-		this.clear_colour[0] = red;
-		this.clear_colour[1] = green;
-		this.clear_colour[2] = blue;
-		this.clear_colour[3] = alpha;
-	}
-	
-	public void setPerpsProperties(float near_plane, float far_plane, float field_of_view) {
-		this.far_plane = far_plane;
-		this.near_plane = near_plane;
-		this.field_of_view = field_of_view;
-	}
-
-	public void setCameraSize(float width, float height) {
-		this.width = width;
-		this.height = height;
-	}
-
-	public void setOrthoProperties(float near_plane, float far_plane, float field_of_view, float size) {
-		this.far_plane = far_plane;
-		this.near_plane = near_plane;
-		this.orthographic_size = size;
-		this.field_of_view = field_of_view;
-	}
-
-	public void setCameraProjection(int projection) {
-		cameraProjection = projection;
+	/**
+	 * @param clearColour the clearColour to set
+	 */
+	public CameraComponent setClearColour(Vector4f clearColour) {
+		this.clearColour = clearColour;
+		return this;
 	}
 
 	/**
-	 * 
+	 * @param cameraProjection the cameraProjection to set
+	 */
+	public CameraComponent setCameraProjection(CameraType cameraProjection) {
+		this.cameraProjection = cameraProjection;
+		return this;
+	}
+
+	/**
+	 * @param orthographicSize the orthographicSize to set
+	 */
+	public CameraComponent setOrthographicSize(float orthographicSize) {
+		this.orthographicSize = orthographicSize;
+		return this;
+	}
+
+	/**
+	 * @param fieldOfView the fieldOfView to set
+	 */
+	public CameraComponent setFieldOfView(float fieldOfView) {
+		this.fieldOfView = fieldOfView;
+		return this;
+	}
+
+	/**
+	 * @param nearPlane the nearPlane to set
+	 */
+	public CameraComponent setNearPlane(float nearPlane) {
+		this.nearPlane = nearPlane;
+		return this;
+	}
+
+	/**
+	 * @param farPlane the farPlane to set
+	 */
+	public CameraComponent setFarPlane(float farPlane) {
+		this.farPlane = farPlane;
+		return this;
+	}
+
+	/**
+	 * @param width the width to set
+	 */
+	public CameraComponent setWidth(float width) {
+		this.width = width;
+		return this;
+	}
+
+	/**
+	 * @param height the height to set
+	 */
+	public CameraComponent setHeight(float height) {
+		this.height = height;
+		return this;
+	}
+
+	/**
 	 * Get View Matrix of Camera
-	 * 
 	 */
 	public Matrix4f getViewMatrix() {
 		Matrix4f viewMatrix = new Matrix4f();
@@ -119,8 +199,7 @@ public class CameraComponent extends Component {
 	}
 	
 	public Matrix4f getProjectionMatrix() {
-		aspectRatio =  width / height;
-		if(this.cameraProjection == EngineManager.ENGINE_CAMERA_ORTHOGRAPHIC) {
+		if(this.cameraProjection == CameraType.Orthographic) {
 			return getOrthoProjectionMatrix();
 		}else {
 			return getPerspProjectionMatrix();
@@ -130,126 +209,19 @@ public class CameraComponent extends Component {
 	
 	public Matrix4f getOrthoProjectionMatrix() {
 		Matrix4f projectionMatrix = new Matrix4f();
-		float orthoLeft = -orthographic_size * aspectRatio * 0.5f;
-		float orthoRight = orthographic_size * aspectRatio * 0.5f;
-		float orthoBottom = -orthographic_size * 0.5f;
-		float orthoTop = orthographic_size * 0.5f;
+		float orthoLeft = -orthographicSize * aspectRatio * 0.5f;
+		float orthoRight = orthographicSize * aspectRatio * 0.5f;
+		float orthoBottom = -orthographicSize * 0.5f;
+		float orthoTop = orthographicSize * 0.5f;
 		
 		projectionMatrix.identity();
-		return projectionMatrix.ortho(orthoLeft, orthoRight, orthoBottom, orthoTop, near_plane, far_plane);
+		return projectionMatrix.ortho(orthoLeft, orthoRight, orthoBottom, orthoTop, nearPlane, farPlane);
 	}
 	
 	public Matrix4f getPerspProjectionMatrix() {
 		Matrix4f projectionMatrix = new Matrix4f();
 		projectionMatrix.identity();
-		return projectionMatrix.perspective(field_of_view, aspectRatio, near_plane, far_plane);
-	}
-
-	@Override
-	public void UI() {
-		
-		
-		ImVec2 dstImVec2 = new ImVec2();
-			
-		ImGui.pushID("Clear Colour:");
-		ImGui.text("Clear Colour:");
-		ImGui.sameLine();
-		
-		if(ImGui.colorEdit4("", clear_colour, ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.NoDragDrop)) {
-		}
-		ImGui.popID();
-		
-		ImGui.pushID("Width:");
-		ImGui.text("Width:");
-		ImGui.sameLine();
-		ImFloat val = new ImFloat(width);
-		ImGui.calcTextSize(dstImVec2, ""+val.get());
-		ImGui.setNextItemWidth(dstImVec2.x+30);
-		if(ImGui.inputFloat("", val)) {
-			width = val.get();
-			if(val.get() < 1) {
-				width = 1;
-			}			
-		}
-		ImGui.popID();
-		ImGui.sameLine();
-		ImGui.pushID("Height:");
-		ImGui.text("Height:");
-		ImGui.sameLine();
-		ImFloat val_height = new ImFloat(height);
-		ImGui.calcTextSize(dstImVec2, ""+val_height.get());
-		ImGui.setNextItemWidth(dstImVec2.x+30);
-		if(ImGui.inputFloat("", val_height)) {
-			height = val_height.get();
-			if(val_height.get() < 1) {
-				height = 1;
-			}		
-		}
-		ImGui.popID();
-		
-		ImGui.pushID("Near Plane:");
-		ImGui.text("Near Plane:");
-		ImGui.sameLine();
-		ImFloat val_nplane = new ImFloat(near_plane);
-		ImGui.calcTextSize(dstImVec2, ""+val_nplane.get());
-		ImGui.setNextItemWidth(dstImVec2.x+30);
-		if(ImGui.inputFloat("", val_nplane)) {
-			near_plane = val_nplane.get();	
-		}
-		ImGui.popID();
-		
-		ImGui.pushID("Far Plane:");
-		ImGui.text("Far Plane:");
-		ImGui.sameLine();
-		ImFloat val_fplane = new ImFloat(far_plane);
-		ImGui.calcTextSize(dstImVec2, ""+val_fplane.get());
-		ImGui.setNextItemWidth(dstImVec2.x+30);
-		if(ImGui.inputFloat("", val_fplane)) {
-			far_plane = val_fplane.get();		
-		}
-		ImGui.popID();
-		
-		ImGui.pushID("Field Of View:");
-		ImGui.text("Field Of View:");
-		ImGui.sameLine();
-		ImFloat val_fov = new ImFloat(field_of_view);
-		ImGui.calcTextSize(dstImVec2, ""+val_fov.get());
-		ImGui.setNextItemWidth(dstImVec2.x+30);
-		if(ImGui.inputFloat("", val_fov)) {
-			field_of_view = val_fov.get();
-			if(val_fov.get() < 1) {
-				field_of_view = 1;
-			}		
-		}
-		ImGui.popID();
-		
-		ImGui.pushID("Projection:");
-		ImGui.text("Projection:");
-		ImGui.sameLine();
-		String[] items = new String[]{"Perspective", "Orthographic"};
-		ImInt currentItem = new ImInt(cameraProjection);
-		if(ImGui.combo("", currentItem, items)) {
-			this.cameraProjection = currentItem.get();
-		}
-		ImGui.popID();
-		
-		if(cameraProjection == 1) 
-		{
-			ImGui.pushID("Size:");
-			ImGui.text("Size:");
-			ImGui.sameLine();
-			ImFloat val_size = new ImFloat(orthographic_size);
-			ImGui.calcTextSize(dstImVec2, ""+val_size.get());
-			ImGui.setNextItemWidth(dstImVec2.x+30);
-			if(ImGui.inputFloat("", val_size)) {
-				orthographic_size = val_size.get();
-				if(val_size.get() < 1) {
-					orthographic_size = 1;
-				}			
-			}
-			ImGui.popID();
-		}
-	
+		return projectionMatrix.perspective(fieldOfView, aspectRatio, nearPlane, farPlane);
 	}
 
 }

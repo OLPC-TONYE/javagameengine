@@ -2,6 +2,9 @@ package entitiesComponents;
 
 public enum Components {
 	CameraComponent,
-	TextureComponent,
+	LightingComponent,
+	SpriteRenderer,
+	MeshRenderer,
+	ScriptComponent,
 	Transform,
 }

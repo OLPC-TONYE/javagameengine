@@ -1,15 +1,15 @@
 package assets.mesh;
 
-import org.joml.Vector4f;
+import org.joml.Vector3f;
 
 import assets.Asset;
 import assets.AssetType;
 
 public class Material extends Asset {
 	
-	Vector4f ambient = new Vector4f(1);
-	Vector4f diffuse = new Vector4f(1);
-	Vector4f specular = new Vector4f(1);
+	Vector3f ambient = new Vector3f(1);
+	Vector3f diffuse = new Vector3f(1);
+	Vector3f specular = new Vector3f(1);
 	
 	float reflectivity = 1;
 	float specularPower = 10;
@@ -21,28 +21,46 @@ public class Material extends Asset {
 	public Material(String name) {
 		super(name, AssetType.Material);
 	}
-	
-	public Vector4f getAmbient() {
+
+	/**
+	 * @return the ambient
+	 */
+	public Vector3f getAmbient() {
 		return ambient;
 	}
 
-	public void setAmbient(Vector4f ambient) {
+	/**
+	 * @param ambient the ambient to set
+	 */
+	public void setAmbient(Vector3f ambient) {
 		this.ambient = ambient;
 	}
 
-	public Vector4f getDiffuse() {
+	/**
+	 * @return the diffuse
+	 */
+	public Vector3f getDiffuse() {
 		return diffuse;
 	}
 
-	public void setDiffuse(Vector4f diffuse) {
+	/**
+	 * @param diffuse the diffuse to set
+	 */
+	public void setDiffuse(Vector3f diffuse) {
 		this.diffuse = diffuse;
 	}
 
-	public Vector4f getSpecular() {
+	/**
+	 * @return the specular
+	 */
+	public Vector3f getSpecular() {
 		return specular;
 	}
 
-	public void setSpecular(Vector4f specular) {
+	/**
+	 * @param specular the specular to set
+	 */
+	public void setSpecular(Vector3f specular) {
 		this.specular = specular;
 	}
 
@@ -63,9 +81,9 @@ public class Material extends Asset {
 	}
 
 	@Override
-	public void copy(Asset from) {
-		if(from == null) return;
-		if(!(from instanceof Material)) return;
+	public Material copy(Asset from) {
+		if(from == null) return null;
+		if(!(from instanceof Material)) return null;
 		
 		Material material = (Material) from;
 		
@@ -74,6 +92,7 @@ public class Material extends Asset {
 		this.specular = material.getSpecular();
 		this.reflectivity = material.getReflectivity();
 		this.specularPower = material.getSpecularPower();
+		return this;
 	}
 	
 }

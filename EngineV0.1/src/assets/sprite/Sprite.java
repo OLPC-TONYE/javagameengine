@@ -3,22 +3,34 @@ package assets.sprite;
 import java.util.ArrayList;
 import java.util.List;
 
+import annotations.ShowIfValueBool;
+import annotations.SkipField;
 import assets.Asset;
 import assets.AssetType;
 import managers.AssetManager;
 
 public class Sprite extends Asset {
 		
-	String textureName = "white";
+	private String textureName = "white";
+	
+	private SpriteType shape = SpriteType.Square;
 	
 //	TileMap
-	boolean isTileMap;
-	List<float[]> tilemap = new ArrayList<>();
-	int current_tile = 1;
-	int number_of_tiles;
-	int tile_width = 16;
-	int tile_height = 16;
-	int spacing;
+	private boolean isTileMap;
+	
+	@ShowIfValueBool(fieldname = "isTileMap", value = true)
+	private List<float[]> tilemap = new ArrayList<>();
+	
+	@SkipField
+	@ShowIfValueBool(fieldname = "isTileMap", value = true)
+	private int current_tile = 1;
+	
+	@ShowIfValueBool(fieldname = "isTileMap", value = true)
+	private int
+	number_of_tiles,
+	tile_width = 16,
+	tile_height = 16,
+	spacing;
 
 	/**
 	 * Sprite
@@ -50,6 +62,14 @@ public class Sprite extends Asset {
 
 	public void setTextureName(String textureName) {
 		this.textureName = textureName;
+	}	
+
+	public SpriteType getShape() {
+		return shape;
+	}
+
+	public void setShape(SpriteType shape) {
+		this.shape = shape;
 	}
 
 	public boolean isTilemap() {
@@ -65,8 +85,30 @@ public class Sprite extends Asset {
 		this.isTileMap = isTileMap;
 		calculateTileMap();
 	}
+	
+	public float[] getFromTileMap(int index) {
+	
+		validateSprite();
+		calculateTileMap();
+		return tilemap.get(index);
+	}
+	
+	public float[] getCurrentTile() {
+		if(isTileMap) {
+			validateSprite();
+		}
+		return tilemap.get(current_tile-1);
+	}
+
+	private void validateSprite() {
+		if(number_of_tiles <= 0) number_of_tiles = 1;
+		if(current_tile>number_of_tiles||current_tile<=0) current_tile = 1;
+	}
 
 	public List<float[]> getTilemap() {
+		if(isTileMap) {
+			validateSprite();
+		}		
 		return tilemap;
 	}
 
@@ -74,12 +116,13 @@ public class Sprite extends Asset {
 		this.tilemap = tilemap;
 	}
 
-	public int getCurrentTile() {
+	public int getCurrentTileIndex() {
 		return current_tile;
 	}
 
 	public void setCurrentTile(int current_tile) {
 		this.current_tile = current_tile;
+		calculateTileMap();
 	}
 
 	public int getNumberOfTiles() {
@@ -88,6 +131,7 @@ public class Sprite extends Asset {
 
 	public void setNumberOfTiles(int number_of_tiles) {
 		this.number_of_tiles = number_of_tiles;
+		calculateTileMap();
 	}
 
 	public int getTileWidth() {
@@ -96,6 +140,7 @@ public class Sprite extends Asset {
 
 	public void setTileWidth(int tile_width) {
 		this.tile_width = tile_width;
+		calculateTileMap();
 	}
 
 	public int getTileHeight() {
@@ -104,6 +149,7 @@ public class Sprite extends Asset {
 
 	public void setTileHeight(int tile_height) {
 		this.tile_height = tile_height;
+		calculateTileMap();
 	}
 
 	public int getTileSpacing() {
@@ -112,6 +158,7 @@ public class Sprite extends Asset {
 
 	public void setTileSpacing(int spacing) {
 		this.spacing = spacing;
+		calculateTileMap();
 	}
 	
 	public void calculateTileMap() {
@@ -165,17 +212,39 @@ public class Sprite extends Asset {
 	}
 
 	@Override
-	public void copy(Asset from) {
-		if(from == null) return;
-		if(!(from instanceof Sprite)) return;
+	public Sprite copy(Asset from) {
+		if(from == null) return null;
+		if(!(from instanceof Sprite)) return null;
 		
 		Sprite sprite = (Sprite) from;
 		
 		this.isTileMap = sprite.isTilemap();
+		this.current_tile = sprite.getCurrentTileIndex();
 		this.number_of_tiles = sprite.getNumberOfTiles();
 		this.spacing = sprite.getTileSpacing();
 		this.textureName = sprite.getTextureName();
 		this.tile_height = sprite.getTileHeight();
 		this.tile_width = sprite.getTileWidth();
+		return this;
+	}
+
+	@Override
+	public boolean equals(Object to) {
+		
+		if(to == null) return false;
+		if(!(to instanceof Sprite)) return false;
+		
+		Sprite sprite = (Sprite) to;
+		
+		if(this.textureName != sprite.textureName) return false;
+		
+		if(this.isTileMap != sprite.isTileMap) return false;
+		if(this.current_tile != sprite.current_tile) return false;
+		if(this.number_of_tiles != sprite.number_of_tiles) return false;
+		if(this.spacing != sprite.spacing) return false;
+		if(this.tile_height != sprite.tile_height) return false;
+		if(this.tile_width != sprite.tile_width) return false;
+		
+		return true;
 	}	
 }

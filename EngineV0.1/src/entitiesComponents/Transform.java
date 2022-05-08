@@ -3,24 +3,26 @@ package entitiesComponents;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
-import imgui.ImGui;
-
 public class Transform extends Component{
 
 	private Vector3f position = new Vector3f();
 	private Vector3f rotation = new Vector3f();
 	private Vector3f scale = new Vector3f(1);
 	
-	private Vector3f translate = new Vector3f();
-	private Vector3f rotate = new Vector3f();
+	private transient Vector3f translate = new Vector3f();
+	private transient Vector3f rotate = new Vector3f();
+	
+	/** Direction of Positive Z **/
+	private transient Vector3f direction = new Vector3f(0, 0, 1);
 
 	private transient Matrix4f transformationMatrix;
 	
-	private Transform lastTransform;
+	private transient Transform lastTransform;
 
 	@Override
 	public void prepare() {
 		calcTransformationMatrix();
+		transformationMatrix.positiveZ(direction);
 	}
 	
 	@Override
@@ -61,6 +63,9 @@ public class Transform extends Component{
 		transformationMatrix.rotateY((float) Math.toRadians(rotation.y));
 		transformationMatrix.rotateZ((float) Math.toRadians(rotation.z));
 		transformationMatrix.scale(scale);
+		
+		// Update Direction
+		transformationMatrix.positiveZ(direction);
 	}
 	
 	public Matrix4f getTransformationMatrix() {
@@ -147,6 +152,20 @@ public class Transform extends Component{
 		this.scale = scale;
 	}
 	
+	/**
+	 * @return the direction
+	 */
+	public Vector3f getDirection() {
+		return direction;
+	}
+
+	/**
+	 * @param direction the direction to set
+	 */
+	public void setDirection(Vector3f direction) {
+		this.direction = direction;
+	}
+
 	public void copy(Transform to) {
 		if(to == null) to = new Transform();
 		to.setPosition(position);
@@ -167,47 +186,6 @@ public class Transform extends Component{
 
 		return equals;
 	}
-
-	@Override
-	public void UI() {
-		// TODO Auto-generated method stub
-		{
-			ImGui.pushID("Position:");
-			ImGui.text("Position:");
-			ImGui.sameLine();
-			Vector3f val = position;
-			float[] imFloat = {val.x, val.y, val.z};
-			if (ImGui.inputFloat3("", imFloat)) {
-				setPosition(new Vector3f(imFloat));;
-			}
-			ImGui.popID();
-		}
-		
-		{
-			ImGui.pushID("Rotation:");
-			ImGui.text("Rotation:");
-			ImGui.sameLine();
-			Vector3f val = rotation;
-			float[] imFloat = {val.x, val.y, val.z};
-			if (ImGui.inputFloat3("", imFloat)) {
-				setRotation(new Vector3f(imFloat));;
-			}
-			ImGui.popID();
-		}
-		
-		{
-			ImGui.pushID("Scale:");
-			ImGui.text("Scale:");
-			ImGui.sameLine();
-			Vector3f val = scale;
-			float[] imFloat = {val.x, val.y, val.z};
-			if (ImGui.inputFloat3("", imFloat)) {
-				setScale(new Vector3f(imFloat));;
-			}
-			ImGui.popID();
-		}
-	}
-	
 	
 
 }

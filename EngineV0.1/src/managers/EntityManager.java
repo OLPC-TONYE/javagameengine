@@ -1,11 +1,11 @@
 package managers;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-
+import java.util.Map.Entry;
 import entities.Entity;
+import tools.Dictionary;
 
 public class EntityManager {
 	
@@ -21,13 +21,10 @@ public class EntityManager {
 
 	}
 
-	public static Map<String, Entity> world_entities = new HashMap<>();
-	public static Map<String, Integer> ids = new HashMap<>();
-	
-	public static Map<String, ArrayList<String>> hierarchy = new HashMap<>();
+	public static Dictionary<String, Integer, Entity, ArrayList<String>> world = new Dictionary<>();
 	
 	public static boolean isParentOf(String nameOfEntity, String nameOfChild) {
-		List<String> children = hierarchy.get(nameOfEntity);
+		List<String> children = world.getFromThirdMap(nameOfEntity);
 		if(children.contains(nameOfChild)) {
 			return true;
 		}
@@ -35,7 +32,7 @@ public class EntityManager {
 	}
 	
 	public static boolean isChildOf(String nameOfEntity, String nameOfParent) {
-		List<String> children = hierarchy.get(nameOfParent);
+		List<String> children = world.getFromThirdMap(nameOfParent);
 		if(children.contains(nameOfEntity)) {
 			return true;
 		}
@@ -56,7 +53,7 @@ public class EntityManager {
 	}
 	
 	public static boolean hasChildren(String nameOfEntity) {
-		List<String> children = hierarchy.get(nameOfEntity);
+		List<String> children = world.getFromThirdMap(nameOfEntity);
 		if(children.size()>0) {
 			return true;
 		}
@@ -64,7 +61,7 @@ public class EntityManager {
 	}
 	
 	public static boolean hasParent(String nameOfEntity) {
-		for(String parent: hierarchy.keySet()) {
+		for(String parent: world.keySet()) {
 			if(parent == nameOfEntity) {
 				continue;
 			}
@@ -73,7 +70,7 @@ public class EntityManager {
 				continue;
 			}
 			
-			List<String> children = hierarchy.get(parent);
+			List<String> children = world.getFromThirdMap(parent);
 			
 			if(children.contains(nameOfEntity)) {
 				return true;
@@ -83,11 +80,11 @@ public class EntityManager {
 	}
 	
 	public static List<String> getChildrenOf(String nameOfEntity) {
-		return hierarchy.get(nameOfEntity);
+		return world.getFromThirdMap(nameOfEntity);
 	}
 	
 	public static String getParentOf(String nameOfEntity) {
-		for(String parent: hierarchy.keySet()) {
+		for(String parent: world.keySet()) {
 			if(parent == nameOfEntity) {
 				continue;
 			}
@@ -96,7 +93,7 @@ public class EntityManager {
 				continue;
 			}
 			
-			List<String> children = hierarchy.get(parent);
+			List<String> children = world.getFromThirdMap(parent);
 			
 			if(children.contains(nameOfEntity)) {
 				return parent;
@@ -148,14 +145,14 @@ public class EntityManager {
 	}
 	
 	public static void showTree() {
-		for(String root: hierarchy.keySet()) {
+		for(String root: world.keySet()) {
 			if(!hasParent(root)) {
 				System.out.print(root+" - ");
 				showChildren(root);
 				System.out.print("\n");
 			}
 		}
-		System.out.println(hierarchy);
+		System.out.println(world.getThirdMap());
 	}
 	
 	public static void showChildren(String parent) {
@@ -174,7 +171,7 @@ public class EntityManager {
 	private static String getAvailName(String name) {
 		String newName = name;
 		int count = 0;
-		while(world_entities.containsKey(newName)) {
+		while(world.containsKey(newName)) {
 			count++;
 			newName = name+" "+count;
 		}
@@ -183,7 +180,7 @@ public class EntityManager {
 	
 	private static int getAvailIdentifier() {
 		int entityId = 1;
-		while(ids.containsValue(entityId)) {
+		while(world.getFirstMap().containsValue(entityId)) {
 			entityId++;
 		}
 		return entityId;
@@ -191,7 +188,7 @@ public class EntityManager {
 	
 	public static boolean add(Entity entity) {
 		String entityName = getAvailName(entity.getName());
-		if(!world_entities.containsKey(entityName)) {
+		if(!world.containsKey(entityName)) {
 			addEntity(entity, entityName);
 			return true;
 		}
@@ -200,7 +197,7 @@ public class EntityManager {
 	
 	public static boolean add(Entity entity, String name) {
 		String entityName = getAvailName(name);
-		if(!world_entities.containsKey(entityName)) {
+		if(!world.containsKey(entityName)) {
 			entity.setName(entityName);
 			addEntity(entity, entityName);
 			return true;
@@ -209,13 +206,11 @@ public class EntityManager {
 	}
 	
 	private static void addEntity(Entity entity, String entityName) {
-		world_entities.put(entityName, entity);
-		ids.put(entityName, getAvailIdentifier());
-		hierarchy.put(entityName, new ArrayList<>());
+		world.put(entityName, getAvailIdentifier(), entity, new ArrayList<>());
 	}
 	
 	public static boolean remove(String nameOfEntity) {
-		if(world_entities.containsKey(nameOfEntity)) {
+		if(world.containsKey(nameOfEntity)) {
 			if(hasChildren(nameOfEntity)) {
 				List<String> children = getChildrenOf(nameOfEntity);
 				for(int i=0; i<children.size();i++) {
@@ -232,14 +227,28 @@ public class EntityManager {
 	}
 	
 	private static void removeEntity(String nameOfEntity) {
-		world_entities.remove(nameOfEntity);
-		ids.remove(nameOfEntity);
-		hierarchy.remove(nameOfEntity);
+		world.remove(nameOfEntity);
+	}
+	
+	public static Entity getEntityById(int entityId) {
+		for(Entry<String, Integer> entry: world.getFirstMap().entrySet()) {
+			
+			int id = entry.getValue();
+			if(id == entityId) {
+				return world.getFromSecondMap(entry.getKey());
+			}
+		}
+		return null;
+	}
+	
+	public static Collection<Entity> getWorldEntities() {
+		
+		return world.getSecondMap().values();
 	}
 	
 	public static int getId(String entityname) {
-		if(world_entities.containsKey(entityname)) {
-			return ids.get(entityname);
+		if(world.containsKey(entityname)) {
+			return world.getFromFirstMap(entityname);
 		}
 		return 0;
 	}
@@ -250,5 +259,9 @@ public class EntityManager {
 			all.add(type.name());
 		}
 		return all.toArray(new String[all.size()]);
+	}
+
+	public static void reset() {
+		world.clear();
 	}
 }

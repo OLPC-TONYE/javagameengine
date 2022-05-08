@@ -104,7 +104,7 @@ public class Application{
 						
 		}
 		EngineManager.cleanUp();
-		ImGuiLayer.end();
+		ImGuiLayer.dispose();
 		pile.unstackAll();
 		window.closeWindow();
 		

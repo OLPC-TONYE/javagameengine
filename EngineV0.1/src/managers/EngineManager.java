@@ -13,6 +13,7 @@ import assets.mesh.Mesh;
 import entities.Entity;
 import entitiesComponents.CameraComponent;
 import entitiesComponents.Transform;
+import entitiesComponents.enums.CameraType;
 import opengl.VertexArrayObject;
 
 public class EngineManager {
@@ -26,8 +27,8 @@ public class EngineManager {
 	public final static float[] ENGINE_SPRITE_SQUARE_TEXTURECOORDS = { 0,0, 0,1,  1,1, 1,0};
 	
 	static float[] positions = {			
-			/* */-0.5f,0.5f,-0.5f, /* */-0.5f,-0.5f,-0.5f, /* */0.5f,-0.5f,-0.5f, /* */0.5f,0.5f,-0.5f,	
 			/* */-0.5f,0.5f,0.5f, /* */-0.5f,-0.5f,0.5f, /* */0.5f,-0.5f,0.5f, /* */0.5f,0.5f,0.5f,	
+			/* */-0.5f,0.5f,-0.5f, /* */-0.5f,-0.5f,-0.5f, /* */0.5f,-0.5f,-0.5f, /* */0.5f,0.5f,-0.5f,	
 			/* */0.5f,0.5f,-0.5f, /* */0.5f,-0.5f,-0.5f, /* */0.5f,-0.5f,0.5f,	/* */0.5f,0.5f,0.5f,
 			/* */-0.5f,0.5f,-0.5f,	/* */-0.5f,-0.5f,-0.5f,	/* */-0.5f,-0.5f,0.5f,	/* */-0.5f,0.5f,0.5f,
 			/* */-0.5f,0.5f,0.5f, /* */-0.5f,0.5f,-0.5f, /* */0.5f,0.5f,-0.5f, /* */0.5f,0.5f,0.5f,
@@ -52,8 +53,8 @@ public class EngineManager {
 	};
 	
 	static float[] normals = {
-			/* */0.0f,0.0f,-1.0f, /* */0.0f,0.0f,-1.0f, /* */0.0f,0.0f,-1.0f, /* */0.0f,0.0f,-1.0f, 
 			/* */0.0f,0.0f,1.0f, /* */0.0f,0.0f,1.0f, /* */0.0f,0.0f,1.0f, /* */0.0f,0.0f,1.0f, 
+			/* */0.0f,0.0f,-1.0f, /* */0.0f,0.0f,-1.0f, /* */0.0f,0.0f,-1.0f, /* */0.0f,0.0f,-1.0f, 
 			/* */1.0f,0.0f,0.0f, /* */1.0f,0.0f,0.0f, /* */1.0f,0.0f,0.0f, /* */1.0f,0.0f,0.0f, 
 			/* */-1.0f,0.0f,0.0f, /* */-1.0f,0.0f,0.0f, /* */-1.0f,0.0f,0.0f, /* */-1.0f,0.0f,0.0f, 
 			/* */0.0f,1.0f,0.0f, /* */0.0f,1.0f,0.0f, /* */0.0f,1.0f,0.0f, /* */0.0f,1.0f,0.0f, 
@@ -121,13 +122,7 @@ public class EngineManager {
 		Transform transform = new Transform();
 		transform.setPosition(new Vector3f(0, 0, 10));
 		camera.addComponent(transform);
-		CameraComponent cp = new CameraComponent();
-		cp.setCameraProjection(ENGINE_CAMERA_PERSPECTIVE);
-		cp.setPerpsProperties(0.01f, 1000f, 70);
-		cp.setCameraSize(510, 320);
-		cp.setClearColour(0.06f, 0.06f, 0.06f, 0.0f);
-
-		camera.addComponent(cp);
+		camera.addComponent(new CameraComponent());
 		return camera;
 	}
 	
@@ -135,12 +130,7 @@ public class EngineManager {
 		Entity camera = new Entity();
 		camera.setName("Camera");
 		camera.addComponent(new Transform());
-		CameraComponent cp = new CameraComponent();
-		cp.setCameraProjection(ENGINE_CAMERA_ORTHOGRAPHIC);
-		cp.setOrthoProperties(1f, -1f, 70, 5);
-		cp.setCameraSize(510, 320);
-
-		camera.addComponent(cp);
+		camera.addComponent(new CameraComponent().setCameraProjection(CameraType.Orthographic));
 		return camera;
 	}
 	
@@ -148,11 +138,7 @@ public class EngineManager {
 		Entity camera = new Entity();
 		camera.setName("Camera");
 		camera.addComponent(new Transform());
-		CameraComponent cp = new CameraComponent();
-		cp.setCameraProjection(ENGINE_CAMERA_PERSPECTIVE);
-		cp.setPerpsProperties(0.01f, 1000f, 70);
-		cp.setCameraSize(510, 320);
-		camera.addComponent(cp);
+		camera.addComponent(new CameraComponent());
 		return camera;
 	}
 	

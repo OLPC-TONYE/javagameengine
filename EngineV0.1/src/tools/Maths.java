@@ -1,6 +1,7 @@
 package tools;
 
 import org.joml.Matrix4f;
+import org.joml.Random;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
@@ -13,6 +14,8 @@ import entitiesComponents.Transform;
 
  */
 public class Maths {
+	
+	private static Random random = new Random();
 
 	public static float clamp(float min, float max, float value) {
 		if(value>max) {
@@ -166,5 +169,17 @@ public class Maths {
 	    
 		return Matrix.set(m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23, m30, m31, m32, m33);
 	}
-
+	
+	public static int randomInt(int n) {
+		return random.nextInt(n);
+	}
+	
+	public static int randomNInt() {
+		int newNumber = 0;
+		for(int i=0; i < 9; i++) {
+			int unit = (int) (random.nextInt(9) * Math.pow(10, i));
+			newNumber += unit;
+		}
+		return Math.abs(newNumber);
+	}
 }

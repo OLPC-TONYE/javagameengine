@@ -13,7 +13,7 @@ import entitiesComponents.SpriteRenderer;
 public class Entity {
 	
 	protected String name;
-	protected boolean modified;
+	protected transient boolean modified;
 	
 	protected List<Component> components = new ArrayList<Component>();
 	

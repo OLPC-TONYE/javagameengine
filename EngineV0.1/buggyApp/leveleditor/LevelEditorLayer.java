@@ -4,41 +4,27 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 
-import assets.Asset;
-import assets.light.PointLight;
-import assets.sprite.Sprite;
 import entities.Drawable;
 import entities.Entity;
-import entitiesComponents.Component;
-import entitiesComponents.LightingComponent;
-import entitiesComponents.MeshRenderer;
 import entitiesComponents.ScriptComponent;
-import entitiesComponents.SpriteRenderer;
 import entitiesComponents.Transform;
-import events.EventHandler;
-import events.EventLevel;
-import events.ImGuiLayerRenderEvent;
-import gui.FileExplorer;
 import gui.Guizmos;
-import imgui.ImColor;
+import gui.ImGuiLayer;
 import imgui.ImGui;
 import imgui.ImVec2;
 import imgui.flag.ImGuiButtonFlags;
-import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiCond;
-import imgui.flag.ImGuiDragDropFlags;
-import imgui.flag.ImGuiMouseCursor;
-import imgui.flag.ImGuiPopupFlags;
 import imgui.flag.ImGuiStyleVar;
-import imgui.flag.ImGuiTreeNodeFlags;
 import imgui.flag.ImGuiWindowFlags;
-import imgui.type.ImBoolean;
+import leveleditor.interfaces.AssetBrowser;
+import leveleditor.interfaces.EntityExplorer;
+import leveleditor.interfaces.InspectorPanel;
+import leveleditor.interfaces.FileExplorer;
 import listeners.KeyListener;
 import listeners.MouseListener;
 import main.Application;
 import main.Layer;
 import main.Window;
-import managers.AssetManager;
 import managers.EngineManager;
 import managers.EntityManager;
 import opengl.Framebuffer;
@@ -59,13 +45,15 @@ public class LevelEditorLayer extends Layer
 	Framebuffer screen;
 
 	Scene levelScene = new LevelEditorScene();
-	String selectedEntity;
+	
+	public String selectedEntity;
+	public String selectedAsset;
 	
 	Guizmos guizmo;
 
 	VertexArrayObject lines;
 	VertexArrayObject camera;
-	
+		
 	float[] pixelData;
 	float[] guizmo_pixelData = new float[3];
 	
@@ -74,7 +62,6 @@ public class LevelEditorLayer extends Layer
 
 	@Override
 	public void attach() {
-		AssetManager.loadDefaultAssets();
 		screen = new Framebuffer(1024, 600);
 		renderer = new Renderer3D();
 		renderer2 = new RendererDebug();
@@ -133,40 +120,35 @@ public class LevelEditorLayer extends Layer
 	}
 
 	private void renderInterfaces() {
-		beginDockspace();
+		beginWorkspace();
 	}
 
-	private void beginDockspace() {
+	AssetBrowser assetBrowser = new AssetBrowser();
+	InspectorPanel entityInspector = new InspectorPanel();
+	EntityExplorer entityExplorer = new EntityExplorer();
+	FileExplorer fileExplorer = new FileExplorer("Open Scene...");
+	
+	String print = null;
+	private void beginWorkspace() {
+		
 		// DOCKSPACE
-		int windowFlags = ImGuiWindowFlags.MenuBar | ImGuiWindowFlags.NoDocking;
-
-		ImGui.setNextWindowPos(0.0f, 0.0f, ImGuiCond.FirstUseEver);
-		ImGui.setNextWindowSize(Window.get().width(), Window.get().height());
-		ImGui.pushStyleVar(ImGuiStyleVar.WindowRounding, 0f);
-		ImGui.pushStyleVar(ImGuiStyleVar.WindowBorderSize, 0.0f);
-		windowFlags |= ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoResize
-				| ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoBringToFrontOnFocus | ImGuiWindowFlags.NoNavFocus;
-
-		ImGui.begin("DockspaceBackground", new ImBoolean(true), windowFlags);
-		ImGui.popStyleVar(2);
-
-		int dockspace_id = ImGui.getID("ActualDockspace");
-		ImGui.dockSpace(dockspace_id);
+		ImGuiLayer.addMainDockSpace();
 
 		mainMenu();
 		
 		beginScreen();
-		beginAssetExplorer();
-
-		beginEntityInspector();
-		beginEntityExplorer();
-
-		EventHandler.handle(EventLevel.ImGuiLayerRender);
+		
+		
+		assetBrowser.render(this);
+			
+		entityInspector.render(this);
+		entityExplorer.render(this);
 
 		ImGui.showDemoWindow();
-		// For Dock space
-		ImGui.end();
+		
+		if(!ImGuiLayer.resumed) ImGui.end();
 	}
+	
 	
 	private void mainMenu() {
 		if(ImGui.beginMenuBar()) {
@@ -178,22 +160,36 @@ public class LevelEditorLayer extends Layer
 				}
 				
 				if(ImGui.menuItem("Open")) {
-					SceneLoader.load();
+					SceneLoader.load(fileExplorer.fetchFile());
 				}
 				
 				if(ImGui.menuItem("Save")) {
-					SceneLoader.save();
+					fileExplorer.saveFile(SceneLoader.saveData(), "bug");
 				}
 				
-				ImGui.endMenu();
+				if(!ImGuiLayer.resumed) {
+					ImGui.endMenu();
+				}				
 			}
 			
 			if(ImGui.beginMenu("View")) {
 				
+				if(ImGui.menuItem("Use Ambient Light", "", levelScene.useAmbient)) {
+					levelScene.useAmbient = !levelScene.useAmbient;
+				}
+				
 				ImGui.endMenu();
 			}
 			
-			ImGui.endMenuBar();
+			if(ImGui.beginMenu("About")) {
+				
+				ImGui.endMenu();
+			}
+			
+			if(!ImGuiLayer.resumed) {
+				ImGui.endMenuBar();
+			}
+			
 		}
 	}
 
@@ -277,386 +273,16 @@ public class LevelEditorLayer extends Layer
 		if(guizmo_pixelData[0] >= 1 | guizmo_pixelData[1] >= 1 | guizmo_pixelData[2] >= 1) {
 			
 		}else {
-			for (Entity entity : EntityManager.world_entities.values()) {
-				int id = EntityManager.getId(entity.getName());
-				if ((int) pixelData[0] == id) {
-					this.selectedEntity = entity.getName();
-					this.guizmo.attachTo(entity);
-					break;
-				} else {
-					this.guizmo.dettach();
-				}
-			}
-		}
-		
-	}
-
-	private void beginAssetExplorer() {
-		ImGui.begin("Assets");
-		
-		if (ImGui.beginPopupContextWindow(ImGuiPopupFlags.MouseButtonRight | ImGuiPopupFlags.NoOpenOverItems)) {
 			
-			if(ImGui.beginMenu("Create")) {
-				
-				if(ImGui.beginMenu("Mesh")) {
-					
-					if(ImGui.menuItem("Cube")) {
-						
-					}
-					ImGui.separator();
-					if(ImGui.menuItem("From OBJ")) {
-						
-					}
-					ImGui.endMenu();
-				}
-				
-
-				if(ImGui.menuItem("Sprite")) {
-					
-					
-					
-				}
-				
-				ImGui.endMenu();
-			}
-			ImGui.endPopup();
-		}
-		
-		ImGui.pushStyleColor(ImGuiCol.Button, ImColor.floatToColor(1, 1, 1, 0));
-		ImGui.pushStyleColor(ImGuiCol.ButtonHovered, ImColor.floatToColor(1, 1, 1, 0.2f));
-		ImGui.pushStyleColor(ImGuiCol.ButtonActive, ImColor.floatToColor(1, 1, 1, 0.2f));
-		
-		int i = 0;
-		for (Asset asset : AssetManager.assets.values()) {
-			float WindowPosX = ImGui.getWindowPosX();
-			float WindowSizeX = ImGui.getWindowSizeX();
-			float ItemSpacingX = ImGui.getStyle().getItemSpacingX();
-			float windowX2 = WindowPosX + WindowSizeX;
-
-						
-			int assetIcon;
-			switch (asset.getAssetType())
-			{
-				case Mesh:
-					assetIcon = AssetManager.getIconTexture("Mesh").getTextureID();
-					break;
-				case Sprite:
-					Sprite sprite = (Sprite) asset;
-					assetIcon = AssetManager.getTexture(sprite.getTextureName()).getTextureID();
-					break;
-				default:
-					assetIcon = AssetManager.getIconTexture("FileIcon").getTextureID();
-					break;
-			}
-
-			ImGui.pushID(i);
-			ImGui.beginGroup();
-			ImGui.imageButton(assetIcon, 100, 80);
-			if (ImGui.beginDragDropSource()) {
-				ImGui.setDragDropPayload("buggy_asset", asset);
-				ImGui.text(asset.getAssetType()+" : " + asset.getAssetName());
-				ImGui.endDragDropSource();
-			}
-			ImVec2 text_size = new ImVec2();
-			ImGui.calcTextSize(text_size , asset.getAssetName());
-			
-			ImGui.setCursorPosX((ImGui.getCursorPosX() + 100/2) - text_size.x/2.1f);
-			ImGui.text(asset.getAssetName());
-			ImGui.endGroup();
-			ImGui.popID();
-
-			i++;
-			float lastPosX = ImGui.getItemRectMaxX();
-			float nextPosX = lastPosX + ItemSpacingX + 100;
-
-			if (nextPosX < windowX2) {
-				ImGui.sameLine();
-			}
-		}
-		
-		ImGui.popStyleColor(3);
-		
-//		for (Texture texture : EngineManager.textureAssets.values()) {
-//
-//			float WindowPosX = ImGui.getWindowPosX();
-//			float WindowSizeX = ImGui.getWindowSizeX();
-//			float ItemSpacingX = ImGui.getStyle().getItemSpacingX();
-//			float windowX2 = WindowPosX + WindowSizeX;
-//
-//			ImGui.imageButton(texture.getTextureID(), 100, 100);
-//			if (ImGui.beginDragDropSource()) {
-//				ImGui.setDragDropPayload("payload_type", texture.getName());
-//				ImGui.text("Drag started : " + texture.getName());
-//				ImGui.endDragDropSource();
-//			}
-//
-//			float lastPosX = ImGui.getItemRectMaxX();
-//			float nextPosX = lastPosX + ItemSpacingX + 100;
-//
-//			if (nextPosX < windowX2) {
-//				ImGui.sameLine();
-//			}
-//
-//		}
-
-		ImGui.end();
-	}
-
-	String explorer_deleteFlag = null;
-
-	private void showChildren(String parent) {
-		if (EntityManager.hasChildren(parent)) {
-			for (String child : EntityManager.getChildrenOf(parent)) {
-				boolean open = ImGui.treeNodeEx(child, ImGuiTreeNodeFlags.OpenOnArrow);
-				if (ImGui.beginDragDropSource()) {
-					ImGui.setDragDropPayload("child", child);
-					ImGui.text(child);
-					ImGui.endDragDropSource();
-				}
-				if (ImGui.beginDragDropTarget()) {
-					Object payload_check = ImGui.acceptDragDropPayload("child", ImGuiDragDropFlags.AcceptPeekOnly);
-					boolean check = true;
-					if (payload_check != null) {
-						check = EntityManager.isAbove( (String)payload_check, child);				
-						payload_check = null;
-					}
-					if(check) {
-						ImGui.setMouseCursor(ImGuiMouseCursor.NotAllowed);
-					}
-					if(!check) {
-						Object payload = ImGui.acceptDragDropPayload("child");
-						if (payload != null) {
-							String childaccept = (String) ImGui.acceptDragDropPayload("child");
-							EntityManager.makeChildOf(childaccept, child);
-							payload = null;
-						}
-					}				
-					ImGui.endDragDropTarget();
-				}
-				if (ImGui.beginPopupContextItem(ImGuiPopupFlags.MouseButtonRight)) {
-					if (ImGui.menuItem("Delete")) {
-						explorer_deleteFlag = child;
-					}
-					ImGui.endPopup();
-				}
-				if (open) {
-					showChildren(child);
-					ImGui.treePop();
-				}
-
-			}
-		}
-	}
-
-	private void beginEntityExplorer() {
-		ImGui.begin("EntityExplorer");
-
-		if (ImGui.button("Open")) {
-			FileExplorer.open();
-			EventHandler.queue(new FetchFileEvent());
-		}
-
-		for (String root : EntityManager.hierarchy.keySet()) {
-			if (!EntityManager.hasParent(root)) {
-				boolean open = ImGui.treeNodeEx(root, ImGuiTreeNodeFlags.DefaultOpen | ImGuiTreeNodeFlags.OpenOnArrow);
-				if (ImGui.beginDragDropSource()) {
-					ImGui.setDragDropPayload("child", root);
-					ImGui.text(root);
-					ImGui.endDragDropSource();
-				}
-				if (ImGui.beginDragDropTarget()) {
-					Object payload_check = ImGui.acceptDragDropPayload("child", ImGuiDragDropFlags.AcceptPeekOnly);
-					boolean check = true;
-					if (payload_check != null) {
-						check = EntityManager.isAbove( (String)payload_check, root);
-										
-						payload_check = null;
-					}
-					if(check) {
-						ImGui.setMouseCursor(ImGuiMouseCursor.NotAllowed);
-					}
-					if(!check) {
-						Object payload = ImGui.acceptDragDropPayload("child");
-						if (payload != null) {
-							String childaccept = (String) ImGui.acceptDragDropPayload("child");
-							EntityManager.makeChildOf(childaccept, root);
-							payload = null;
-						}
-					}				
-					ImGui.endDragDropTarget();
-				}
-				if (ImGui.beginPopupContextItem(ImGuiPopupFlags.MouseButtonRight)) {
-					if (ImGui.menuItem("Delete")) {
-						explorer_deleteFlag = root;
-					}
-					ImGui.endPopup();
-				}
-				if (open) {
-					showChildren(root);
-					ImGui.treePop();
-				}
-			}
-		}
-
-		if (explorer_deleteFlag != null) {
-			boolean success = EntityManager.remove(explorer_deleteFlag);
-			if (!success) {
-				System.out.println("Failed to Remove " + explorer_deleteFlag);
+			if (EntityManager.world.getFirstMap().containsValue((int) pixelData[0])) {
+				Entity entity = EntityManager.getEntityById((int) pixelData[0]);
+				this.selectedEntity = entity.getName();
+				this.guizmo.attachTo(entity);
 			} else {
-				this.selectedEntity = null;
+				this.guizmo.dettach();
 			}
-			explorer_deleteFlag = null;
 		}
-
-		if (ImGui.beginPopupContextWindow(ImGuiPopupFlags.MouseButtonRight | ImGuiPopupFlags.NoOpenOverItems)) {
-
-			if (ImGui.beginMenu("Add Entity")) {
-
-				if (ImGui.menuItem("Empty Entity")) {
-					Entity new_Entity = new Entity();
-					new_Entity.addComponent(new Transform());
-					boolean success = EntityManager.add(new_Entity, "Empty Entity");
-					if (!success) {
-						System.out.println("Failed to Add " + new_Entity.getName());
-					}
-					new_Entity.start();
-					this.selectedEntity = new_Entity.getName();
-				}
-				
-				if (ImGui.menuItem("Camera 2D")) {
-					Entity new_Entity = EngineManager.create2DCamera();
-					boolean success = EntityManager.add(new_Entity, "2D Camera");
-					if (!success) {
-						System.out.println("Failed to Add " + new_Entity.getName());
-					}
-					new_Entity.start();
-					this.selectedEntity = new_Entity.getName();
-				}
-				
-				if (ImGui.menuItem("Camera 3D")) {
-					Entity new_Entity = EngineManager.create3DCamera();
-					boolean success = EntityManager.add(new_Entity, "3D Camera");
-					if (!success) {
-						System.out.println("Failed to Add " + new_Entity.getName());
-					}
-					new_Entity.start();
-					this.selectedEntity = new_Entity.getName();
-				}
-				
-				if(ImGui.menuItem("Light")) {
-					Entity new_Entity = new Entity();
-					Transform transform1 = new Transform();
-					transform1.setPosition(new Vector3f(0, 0, 2));	
-					new_Entity.addComponent(transform1);
-
-					LightingComponent lighting1 = new LightingComponent();
-					PointLight pointlight = new PointLight();
-					pointlight.setIntensity(0.5f);
-					lighting1.setLight(pointlight);
-					new_Entity.addComponent(lighting1);		
-					boolean success = EntityManager.add(new_Entity, "Light");
-					if (!success) {
-						System.out.println("Failed to Add " + new_Entity.getName());
-					}
-					new_Entity.start();
-					this.selectedEntity = new_Entity.getName();
-				}
-
-				if (ImGui.menuItem("Sprite")) {
-					Entity new_Entity = new Entity();
-					new_Entity.addComponent(new Transform());
-					new_Entity.addComponent(new SpriteRenderer());
-					boolean success = EntityManager.add(new_Entity, "Sprite");
-					if (!success) {
-						System.out.println("Failed to Add " + new_Entity.getName());
-					}
-					new_Entity.start();
-					this.selectedEntity = new_Entity.getName();
-				}
-
-				if (ImGui.menuItem("Mesh")) {
-					Entity new_Entity = new Entity();
-					new_Entity.addComponent(new Transform());
-					MeshRenderer m = new MeshRenderer();
-					m.setTexture("first");
-					new_Entity.addComponent(m);
-					boolean success = EntityManager.add(new_Entity, "Mesh");
-					if (!success) {
-						System.out.println("Failed to Add " + new_Entity.getName());
-					}
-					new_Entity.start();
-					this.selectedEntity = new_Entity.getName();
-				}
-
-				ImGui.endMenu();
-			}
-
-			ImGui.endPopup();
-		}
-
-		ImGui.end();
-	}
-
-	/**
-	 * 
-	 * EntityInspector shows the details of the current entity selected
-	 * 
-	 */
-	private void beginEntityInspector() {
-		ImGui.begin("EntityInspector");
-
-		if (this.selectedEntity != null) {
-			ImGui.text(selectedEntity);
-			Entity entity = EntityManager.world_entities.get(selectedEntity);
-
-			if (ImGui.beginPopupContextWindow(ImGuiPopupFlags.MouseButtonRight)) {
-
-				if (ImGui.beginMenu("Add Component")) {
-
-					if (ImGui.menuItem("Sprite Renderer")) {
-
-					}
-
-					ImGui.endMenu();
-				}
-
-				ImGui.endPopup();
-			}
-
-			for (Component component : entity.getComponents()) {
-
-				if (ImGui.collapsingHeader(component.getClass().getSimpleName(), ImGuiTreeNodeFlags.DefaultOpen)) {
-					component.UI();
-				}
-
-			}
-
-		}
-
-		ImGui.end();
-	}
-
-}
-
-class FetchFileEvent extends ImGuiLayerRenderEvent
-{
-
-	public FetchFileEvent() {
-		super("FetchFileName");
-	}
-
-	@Override
-	public void onEvent() {
-		if (FileExplorer.onClose == 1) {
-			AssetManager.getTextureWithPath(FileExplorer.getFetchedFile().getAbsolutePath());
-		}
-	}
-
-	@Override
-	public boolean handle() {
-
-		FileExplorer.render();
-		return FileExplorer.onClose > 0;
+		
 	}
 
 }

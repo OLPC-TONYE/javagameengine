@@ -8,246 +8,127 @@ Pos=60,60
 Size=400,400
 Collapsed=0
 
-[Window][Assets]
-Pos=298,659
-Size=1095,321
-Collapsed=0
-DockId=0x00000004,0
-
-[Window][EnityInspector]
-Pos=1321,34
-Size=351,946
-Collapsed=0
-DockId=0x00000002,0
-
 [Window][Game]
-Pos=298,34
-Size=1095,623
+Pos=226,34
+Size=1100,630
 Collapsed=0
-DockId=0x00000001,0
+DockId=0x00000005,0
+
+[Window][Assets]
+Pos=226,666
+Size=1100,314
+Collapsed=0
+DockId=0x0000000B,0
 
 [Window][EntityInspector]
-Pos=1395,34
-Size=277,946
+Pos=1090,34
+Size=268,946
 Collapsed=0
-DockId=0x00000006,0
+DockId=0x00000008,0
 
 [Window][EntityExplorer]
 Pos=8,34
-Size=288,946
+Size=216,946
 Collapsed=0
-DockId=0x00000007,0
+DockId=0x00000002,0
+
+[Window][Explorer]
+Pos=411,215
+Size=800,420
+Collapsed=0
+
+[Window][File Hierachy]
+Pos=0,26
+Size=201,300
+Collapsed=0
+DockId=0x00000003,0
 
 [Window][Dear ImGui Demo]
-Pos=801,3
-Size=520,900
+Pos=869,78
+Size=493,680
 Collapsed=1
 
-[Window][Example: Property editor]
-Pos=60,66
-Size=959,839
+[Window][FileBrowser]
+Pos=203,26
+Size=597,300
+Collapsed=0
+DockId=0x00000004,0
+
+[Window][ButtonsFileBrowser]
+Pos=0,328
+Size=800,92
+Collapsed=0
+DockId=0x0000000A,0
+
+[Window][Dear ImGui Style Editor]
+Pos=63,16
+Size=422,1000
 Collapsed=0
 
-[Window][Example: Custom rendering]
-Pos=116,153
-Size=503,557
+[Window][Open Scene...]
+Size=800,420
 Collapsed=0
 
-[Window][No]
-Pos=335,238
-Size=843,446
-Collapsed=0
-
-[Window][Stacked 1]
-Pos=627,380
-Size=430,228
-Collapsed=0
-
-[Window][Example: Constrained Resize]
+[Window][Restore]
 Pos=60,60
-Size=800,200
+Size=32,42
+Collapsed=0
+
+[Window][Resume]
+Pos=60,60
+Size=32,42
+Collapsed=0
+
+[Window][Example: Property editor]
+Pos=60,60
+Size=430,450
+Collapsed=0
+
+[Window][Example: Auto-resizing window]
+Pos=60,60
+Size=447,612
 Collapsed=0
 
 [Window][Example: Documents]
-Pos=116,8
-Size=799,824
-Collapsed=0
-
-[Window][Lettuce]
-Pos=68,184
-Size=685,850
-Collapsed=0
-DockId=0xA086D808,0
-
-[Window][Eggplant]
-Pos=68,184
-Size=685,850
-Collapsed=0
-DockId=0xA086D808,1
-
-[Window][Carrot]
-Pos=68,184
-Size=685,850
-Collapsed=0
-DockId=0xA086D808,2
-
-[Window][Tomato]
-Pos=68,184
-Size=685,850
-Collapsed=0
-DockId=0xA086D808,3
-
-[Window][A Rather Long Title]
-Pos=68,184
-Size=685,850
-Collapsed=0
-DockId=0xA086D808,4
-
-[Window][Some Document]
-Pos=68,184
-Size=685,850
-Collapsed=0
-DockId=0xA086D808,5
-
-[Window][Example: Log]
-Pos=60,60
-Size=500,400
-Collapsed=0
-
-[Window][Example: Simple layout]
-Pos=60,51
-Size=500,440
-Collapsed=0
-
-[Window][Example: Console]
-Pos=60,60
-Size=520,600
-Collapsed=0
-
-[Window][Same title as another window##1]
-Pos=100,100
-Size=421,82
-Collapsed=0
-
-[Window][Same title as another window##2]
-Pos=100,200
-Size=421,82
-Collapsed=0
-
-[Window][###AnimatedTitle]
-Pos=100,300
-Size=239,62
-Collapsed=0
-
-[Window][NewEntity]
-Pos=704,249
-Size=320,480
-Collapsed=0
-
-[Window][Dear ImGui Style Editor]
-Pos=60,60
-Size=422,982
-Collapsed=0
-
-[Window][Example: Long text display]
-Pos=63,64
-Size=520,600
-Collapsed=0
-
-[Window][Delete?]
-Pos=703,414
-Size=273,160
-Collapsed=0
-
-[Window][Stacked 2]
-Pos=726,448
-Size=231,92
-Collapsed=0
-
-[Window][FileExplorer]
-Pos=316,111
-Size=800,420
+Pos=77,16
+Size=684,756
 Collapsed=0
 
 [Window][DockSpace Demo]
 Size=1680,988
 Collapsed=0
 
-[Window][whitePreview]
-Pos=623,295
+[Window][firstPreview]
+Pos=643,220
 Size=300,300
 Collapsed=0
 
-[Window][firstPreview]
-Pos=725,369
-Size=300,300
+[Window][Example: Custom rendering]
+Pos=27,78
+Size=499,592
+Collapsed=0
+
+[Window][Inspector]
+Pos=1328,34
+Size=344,946
+Collapsed=0
+DockId=0x0000000C,0
+
+[Window][InspectorEntity]
+Pos=60,60
+Size=184,416
 Collapsed=0
 
 [Table][0xD0F0C6E3,2]
-Column 0  Weight=1.1670
-Column 1  Weight=0.8330
-
-[Table][0xE0773582,3]
 Column 0  Weight=1.0000
 Column 1  Weight=1.0000
-Column 2  Weight=1.0000
 
-[Table][0x49F8DCEA,3]
+[Table][0x20DF7A63,4]
 RefScale=20
-Column 0  Weight=1.0000
-Column 1  Width=132
-Column 2  Width=198
-
-[Table][0xC9935533,3]
-Column 0  Weight=1.0000
-Column 1  Weight=1.0000
-Column 2  Weight=1.0000
-
-[Table][0x64418101,3]
-RefScale=20
-Column 0  Width=62
-Column 1  Width=62
-Column 2  Width=62
-
-[Table][0x47600645,3]
-RefScale=20
-Column 0  Width=64
-Column 1  Width=64
-Column 2  Weight=1.0000
-
-[Table][0xDE6957FF,6]
-RefScale=20
-Column 0  Width=64
-Column 1  Width=64
-Column 2  Width=-1
+Column 0  Width=39 Sort=0v
+Column 1  Width=86
+Column 2  Width=45
 Column 3  Weight=1.0000
-Column 4  Weight=1.0000
-Column 5  Weight=-1.0000
-
-[Table][0x861D378E,3]
-Column 0  Weight=1.0000
-Column 1  Weight=1.0000
-Column 2  Weight=1.0000
-
-[Table][0x1F146634,3]
-RefScale=20
-Column 0  Width=64
-Column 1  Width=64
-Column 2  Width=64
-
-[Table][0x8DFA6E86,2]
-Column 0  Weight=1.0000
-Column 1  Weight=1.0000
-
-[Table][0xFABAAEF7,2]
-Column 0  Weight=1.0000
-Column 1  Weight=1.0000
-
-[Table][0xA43C3885,3]
-RefScale=20
-Column 0  Width=52
-Column 1  Width=52
-Column 2  Width=52
 
 [Table][0x82CBB907,3]
 Column 0  Weight=1.0000
@@ -260,18 +141,57 @@ Column 0  Width=76
 Column 1  Width=76
 Column 2  Width=76
 
-[Table][0xC179E37C,3]
+[Table][0x49F8DCEA,3]
 RefScale=20
-Column 0  Width=133 Sort=0v
-Column 1  Width=69
-Column 2  Width=-1
+Column 0  Weight=1.0000
+Column 1  Width=72
+Column 2  Width=198
 
-[Table][0x20DF7A63,4]
+[Table][0xA43C3885,3]
 RefScale=20
-Column 0  Width=39 Sort=0v
-Column 1  Width=58
-Column 2  Width=45
-Column 3  Weight=1.0000
+Column 0  Width=52
+Column 1  Width=52
+Column 2  Width=52
+
+[Table][0x45A0E60D,7]
+RefScale=20
+Column 0  Width=51
+Column 1  Width=114
+Column 2  Width=114
+Column 3  Width=114
+Column 4  Width=114
+Column 5  Width=114
+Column 6  Width=114
+
+[Table][0xE0773582,3]
+Column 0  Weight=1.0000
+Column 1  Weight=1.0000
+Column 2  Weight=1.0000
+
+[Table][0x861D378E,3]
+Column 0  Weight=1.0000
+Column 1  Weight=1.0000
+Column 2  Weight=1.0000
+
+[Table][0x1F146634,3]
+RefScale=20
+Column 0  Width=64
+Column 1  Width=64
+Column 2  Width=64
+
+[Table][0x64418101,3]
+RefScale=20
+Column 0  Width=86
+Column 1  Width=76
+Column 2  Width=62
+
+[Table][0x8DFA6E86,2]
+Column 0  Weight=1.0000
+Column 1  Weight=1.0000
+
+[Table][0xFABAAEF7,2]
+Column 0  Weight=1.0000
+Column 1  Weight=1.0000
 
 [Table][0xDA36A7E0,6]
 RefScale=20
@@ -283,14 +203,18 @@ Column 4  Weight=1.0000
 Column 5  Width=-1
 
 [Docking][Data]
-DockSpace         ID=0xA086D808 Pos=68,184 Size=685,850 CentralNode=1 Selected=0x8BB04FA5
+DockSpace         ID=0x83E5472E Pos=0,26 Size=800,394 Split=Y
+  DockNode        ID=0x00000009 Parent=0x83E5472E SizeRef=800,300 Split=X
+    DockNode      ID=0x00000003 Parent=0x00000009 SizeRef=201,394 HiddenTabBar=1 Selected=0x3A9D2705
+    DockNode      ID=0x00000004 Parent=0x00000009 SizeRef=597,394 CentralNode=1 HiddenTabBar=1 Selected=0xD216784D
+  DockNode        ID=0x0000000A Parent=0x83E5472E SizeRef=800,92 HiddenTabBar=1 Selected=0x0B36C194
 DockSpace         ID=0xD6BDBBC4 Window=0x6CE2B512 Pos=8,34 Size=1664,946 Split=X Selected=0x83199EB2
-  DockNode        ID=0x00000007 Parent=0xD6BDBBC4 SizeRef=288,946 Selected=0x3468653E
-  DockNode        ID=0x00000009 Parent=0xD6BDBBC4 SizeRef=1374,946 Split=X
-    DockNode      ID=0x00000005 Parent=0x00000009 SizeRef=1095,946 Split=Y
-      DockNode    ID=0x00000003 Parent=0x00000005 SizeRef=1664,623 Split=X
-        DockNode  ID=0x00000001 Parent=0x00000003 SizeRef=1311,946 CentralNode=1 Selected=0x83199EB2
-        DockNode  ID=0x00000002 Parent=0x00000003 SizeRef=351,946 Selected=0x07CD2889
-      DockNode    ID=0x00000004 Parent=0x00000005 SizeRef=1664,321 Selected=0x7E7D78B8
-    DockNode      ID=0x00000006 Parent=0x00000009 SizeRef=277,946 Selected=0xF4DD1496
+  DockNode        ID=0x00000006 Parent=0xD6BDBBC4 SizeRef=1318,946 Split=X
+    DockNode      ID=0x00000001 Parent=0x00000006 SizeRef=1331,946 Split=X
+      DockNode    ID=0x00000002 Parent=0x00000001 SizeRef=216,946 Selected=0x3468653E
+      DockNode    ID=0x00000007 Parent=0x00000001 SizeRef=1100,946 Split=Y Selected=0x83199EB2
+        DockNode  ID=0x00000005 Parent=0x00000007 SizeRef=1099,630 CentralNode=1 Selected=0x83199EB2
+        DockNode  ID=0x0000000B Parent=0x00000007 SizeRef=1099,314 Selected=0x7E7D78B8
+    DockNode      ID=0x00000008 Parent=0x00000006 SizeRef=331,946 Selected=0xF4DD1496
+  DockNode        ID=0x0000000C Parent=0xD6BDBBC4 SizeRef=344,946 Selected=0xF02CD328
 

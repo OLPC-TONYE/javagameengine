@@ -5,6 +5,7 @@ public abstract class Asset {
 	public static final Asset NullAsset = new NullAsset();
 	
 	private String name;
+	private int uId;
 	private AssetType type;
 	
 	public Asset(String name, AssetType type) {
@@ -28,7 +29,21 @@ public abstract class Asset {
 		this.type = type;
 	}
 
-	public abstract void copy(Asset from);
+	/**
+	 * @return the uId
+	 */
+	public int getId() {
+		return uId;
+	}
+
+	/**
+	 * @param uId the uId to set
+	 */
+	public void setId(int uId) {
+		this.uId = uId;
+	}
+
+	public abstract Asset copy(Asset from);
 	
 }
 
@@ -40,7 +55,8 @@ class NullAsset extends Asset {
 	}
 
 	@Override
-	public void copy(Asset from) {
+	public NullAsset copy(Asset from) {
+		return this;
 		// Nothing to Do
 	}
 	
