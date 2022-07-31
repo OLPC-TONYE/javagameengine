@@ -1,4 +1,4 @@
-package assets.sprite;
+package assets;
 
 public enum SpriteType {
 	Square,

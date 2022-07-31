@@ -4,11 +4,11 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-import entitiesComponents.CameraComponent;
-import entitiesComponents.Component;
-import entitiesComponents.LightingComponent;
-import entitiesComponents.MeshRenderer;
-import entitiesComponents.SpriteRenderer;
+import components.CameraComponent;
+import components.Component;
+import components.LightingComponent;
+import components.MeshRenderer;
+import components.SpriteRenderer;
 
 public class Entity {
 	

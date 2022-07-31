@@ -5,8 +5,8 @@ import org.joml.Random;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
-import entitiesComponents.CameraComponent;
-import entitiesComponents.Transform;
+import components.CameraComponent;
+import components.Transform;
 
 
 /**

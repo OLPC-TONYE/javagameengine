@@ -6,9 +6,9 @@ import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
-import assets.mesh.Material;
-import entitiesComponents.LightingComponent;
-import entitiesComponents.Transform;
+import assets.Material;
+import components.LightingComponent;
+import components.Transform;
 
 import static org.lwjgl.opengl.GL11.*;
 

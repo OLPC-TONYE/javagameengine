@@ -1,4 +1,4 @@
-package leveleditor.interfaces;
+package interfaces;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -18,13 +18,14 @@ import annotations.SkipField;
 import annotations.TextureNameField;
 import assets.Asset;
 import assets.AssetType;
-import assets.mesh.Material;
-import assets.mesh.Mesh;
-import assets.sprite.Sprite;
+import assets.Material;
+import assets.Mesh;
+import assets.Sprite;
+import components.Component;
+import components.SpriteRenderer;
 import entities.Entity;
-import entitiesComponents.Component;
-import entitiesComponents.SpriteRenderer;
 import imgui.ImGui;
+import imgui.ImVec4;
 import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiColorEditFlags;
 import imgui.flag.ImGuiComboFlags;
@@ -50,9 +51,13 @@ public class InspectorPanel {
 	public void render(LevelEditorLayer layer) {
 		
 		ImGui.begin("Inspector");
-
+		int imGuiID = ImGui.getID("Inspector Dockspace");
+		ImVec4 wBg = ImGui.getStyle().getColor(ImGuiCol.WindowBg);
+		ImGui.pushStyleColor(ImGuiCol.DockingEmptyBg, wBg.x, wBg.y, wBg.z, wBg.w);
+		ImGui.dockSpace(imGuiID );
+		ImGui.popStyleColor();
 		if (layer.selectedEntity != null) {
-			
+			ImGui.begin("Inspector:Entity", ImGuiWindowFlags.None);
 			ImGui.text(layer.selectedEntity);
 			Entity entity = EntityManager.world.getFromSecondMap(layer.selectedEntity);
 
@@ -77,15 +82,16 @@ public class InspectorPanel {
 				}
 
 			}
+			ImGui.end();
 		}
 		if(layer.selectedAsset != null) {
 			Asset asset = AssetManager.assets.getFromSecondMap(layer.selectedAsset);
-			ImGui.separator();
+			ImGui.begin("Inspector:Asset");
 			if(ImGui.collapsingHeader("Asset: "+asset.getAssetName(), ImGuiTreeNodeFlags.DefaultOpen)){
 
 				assetUI(asset);
 			}
-			
+			ImGui.end();
 		}
 
 		ImGui.end();
@@ -482,7 +488,7 @@ public class InspectorPanel {
 	            if (payload != null && payload instanceof Asset) {
 	            	Asset asset_ = (Asset) payload;
 	            	if(asset_.getAssetType() == AssetType.Mesh) {
-	            		field.set(asset_, (Mesh) asset_);
+	            		field.set(object, (Mesh) asset_);
 	            	}
 	            }
 	            ImGui.endDragDropTarget();
@@ -504,7 +510,7 @@ public class InspectorPanel {
 	            if (payload != null && payload instanceof Asset) {
 	            	Asset asset_ = (Asset) payload;
 	            	if(asset_.getAssetType() == AssetType.Material) {
-	            		field.set(asset_, (Material) asset_);
+	            		field.set(object, (Material) asset_);
 	            	}
 	            }
 	            ImGui.endDragDropTarget();

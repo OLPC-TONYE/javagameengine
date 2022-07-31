@@ -1,12 +1,12 @@
-package leveleditor.interfaces;
+package interfaces;
 
 import org.joml.Vector3f;
 
+import components.LightingComponent;
+import components.MeshRenderer;
+import components.SpriteRenderer;
+import components.Transform;
 import entities.Entity;
-import entitiesComponents.LightingComponent;
-import entitiesComponents.MeshRenderer;
-import entitiesComponents.SpriteRenderer;
-import entitiesComponents.Transform;
 import imgui.ImGui;
 import imgui.flag.ImGuiDragDropFlags;
 import imgui.flag.ImGuiMouseCursor;

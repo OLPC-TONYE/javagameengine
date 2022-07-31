@@ -1,13 +1,13 @@
-package entitiesComponents;
+package components;
 
 import org.joml.Vector3f;
 
 import annotations.ColourField;
 import annotations.HideIfNull;
 import annotations.SkipField;
-import assets.mesh.Material;
-import assets.mesh.Mesh;
-import assets.sprite.Sprite;
+import assets.Material;
+import assets.Mesh;
+import assets.Sprite;
 import managers.AssetManager;
 import managers.EngineManager;
 
@@ -32,48 +32,62 @@ public class SpriteRenderer extends Component {
 	@Override
 	public void prepare() {
 		if(firstTimeStart) {
-			if(sprite != null) {
-				sprite.calculateTileMap();
-				mesh.setTextureUVs(sprite.isTilemap() ? sprite.getCurrentTile(): EngineManager.ENGINE_SPRITE_SQUARE_TEXTURECOORDS);
-			}
+			updateSprite();
 			firstTimeStart = false;
-			copy(lastState);
+			copyTo(lastState);
 		}
 		
+	}
+
+	private void updateSprite() {
+		if(sprite != null) {
+			
+			determineSpriteShape();
+			
+			sprite.calculateTileMap();
+			determineUVs();
+		}
+	}
+	
+	private void determineUVs() {
+		if(sprite.isTilemap()) {
+			mesh.setTextureUVs(sprite.getCurrentTile());
+		}else {
+			mesh.setTextureUVs(EngineManager.ENGINE_SPRITE_SQUARE_TEXTURECOORDS);
+		}
+		mesh.update();
+	}
+
+	private void determineSpriteShape() {
+		if(mesh == null) {
+			switch(sprite.getShape()) {
+			
+				case Circle:
+					break;
+				case Square:
+					this.mesh = new Mesh().copy(AssetManager.defaultSquareMesh);
+					break;
+				case Triangle:
+					break;
+				default:
+					break;
+				
+			}
+		}
 	}
 	
 	@Override
 	public void update(double dt) {
+		
+		// check if state has changed
+		
 		if(!this.equals(lastState)) {	
 			modify();
-			if(sprite != null) {
-				
-				if(mesh == null) {
-					switch(sprite.getShape()) {
-					
-						case Circle:
-							break;
-						case Square:
-							this.mesh = new Mesh().copy(AssetManager.defaultSquareMesh);
-							break;
-						case Triangle:
-							break;
-						default:
-							break;
-						
-					}
-				}
-				
-				
-				sprite.calculateTileMap();
-				mesh.setTextureUVs(sprite.isTilemap() ? sprite.getCurrentTile(): EngineManager.ENGINE_SPRITE_SQUARE_TEXTURECOORDS);
-				if(mesh != null)
-					mesh.getVertexArray().modifyVertexBufferObject("textureCords", mesh.getTextureUVs());
-			}
 			
-		}
-		
-		
+			if(sprite != null) {		
+				updateSprite();
+			}			
+		}		
 	}
 	
 	public int getTextureID() {
@@ -124,7 +138,7 @@ public class SpriteRenderer extends Component {
 		return sprite.getTextureName();
 	}
 	
-	public void copy(SpriteRenderer to) {
+	public void copyTo(SpriteRenderer to) {
 		to = new SpriteRenderer();
 		to.mesh = this.mesh;
 		to.colour = this.colour;

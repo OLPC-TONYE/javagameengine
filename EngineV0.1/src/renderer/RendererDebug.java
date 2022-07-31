@@ -22,10 +22,10 @@ import static org.lwjgl.opengl.GL20.glDrawArrays;
 
 import org.joml.Vector3f;
 
+import components.CameraComponent;
+import components.Transform;
 import entities.Entity;
 import entities.Drawable;
-import entitiesComponents.CameraComponent;
-import entitiesComponents.Transform;
 import managers.EntityManager;
 import opengl.Shader;
 import opengl.VertexArrayObject;

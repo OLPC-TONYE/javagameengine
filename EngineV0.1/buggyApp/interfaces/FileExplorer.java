@@ -1,4 +1,4 @@
-package leveleditor.interfaces;
+package interfaces;
 
 import java.io.File;
 import java.io.FileWriter;

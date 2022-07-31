@@ -1,4 +1,4 @@
-package entitiesComponents;
+package components;
 
 import org.joml.Vector3f;
 
@@ -7,7 +7,6 @@ import annotations.ColourField;
 import annotations.ComboEnumField;
 import annotations.EndGroup;
 import annotations.MathsDegreeField;
-import entitiesComponents.enums.LightType;
 
 
 /**

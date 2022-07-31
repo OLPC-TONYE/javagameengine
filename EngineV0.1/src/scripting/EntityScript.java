@@ -1,7 +1,7 @@
 package scripting;
 
+import components.Component;
 import entities.Entity;
-import entitiesComponents.Component;
 
 public abstract class EntityScript {
 	

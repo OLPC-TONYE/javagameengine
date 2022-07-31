@@ -8,9 +8,9 @@ import java.util.Map.Entry;
 
 import assets.Asset;
 import assets.AssetType;
-import assets.mesh.Material;
-import assets.mesh.Mesh;
-import assets.sprite.Sprite;
+import assets.Material;
+import assets.Mesh;
+import assets.Sprite;
 import opengl.Texture;
 import tools.Dictionary;
 import tools.Maths;

@@ -1,12 +1,12 @@
-package entitiesComponents;
+package components;
 
 import org.joml.Vector3f;
 
 import annotations.ColourField;
 import annotations.HideIfNull;
 import annotations.TextureNameField;
-import assets.mesh.Material;
-import assets.mesh.Mesh;
+import assets.Material;
+import assets.Mesh;
 import managers.AssetManager;
 
 public class MeshRenderer extends Component{

@@ -1,7 +1,7 @@
-package leveleditor.interfaces;
+package interfaces;
 
 import assets.Asset;
-import assets.sprite.Sprite;
+import assets.Sprite;
 import imgui.ImColor;
 import imgui.ImGui;
 import imgui.ImVec2;

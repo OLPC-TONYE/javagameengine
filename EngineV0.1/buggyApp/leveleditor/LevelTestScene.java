@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 import org.joml.Vector4f;
 
+import components.CameraComponent;
 import entities.Entity;
-import entitiesComponents.CameraComponent;
 import managers.EntityManager;
 import renderer.Renderer;
 import scenes.Scene;

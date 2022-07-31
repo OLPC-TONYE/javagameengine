@@ -1,12 +1,10 @@
-package assets.sprite;
+package assets;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import annotations.ShowIfValueBool;
 import annotations.SkipField;
-import assets.Asset;
-import assets.AssetType;
 import managers.AssetManager;
 
 public class Sprite extends Asset {

@@ -22,11 +22,11 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import assets.Asset;
-import assets.mesh.Material;
-import assets.mesh.Mesh;
-import assets.sprite.Sprite;
+import assets.Material;
+import assets.Mesh;
+import assets.Sprite;
+import components.Component;
 import entities.Entity;
-import entitiesComponents.Component;
 import managers.AssetManager;
 import managers.EntityManager;
 

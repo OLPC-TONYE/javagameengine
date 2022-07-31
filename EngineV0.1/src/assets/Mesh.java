@@ -1,7 +1,5 @@
-package assets.mesh;
+package assets;
 
-import assets.Asset;
-import assets.AssetType;
 import managers.EngineManager;
 import opengl.VertexArrayObject;
 
@@ -86,14 +84,17 @@ public class Mesh extends Asset{
 	}
 
 	public VertexArrayObject getVertexArray() {
-		if(vertexArray == null) {
-			EngineManager.loadToVAO(this);
-		}
+		if(vertexArray == null) EngineManager.loadToVAO(this);
+		
 		return vertexArray;
 	}
 
 	public void setVertexArray(VertexArrayObject vertexArray) {
 		this.vertexArray = vertexArray;
+	}
+	
+	public void update() {
+		EngineManager.loadToVAO(this);
 	}
 
 	@Override

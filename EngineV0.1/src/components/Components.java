@@ -1,4 +1,4 @@
-package entitiesComponents;
+package components;
 
 public enum Components {
 	CameraComponent,

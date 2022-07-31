@@ -9,10 +9,10 @@ import static org.lwjgl.opengl.GL11.glDrawArrays;
 import static org.lwjgl.opengl.GL11.glLineWidth;
 import org.joml.Vector3f;
 
+import components.CameraComponent;
+import components.Transform;
 import entities.Drawable;
 import entities.Entity;
-import entitiesComponents.CameraComponent;
-import entitiesComponents.Transform;
 import listeners.MouseListener;
 import opengl.Shader;
 import opengl.VertexArrayObject;

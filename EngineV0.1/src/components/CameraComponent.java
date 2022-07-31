@@ -1,4 +1,4 @@
-package entitiesComponents;
+package components;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -10,7 +10,6 @@ import annotations.ComboEnumField;
 import annotations.EndGroup;
 import annotations.ShowIfValueEnum;
 import annotations.SkipField;
-import entitiesComponents.enums.CameraType;
 
 public class CameraComponent extends Component {
 	

@@ -9,11 +9,11 @@ import java.util.List;
 
 import org.joml.Vector3f;
 
-import assets.mesh.Mesh;
+import assets.Mesh;
+import components.CameraComponent;
+import components.CameraType;
+import components.Transform;
 import entities.Entity;
-import entitiesComponents.CameraComponent;
-import entitiesComponents.Transform;
-import entitiesComponents.enums.CameraType;
 import opengl.VertexArrayObject;
 
 public class EngineManager {

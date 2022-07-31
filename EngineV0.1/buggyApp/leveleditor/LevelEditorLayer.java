@@ -4,10 +4,10 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 
+import components.ScriptComponent;
+import components.Transform;
 import entities.Drawable;
 import entities.Entity;
-import entitiesComponents.ScriptComponent;
-import entitiesComponents.Transform;
 import gui.Guizmos;
 import gui.ImGuiLayer;
 import imgui.ImGui;
@@ -16,10 +16,10 @@ import imgui.flag.ImGuiButtonFlags;
 import imgui.flag.ImGuiCond;
 import imgui.flag.ImGuiStyleVar;
 import imgui.flag.ImGuiWindowFlags;
-import leveleditor.interfaces.AssetBrowser;
-import leveleditor.interfaces.EntityExplorer;
-import leveleditor.interfaces.InspectorPanel;
-import leveleditor.interfaces.FileExplorer;
+import interfaces.AssetBrowser;
+import interfaces.EntityExplorer;
+import interfaces.FileExplorer;
+import interfaces.InspectorPanel;
 import listeners.KeyListener;
 import listeners.MouseListener;
 import main.Application;
@@ -74,8 +74,6 @@ public class LevelEditorLayer extends Layer
 		editorCamera = EngineManager.createCamera();
 		editorCamera.start();
 
-		System.out.println("Level Loaded");
-
 		levelScene.init();
 		levelScene.setCamera(editorCamera);
 
@@ -96,24 +94,45 @@ public class LevelEditorLayer extends Layer
 
 	@Override
 	public void render() {
+		
+		// bind the framebuffer
 		screen.bind();
+		
+		// clear the frame
 		renderer.clear();
 		renderer.clearColour(0.06f, 0.06f, 0.06f, 0.0f);
+		
+		// draw gridlines
 		renderer2.drawLines(levelScene.primaryCamera, lines, new Vector3f(1, 1, 1), new Vector3f(), new Vector3f(), new Vector3f(1));
+		
+		// render scene
 		levelScene.render(renderer);
 		levelScene.render(renderer2);
+		
+		// render guizmo if active
 		guizmo.render(levelScene.primaryCamera);
+		
 		pixelData = screen.readPixelData(1, (int) viewportMouseHoverX, (int) viewportMouseHoverY);
 		guizmo_pixelData = screen.readPixelData(2, (int) viewportMouseHoverX, (int) viewportMouseHoverY);
+		
 		screen.unbind();
+		
+		// render the interfaces
 		renderInterfaces();
 	}
 
 	@Override
 	public void update(double dt) {
+		// update the camera
 		editorCamera.update(dt);
+		
+		// update the scene
 		levelScene.update(dt);
+		
+		// update the guizmo
 		guizmo.update(dt, guizmo_pixelData);
+		
+		// play scene (on key "z")
 		if(KeyListener.isKeyPressed(GLFW.GLFW_KEY_Z)) {
 			Application.get().pileOnTop(new LevelTestLayer());
 		}

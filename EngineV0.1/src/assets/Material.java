@@ -1,9 +1,6 @@
-package assets.mesh;
+package assets;
 
 import org.joml.Vector3f;
-
-import assets.Asset;
-import assets.AssetType;
 
 public class Material extends Asset {
 	
