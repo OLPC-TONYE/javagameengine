@@ -1,66 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="buggyApp"/>
-	<classpathentry kind="lib" path="C:/Users/Hosting/JavaProjects/LWJGL/jar files/jar/joml-1.9.25.jar" sourcepath="C:/Users/Hosting/JavaProjects/LWJGL/jar files/sources/joml-1.9.25-sources.jar">
+	<classpathentry kind="lib" path="C:/Users/OLPC/Workspace/Eclipse/buggy/EngineV0.1/lib/gson/gson-2.6.2.jar" sourcepath="/buggy/EngineV0.1/lib/gson/gson-2.6.2-sources.jar">
 		<attributes>
-			<attribute name="javadoc_location" value="file:/C:/Users/Hosting/JavaProjects/LWJGL/jar%20files/docs/"/>
+			<attribute name="javadoc_location" value="jar:platform:/resource/buggy/EngineV0.1/lib/gson/gson-2.6.2-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/Hosting/JavaProjects/EngineV0.1/lib/LWJGL/lwjgl.jar" sourcepath="lib/LWJGL/sources/lwjgl-sources.jar">
+	<classpathentry kind="lib" path="C:/Users/OLPC/Workspace/Eclipse/buggy/EngineV0.1/lib/LWJGL/lwjgl.jar" sourcepath="lib/LWJGL/sources/lwjgl-sources.jar">
 		<attributes>
-			<attribute name="javadoc_location" value="file:/C:/Users/Hosting/JavaProjects/EngineV0.1/lib/LWJGL/docs/"/>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="EngineV0.1/lib/LWJGL"/>
+			<attribute name="javadoc_location" value="jar:platform:/resource/engine/lib/LWJGL/javadoc/lwjgl-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/Hosting/JavaProjects/EngineV0.1/lib/LWJGL/lwjgl-glfw.jar" sourcepath="lib/LWJGL/sources/lwjgl-glfw-sources.jar">
+	<classpathentry kind="lib" path="C:/Users/OLPC/Workspace/Eclipse/buggy/EngineV0.1/lib/LWJGL/lwjgl-glfw.jar"/>
+	<classpathentry kind="lib" path="C:/Users/OLPC/Workspace/Eclipse/buggy/EngineV0.1/lib/LWJGL/lwjgl-openal.jar"/>
+	<classpathentry kind="lib" path="C:/Users/OLPC/Workspace/Eclipse/buggy/EngineV0.1/lib/LWJGL/lwjgl-opengl.jar"/>
+	<classpathentry kind="lib" path="C:/Users/OLPC/Workspace/Eclipse/buggy/EngineV0.1/lib/LWJGL/lwjgl-stb.jar"/>
+	<classpathentry kind="lib" path="C:/Users/OLPC/Workspace/Eclipse/buggy/EngineV0.1/lib/ImGui/imgui-app-1.82.2.jar" sourcepath="/buggy/EngineV0.1/lib/ImGui/sources">
 		<attributes>
-			<attribute name="javadoc_location" value="file:/C:/Users/Hosting/JavaProjects/EngineV0.1/lib/LWJGL/docs/"/>
+			<attribute name="javadoc_location" value="jar:platform:/resource/buggy/EngineV0.1/lib/ImGui/docs/imgui-app-1.82.2-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/Hosting/JavaProjects/EngineV0.1/lib/LWJGL/lwjgl-openal.jar" sourcepath="lib/LWJGL/sources/lwjgl-openal-sources.jar">
+	<classpathentry kind="lib" path="C:/Users/OLPC/Workspace/Eclipse/buggy/EngineV0.1/lib/ImGui/imgui-binding-1.82.2.jar" sourcepath="lib/ImGui/sources/imgui-binding-1.82.2-sources.jar">
 		<attributes>
-			<attribute name="javadoc_location" value="file:/C:/Users/Hosting/JavaProjects/EngineV0.1/lib/LWJGL/docs/"/>
+			<attribute name="javadoc_location" value="file:/C:/Users/OLPC/Workspace/Eclipse/buggy/EngineV0.1/lib/ImGui/docs/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/Hosting/JavaProjects/EngineV0.1/lib/LWJGL/lwjgl-opengl.jar" sourcepath="lib/LWJGL/sources/lwjgl-opengl-sources.jar">
+	<classpathentry kind="lib" path="C:/Users/OLPC/Workspace/Eclipse/buggy/EngineV0.1/lib/ImGui/imgui-lwjgl3-1.82.2.jar" sourcepath="lib/ImGui/sources/imgui-lwjgl3-1.82.2-sources.jar">
 		<attributes>
-			<attribute name="javadoc_location" value="file:/C:/Users/Hosting/JavaProjects/EngineV0.1/lib/LWJGL/docs/"/>
+			<attribute name="javadoc_location" value="jar:platform:/resource/engine/lib/ImGui/docs/imgui-lwjgl3-1.82.2-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/Hosting/JavaProjects/EngineV0.1/lib/LWJGL/lwjgl-stb.jar" sourcepath="lib/LWJGL/sources/lwjgl-stb-sources.jar">
+	<classpathentry kind="lib" path="C:/Users/OLPC/Workspace/Eclipse/buggy/EngineV0.1/lib/joml-1.9.25.jar" sourcepath="lib/joml-1.9.25-sources.jar">
 		<attributes>
-			<attribute name="javadoc_location" value="file:/C:/Users/Hosting/JavaProjects/EngineV0.1/lib/LWJGL/docs/"/>
+			<attribute name="javadoc_location" value="file:/C:/Users/OLPC/Workspace/Eclipse/buggy/EngineV0.1/lib/LWJGL/javadoc/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/Hosting/JavaProjects/EngineV0.1/lib/ImGui/imgui-app-1.82.2.jar" sourcepath="lib/ImGui/sources/imgui-app-1.82.2-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="file:/C:/Users/Hosting/JavaProjects/EngineV0.1/lib/ImGui/docs/"/>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="EngineV0.1/lib/ImGui"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/Hosting/JavaProjects/EngineV0.1/lib/ImGui/imgui-binding-1.82.2.jar" sourcepath="lib/ImGui/sources/imgui-binding-1.82.2-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="file:/C:/Users/Hosting/JavaProjects/EngineV0.1/lib/ImGui/docs/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/Hosting/JavaProjects/EngineV0.1/lib/ImGui/imgui-lwjgl3-1.82.2.jar" sourcepath="lib/ImGui/sources/imgui-lwjgl3-1.82.2-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="file:/C:/Users/Hosting/JavaProjects/EngineV0.1/lib/ImGui/docs/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/Hosting/JavaProjects/EngineV0.1/lib/gson/gson-2.6.2.jar" sourcepath="lib/gson/gson-2.6.2-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="file:/C:/Users/Hosting/Eclipse/buggy/EngineV0.1/lib/gson/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/Hosting/JavaProjects/EngineV0.1/lib/LWJGL/natives/lwjgl-glfw-natives-windows-x86.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Hosting/JavaProjects/EngineV0.1/lib/LWJGL/natives/lwjgl-natives-windows-x86.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Hosting/JavaProjects/EngineV0.1/lib/LWJGL/natives/lwjgl-openal-natives-windows-x86.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Hosting/JavaProjects/EngineV0.1/lib/LWJGL/natives/lwjgl-opengl-natives-windows-x86.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Hosting/JavaProjects/EngineV0.1/lib/LWJGL/natives/lwjgl-stb-natives-windows-x86.jar"/>
-	<classpathentry kind="lib" path="C:/Program Files/Java/jre1.8.0_171/lib/jfxswt.jar"/>
-	<classpathentry kind="lib" path="C:/Program Files/Java/jre1.8.0_171/lib/ext/jfxrt.jar"/>
+	<classpathentry kind="lib" path="C:/Users/OLPC/Workspace/Eclipse/buggy/EngineV0.1/lib/LWJGL/natives/lwjgl-assimp-natives-windows.jar"/>
+	<classpathentry kind="lib" path="C:/Users/OLPC/Workspace/Eclipse/buggy/EngineV0.1/lib/LWJGL/natives/lwjgl-glfw-natives-windows.jar"/>
+	<classpathentry kind="lib" path="C:/Users/OLPC/Workspace/Eclipse/buggy/EngineV0.1/lib/LWJGL/natives/lwjgl-natives-windows.jar"/>
+	<classpathentry kind="lib" path="C:/Users/OLPC/Workspace/Eclipse/buggy/EngineV0.1/lib/LWJGL/natives/lwjgl-openal-natives-windows.jar"/>
+	<classpathentry kind="lib" path="C:/Users/OLPC/Workspace/Eclipse/buggy/EngineV0.1/lib/LWJGL/natives/lwjgl-opengl-natives-windows.jar"/>
+	<classpathentry kind="lib" path="C:/Users/OLPC/Workspace/Eclipse/buggy/EngineV0.1/lib/LWJGL/natives/lwjgl-stb-natives-windows.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

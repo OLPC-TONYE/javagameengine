@@ -132,6 +132,7 @@ public class EntityExplorer {
 					}
 					new_Entity.start();
 					layer.selectedEntity = new_Entity.getName();
+					layer.currentScene.addEntity(new_Entity);
 				}
 				
 				if (ImGui.menuItem("Camera 2D")) {
@@ -142,6 +143,7 @@ public class EntityExplorer {
 					}
 					new_Entity.start();
 					layer.selectedEntity = new_Entity.getName();
+					layer.currentScene.addEntity(new_Entity);
 				}
 				
 				if (ImGui.menuItem("Camera 3D")) {
@@ -152,6 +154,7 @@ public class EntityExplorer {
 					}
 					new_Entity.start();
 					layer.selectedEntity = new_Entity.getName();
+					layer.currentScene.addEntity(new_Entity);
 				}
 				
 				if(ImGui.menuItem("Light")) {
@@ -167,6 +170,7 @@ public class EntityExplorer {
 					}
 					new_Entity.start();
 					layer.selectedEntity = new_Entity.getName();
+					layer.currentScene.addEntity(new_Entity);
 				}
 
 				if (ImGui.menuItem("Sprite")) {
@@ -179,6 +183,7 @@ public class EntityExplorer {
 					}
 					new_Entity.start();
 					layer.selectedEntity = new_Entity.getName();
+					layer.currentScene.addEntity(new_Entity);
 				}
 
 				if (ImGui.menuItem("Mesh")) {
@@ -193,6 +198,7 @@ public class EntityExplorer {
 					}
 					new_Entity.start();
 					layer.selectedEntity = new_Entity.getName();
+					layer.currentScene.addEntity(new_Entity);
 				}
 
 				ImGui.endMenu();

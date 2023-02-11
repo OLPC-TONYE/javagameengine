@@ -22,6 +22,7 @@ import static org.lwjgl.opengl.GL20.glDrawArrays;
 
 import org.joml.Vector3f;
 
+import assets.Scene;
 import components.CameraComponent;
 import components.Transform;
 import entities.Entity;
@@ -29,7 +30,6 @@ import entities.Drawable;
 import managers.EntityManager;
 import opengl.Shader;
 import opengl.VertexArrayObject;
-import scenes.Scene;
 import tools.Maths;
 
 public class RendererDebug extends Renderer{
@@ -177,7 +177,7 @@ public class RendererDebug extends Renderer{
 		shader.start();
 		shader.loadMatrix("projectionMatrix", inGameCamera.getProjectionMatrix());
 		shader.loadMatrix("viewMatrix", inGameCamera.getViewMatrix());
-		for(Entity entity: scene.renderList) {
+		for(Entity entity: scene.entities) {
 			
 			if(!entity.isCamera()) {
 				continue;

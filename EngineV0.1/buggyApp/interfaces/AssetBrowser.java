@@ -1,11 +1,13 @@
 package interfaces;
 
 import assets.Asset;
+import assets.Scene;
 import assets.Sprite;
 import imgui.ImColor;
 import imgui.ImGui;
 import imgui.ImVec2;
 import imgui.flag.ImGuiCol;
+import imgui.flag.ImGuiMouseButton;
 import imgui.flag.ImGuiPopupFlags;
 import leveleditor.LevelEditorLayer;
 import managers.AssetManager;
@@ -50,6 +52,10 @@ public class AssetBrowser{
 						clicked = ImGui.imageButton(assetIcon, 100, 80, tile_cords[0], tile_cords[1], tile_cords[4], tile_cords[5]);
 					}				
 					break;
+				case Scene:
+					assetIcon = AssetManager.getIconTexture("Scene").getTextureID();
+					clicked = ImGui.imageButton(assetIcon, 100, 80);
+					break;
 				default:
 					assetIcon = AssetManager.getIconTexture("FileIcon").getTextureID();
 					clicked = ImGui.imageButton(assetIcon, 100, 80);
@@ -61,9 +67,19 @@ public class AssetBrowser{
 				ImGui.text(asset.getAssetType()+" : " + asset.getAssetName());
 				ImGui.endDragDropSource();
 			}
+			
+			if(ImGui.isMouseDoubleClicked(ImGuiMouseButton.Left)) {
+				switch(asset.getAssetType()) {
+					case Scene:
+						layer.currentScene = (Scene) asset;
+						break;
+				}
+			}
+
 			if(clicked) {
 				layer.selectedAsset = asset.getAssetName();
 			}
+			
 			ImVec2 text_size = new ImVec2();
 			ImGui.calcTextSize(text_size , asset.getAssetName());
 			
@@ -109,6 +125,10 @@ public class AssetBrowser{
 					
 					AssetManager.createTileMapSprite();
 					
+				}
+				
+				if(ImGui.menuItem("Scene")) {
+					AssetManager.createNewScene();
 				}
 				
 				ImGui.endMenu();

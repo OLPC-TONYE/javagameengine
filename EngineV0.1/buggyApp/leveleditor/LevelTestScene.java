@@ -46,13 +46,8 @@ public class LevelTestScene extends Scene{
 				if(!entity.isCamera() && !entity.isLight()) {
 					addToRenderList(entity);
 				}
-				if(entity.isLight()) {
-					addLight(entity);
-				}
 			}
-			renderer.render(this);
-			renderList.clear();
-			lights.clear();
+			entities.clear();
 		}
 	}
 	

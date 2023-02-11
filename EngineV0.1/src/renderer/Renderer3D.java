@@ -16,6 +16,10 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
 import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import assets.Scene;
 import components.CameraComponent;
 import components.LightType;
 import components.LightingComponent;
@@ -26,7 +30,6 @@ import entities.Entity;
 import managers.EntityManager;
 import opengl.Shader;
 import opengl.VertexArrayObject;
-import scenes.Scene;
 import tools.Maths;
 
 public class Renderer3D extends Renderer{
@@ -43,6 +46,24 @@ public class Renderer3D extends Renderer{
 		shader.link();
 	}
 	
+	private void loadEntitiesFromScene(Scene scene, List<Entity> lights, List<Entity> cameras, List<Entity> renderList) {
+		
+		for(Entity entity: scene.entities) {
+			
+			if(entity.isCamera()) {
+				cameras.add(entity);
+			}
+			
+			if(entity.isLight()) {
+				lights.add(entity);
+			}
+			if(!entity.isCamera() && !entity.isLight()) {
+				renderList.add(entity);
+			}
+		}
+			
+	}
+	
 	@Override
 	public void render(Scene scene) {
 		
@@ -50,6 +71,12 @@ public class Renderer3D extends Renderer{
 		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 		
 		glEnable(GL_DEPTH_TEST);
+				
+		List<Entity> lights = new ArrayList<>();
+		List<Entity> cameras = new ArrayList<>();
+		List<Entity> renderList = new ArrayList<>();
+		
+		loadEntitiesFromScene(scene, lights, cameras, renderList);
 		
 		CameraComponent inGameCamera = scene.primaryCamera.getComponent(CameraComponent.class);	
 		
@@ -57,16 +84,16 @@ public class Renderer3D extends Renderer{
 		shader.loadMatrix("inverseViewMatrix", Maths.getInvertedMatrix(inGameCamera.getViewMatrix()));
 		shader.loadMatrix("viewMatrix", inGameCamera.getViewMatrix());
 		
-		if(scene.useAmbient == true) {
-			shader.loadFloat("ambientLightFactor", 1f);
-		}else {
+		if(scene.useSceneLights == true) {
 			shader.loadFloat("ambientLightFactor", 0.1f);
+		}else {
+			shader.loadFloat("ambientLightFactor", 1f);
 		}
 		
 		int pointLightsCounter = 0;
 		int spotLightsCounter = 0;
 		
-		for(Entity light: scene.lights) {
+		for(Entity light: lights) {
 			
 			LightingComponent inGameLight = light.getComponent(LightingComponent.class);
 			Transform lightTransform = light.getComponent(Transform.class);
@@ -103,7 +130,7 @@ public class Renderer3D extends Renderer{
 		
 		
 		shader.start();
-		for(Entity entity: scene.renderList) {
+		for(Entity entity: renderList) {
 			prepareInstance(entity);
 			
 			if(entity.isCamera()) {

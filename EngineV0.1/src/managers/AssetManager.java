@@ -10,6 +10,7 @@ import assets.Asset;
 import assets.AssetType;
 import assets.Material;
 import assets.Mesh;
+import assets.Scene;
 import assets.Sprite;
 import opengl.Texture;
 import tools.Dictionary;
@@ -50,6 +51,12 @@ public class AssetManager {
 		Sprite newSprite = new Sprite();
 		newSprite.setTextureName("spritesheet");
 		addAsset(newSprite);
+	}
+	
+	public static void createNewScene() {
+		Scene newScene = new Scene();
+		newScene.setAssetName("New Scene");
+		addAsset(new Scene());
 	}
 	
 	public static boolean hasAsset(String assetName) {

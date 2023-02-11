@@ -7,13 +7,13 @@ import org.joml.Vector3f;
 import org.joml.Vector4f;
 
 import assets.Material;
+import assets.Scene;
 import components.LightingComponent;
 import components.Transform;
 
 import static org.lwjgl.opengl.GL11.*;
 
 import opengl.Shader;
-import scenes.Scene;
 
 public abstract class Renderer {
 	

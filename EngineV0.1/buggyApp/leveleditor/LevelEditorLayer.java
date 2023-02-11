@@ -4,6 +4,7 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 
+import assets.Scene;
 import components.ScriptComponent;
 import components.Transform;
 import entities.Drawable;
@@ -31,7 +32,6 @@ import opengl.Framebuffer;
 import opengl.VertexArrayObject;
 import renderer.Renderer3D;
 import renderer.RendererDebug;
-import scenes.Scene;
 import scenes.SceneLoader;
 import scripting.EntityScript;
 import tools.Maths;
@@ -42,9 +42,11 @@ public class LevelEditorLayer extends Layer
 	Renderer3D renderer;
 	RendererDebug renderer2;
 	
-	Framebuffer screen;
+	Framebuffer viewport;
 
-	Scene levelScene = new LevelEditorScene();
+//	Scenes will now be changed to assets
+//	Will need to make te editor run with null Scene
+	public Scene currentScene = new Scene();
 	
 	public String selectedEntity;
 	public String selectedAsset;
@@ -62,7 +64,7 @@ public class LevelEditorLayer extends Layer
 
 	@Override
 	public void attach() {
-		screen = new Framebuffer(1024, 600);
+		viewport = new Framebuffer(1024, 600);
 		renderer = new Renderer3D();
 		renderer2 = new RendererDebug();
 
@@ -74,8 +76,7 @@ public class LevelEditorLayer extends Layer
 		editorCamera = EngineManager.createCamera();
 		editorCamera.start();
 
-		levelScene.init();
-		levelScene.setCamera(editorCamera);
+		currentScene.setPrimaryCamera(editorCamera);
 
 		editorCamera.addComponent(new ScriptComponent());
 		ScriptComponent controller = editorCamera.getComponent(ScriptComponent.class);
@@ -86,36 +87,38 @@ public class LevelEditorLayer extends Layer
 
 	@Override
 	public void detach() {
-		levelScene.close();
 		renderer.clear();
 		renderer.clearColour(0.06f, 0.06f, 0.06f, 0.0f);
-		screen.cleanup();
+		viewport.cleanup();
 	}
 
 	@Override
 	public void render() {
 		
 		// bind the framebuffer
-		screen.bind();
+		viewport.bind();
 		
 		// clear the frame
 		renderer.clear();
 		renderer.clearColour(0.06f, 0.06f, 0.06f, 0.0f);
 		
 		// draw gridlines
-		renderer2.drawLines(levelScene.primaryCamera, lines, new Vector3f(1, 1, 1), new Vector3f(), new Vector3f(), new Vector3f(1));
+		renderer2.drawLines(editorCamera, lines, new Vector3f(1, 1, 1), new Vector3f(), new Vector3f(), new Vector3f(1));
 		
 		// render scene
-		levelScene.render(renderer);
-		levelScene.render(renderer2);
+		if(currentScene.primaryCamera != null) {
+			renderer.render(currentScene);
+			renderer2.render(currentScene);
+			
+			// render guizmo if active
+			guizmo.render(currentScene.primaryCamera);
+		}
 		
-		// render guizmo if active
-		guizmo.render(levelScene.primaryCamera);
 		
-		pixelData = screen.readPixelData(1, (int) viewportMouseHoverX, (int) viewportMouseHoverY);
-		guizmo_pixelData = screen.readPixelData(2, (int) viewportMouseHoverX, (int) viewportMouseHoverY);
+		pixelData = viewport.readPixelData(1, (int) viewportMouseHoverX, (int) viewportMouseHoverY);
+		guizmo_pixelData = viewport.readPixelData(2, (int) viewportMouseHoverX, (int) viewportMouseHoverY);
 		
-		screen.unbind();
+		viewport.unbind();
 		
 		// render the interfaces
 		renderInterfaces();
@@ -127,7 +130,9 @@ public class LevelEditorLayer extends Layer
 		editorCamera.update(dt);
 		
 		// update the scene
-		levelScene.update(dt);
+		for(Entity entity: currentScene.getEntities()) {
+			entity.update(dt);
+		}
 		
 		// update the guizmo
 		guizmo.update(dt, guizmo_pixelData);
@@ -193,15 +198,14 @@ public class LevelEditorLayer extends Layer
 			
 			if(ImGui.beginMenu("View")) {
 				
-				if(ImGui.menuItem("Use Ambient Light", "", levelScene.useAmbient)) {
-					levelScene.useAmbient = !levelScene.useAmbient;
+				if(ImGui.menuItem("Scene Lights", "", currentScene.useSceneLights)) {
+					currentScene.useSceneLights = !currentScene.useSceneLights;
 				}
 				
 				ImGui.endMenu();
 			}
 			
 			if(ImGui.beginMenu("About")) {
-				
 				ImGui.endMenu();
 			}
 			
@@ -219,10 +223,10 @@ public class LevelEditorLayer extends Layer
 	float viewportMouseHoverY;
 
 	/**
-	 * Game Screen (using Framebuffer).
+	 * ViewPort (using Frame Buffer).
 	 */
 	private void beginScreen() {
-		ImGui.setNextWindowSize(screen.getFramBufferWidth(), screen.getFramBufferHeight(), ImGuiCond.Always);
+		ImGui.setNextWindowSize(viewport.getFramBufferWidth(), viewport.getFramBufferHeight(), ImGuiCond.Always);
 
 		ImGui.pushStyleVar(ImGuiStyleVar.WindowPadding, 0, 0);
 		ImGui.pushStyleVar(ImGuiStyleVar.WindowRounding, 0.0f);
@@ -270,14 +274,14 @@ public class LevelEditorLayer extends Layer
 				ImGui.getWindowPosY() + ImGui.getCursorPosY());
 		viewportSize = new Vector2f(ImGui.getWindowSizeX(), ImGui.getWindowSizeY());
 
-		viewportMouseHoverX = ((cursorPosX - viewportCursor.x) / aspectWidth) * screen.getFramBufferWidth();
+		viewportMouseHoverX = ((cursorPosX - viewportCursor.x) / aspectWidth) * viewport.getFramBufferWidth();
 		viewportMouseHoverY = ((aspectHeight - (cursorPosY - viewportCursor.y)) / aspectHeight)
-				* screen.getFramBufferHeight();
+				* viewport.getFramBufferHeight();
 
 		ImGui.popStyleVar();
 		ImGui.popStyleVar();
 
-		ImGui.image(screen.getTexture(0), aspectWidth, aspectHeight, 0, 1, 1, 0);
+		ImGui.image(viewport.getTexture(0), aspectWidth, aspectHeight, 0, 1, 1, 0);
 
 		if (ImGui.isItemHovered()) {
 			if (ImGui.isMouseClicked(ImGuiButtonFlags.MouseButtonLeft)) {
